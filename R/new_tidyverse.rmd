@@ -26,3 +26,15 @@ output <- function(data) {
     kable_styling(full_width = F)
   }
 ```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/data_science.png)
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/tidyverse.png)
+
+```{r}
+library(tidyverse)
+library(gapminder)
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
+
