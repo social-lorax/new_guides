@@ -60,7 +60,6 @@ See [Basic R](new_basic_r.html)
 
 <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/readr.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/haven.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/readxl.png" height="150">
 
-
 [Cheatsheet for Importing Data](https://github.com/social-lorax/new_guides/blob/main/Cheatsheets/r_data_import.pdf)
 
 Also see [tidycensus](new_tidycensus.html) and [SQL](new_sql.html)
@@ -73,7 +72,7 @@ Also see [tidycensus](new_tidycensus.html) and [SQL](new_sql.html)
 
 ****
 
-![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/dplyr.png) ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/lubridate.png) ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/stringr.png)
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/tibble.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/dplyr.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/stringr.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/forcats.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/lubridate.png" height="150">
 
 ****
 
@@ -83,6 +82,8 @@ Also see [tidycensus](new_tidycensus.html) and [SQL](new_sql.html)
 
 ****
 
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/ggplot.png" height="150">
+
 See [ggplot](new_basic_r.html) or [Spatial R](new_basic_r.html)
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
@@ -91,6 +92,8 @@ See [ggplot](new_basic_r.html) or [Spatial R](new_basic_r.html)
 
 ****
 
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/tidymodels_main.png" height="150">
+
 See [Statistics](new_stats_r.html) or [tidymodels](new_tidymodels.html)
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
@@ -98,6 +101,8 @@ See [Statistics](new_stats_r.html) or [tidymodels](new_tidymodels.html)
 # $\first{Communicate}$
 
 ****
+
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/markdown.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/shiny.png" height="150">
 
 See [Markdown](new_markdown.html) or [Shiny](new_shiny.html)
 
