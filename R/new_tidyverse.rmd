@@ -48,7 +48,7 @@ library(gapminder)
 
 ****
 
-![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/r_main.png) 
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/r_main.png" height="150">
 
 See [Basic R](new_basic_r.html)
 
@@ -58,9 +58,10 @@ See [Basic R](new_basic_r.html)
 
 ****
 
-![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/readr.png) ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/haven.png) ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/readxl.png)
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/readr.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/haven.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/readxl.png" height="150">
 
-[Cheatsheet for Importing Data](https://github.com/social-lorax/new_guides/blob/main/Cheatsheets/data_import.pdf)
+
+[Cheatsheet for Importing Data](https://github.com/social-lorax/new_guides/blob/main/Cheatsheets/r_data_import.pdf)
 
 Also see [tidycensus](new_tidycensus.html) and [SQL](new_sql.html)
 
@@ -69,6 +70,10 @@ Also see [tidycensus](new_tidycensus.html) and [SQL](new_sql.html)
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
 
 # $\first{Tidy}$
+
+****
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/dplyr.png) ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/lubridate.png) ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/stringr.png)
 
 ****
 
