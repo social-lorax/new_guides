@@ -1,0 +1,85 @@
+---
+output: 
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    number_sections: false
+    df_print: kable
+knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
+---
+
+\newcommand\first[1]{\color{darkblue}{\textbf{#1}}}
+\newcommand\second[1]{\color{dodgerblue}{\textbf{#1}}}
+\newcommand\third[1]{\color{skyblue}{\textrm{#1}}}
+
+[Return to Main Page](new_r_index.html)
+
+```{r include=FALSE}
+library(kableExtra)
+
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+
+output <- function(data) {
+  knitr::kable(data) %>% 
+    kable_styling(full_width = F)
+  }
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/tidymodels.png)
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(gapminder)
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
+
+```{r eval }
+gapminder %>% 
+  head() 
+```
+
+```{r}
+gapminder %>% 
+  filter(year == 2007) %>% 
+  ggplot(aes(x = log(gdpPercap), 
+             y = lifeExp, 
+             group = continent,
+             color = continent)) + 
+  geom_point() + 
+  geom_smooth(method = lm, se = FALSE) + 
+  scale_color_viridis_d()
+```
+
+
+```{r}
+lm_model <- linear_reg() %>% 
+  set_engine("lm")
+
+lm_fit <- lm_model %>% 
+  fit(lifeExp ~ log(gdpPercap) + year + continent, data = gapminder)
+
+lm_fit %>% tidy()
+```
+
+```{r}
+new_data <- tibble(gdpPercap = 50000,
+                   year = 2007,
+                   continent = c("Africa", "Americas", "Asia", "Europe", "Oceania"))
+
+mean_pred <- predict(lm_fit, new_data = new_data)
+ci_pred <- predict(lm_fit, new_data = new_data, type = "conf_int")
+
+new_data %>% 
+  bind_cols(mean_pred) %>% 
+  bind_cols(ci_pred) %>% 
+  ggplot(aes(x = continent)) + 
+  geom_point(aes(y = .pred)) + 
+  geom_errorbar(aes(ymin = .pred_lower,
+                    ymax = .pred_upper),
+                width = 0.2) + 
+  labs(y = "lifeExp")
+```
