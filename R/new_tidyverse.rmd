@@ -48,19 +48,23 @@ library(gapminder)
 
 ****
 
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/r_main.png) 
+
 See [Basic R](new_basic_r.html)
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
 
 # $\first{Import}$
 
+****
+
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/readr.png) ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/haven.png) ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/readxl.png)
 
 [Cheatsheet for Importing Data](https://github.com/social-lorax/new_guides/blob/main/Cheatsheets/data_import.pdf)
 
-****
-
 Also see [tidycensus](new_tidycensus.html) and [SQL](new_sql.html)
+
+****
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
 
