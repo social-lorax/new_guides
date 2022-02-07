@@ -27,9 +27,15 @@ output <- function(data) {
   }
 ```
 
+<div align="center">
+
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/data_science.png)
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/tidyverse.png)
+
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/R/r4ds.png" height="250"> [Link to Book](https://r4ds.had.co.nz/)
+
+</div>
 
 ```{r}
 library(tidyverse)
@@ -38,3 +44,48 @@ library(gapminder)
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
 
+# $\first{Program}$
+
+****
+
+See [Basic R](new_basic_r.html)
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
+
+# $\first{Import}$
+
+****
+
+Also see [tidycensus](new_tidycensus.html) and [SQL](new_sql.html)
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
+
+# $\first{Tidy}$
+
+****
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
+
+# $\first{Visualize}$
+
+****
+
+See [ggplot](new_basic_r.html) or [Spatial R](new_basic_r.html)
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
+
+# $\first{Model}$
+
+****
+
+See [Statistics](new_stats_r.html) or [tidymodels](new_tidymodels.html)
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
+
+# $\first{Communicate}$
+
+****
+
+See [Markdown](new_markdown.html) or [Shiny](new_shiny.html)
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
