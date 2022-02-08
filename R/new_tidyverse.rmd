@@ -66,6 +66,498 @@ Also see [tidycensus](new_tidycensus.html) and [SQL](new_sql.html)
 
 ****
 
+### $\second{Equity Check}$
+
+* Where does this data come from?
+* Why was this data collected?
+* How was this data generated?
+* Is this data demographically representative?
+* Who is included and who is excluded from this data?
+* Whose voices, lives, and experiences are missing?
+* How much can this data be disaggregated by race, gender, ethnicity, etc.?
+* Are the categories mutually exclusive and fully inclusive?
+* Are there “other” categories and, if so, who does that include?
+* Who stands to benefit from this data?
+* Who might be harmed by the collection or publication of this data?
+
+(See more in Urban Institute’s [Do No Harm Guide](https://www.urban.org/research/publication/do-no-harm-guide-applying-equity-awareness-data-visualization/view/full_report))
+
+****
+
+### $\second{Tibbles}$
+
+`as_tibble()` transforms existing data into a tibble
+
+```{r eval = FALSE}
+data %>% 
+  as_tibble()
+```
+
+<br> 
+
+`tibble()` creates a tibble from new data
+
+```{r eval = FALSE}
+tibble(x = 1:5, 
+       y = 1, 
+       z = x ^ 2 + y)
+```
+
+```{r echo = FALSE}
+tibble(x = 1:5, 
+       y = 1, 
+       z = x ^ 2 + y) %>% output()
+```
+
+****
+
+### $\second{Import Data}$
+
+#### $\third{- Basic Files (readr)}$ 
+
+`readr` (part of tidyverse) covers basics like csv files
+
+* `delim = ";"` specifies the non-comma delimiter (`"\t"` is tab, `" "` is space)
+* `skip = n` skips the first n lines
+* `comment = "#"` drops all lines that start with (e.g.) #
+* `col_names = FALSE` tells `read_csv()` not to treat the first row as headings and instead label them from `X1` to `Xn`
+* `col_names = c("x", "y", "z")` renames the columns as the character vector
+* `col_types = cols()` reads in the columns as the specified data type
+* `na = 999` replaces dataset-specific NA values (e.g., 999) as NA
+
+```{r eval = FALSE}
+read_csv("path/to/file.csv")
+
+read_rds("path/to/file.rds")
+
+read_delim("path/to/file.txt", delim = ";")
+```
+
+```{r eval = FALSE}
+#Best Practice
+csv_data <- read_csv("path/to/file.csv",
+                     col_types = cols(w = col_double(),
+                                      x = col_date(format = ""),
+                                      y = col_character(),
+                                      z = col_logical()))
+```
+
+<br> 
+
+#### $\third{- Stats (haven)}$ 
+
+`haven` reads SPSS, Stata, and SAS files
+
+```{r eval = FALSE}
+library(haven)
+
+read_sas("path/to/file.sas7bdat")
+
+read_spss("path/to/file.spv")
+
+read_stata("path/to/file.dta")
+```
+
+<br> 
+
+#### $\third{- Excel (readxl)}$ 
+
+`readxl` reads excel files (both .xls and .xlsx)
+
+```{r eval = FALSE}
+library(readxl)
+
+read_excel("path/to/file.xlsx")
+```
+
+<br> 
+
+#### $\third{- Databases (DBI)}$ 
+
+`DBI`, along with a database specific backend (e.g. RMySQL, RSQLite, RPostgreSQL etc), runs SQL queries (See [SQL](new_sql.html))
+
+```{r eval = FALSE}
+library(DBI)
+
+con <- "connection to database"
+
+dbGetQuery(con, "
+  
+  SELECT * 
+    FROM table
+           
+           ") %>% as_tibble()
+```
+
+<br> 
+
+#### $\third{- JSON Files (jsonlite)}$
+
+`jsonlite` reads json files
+
+<br> 
+
+#### $\third{- XML Files (xml2)}$
+
+`xml2` reads XML
+
+****
+
+### $\second{Export}$
+
+`write_csv()` exports a plain csv
+
+```{r eval = FALSE}
+dataset %>% write_csv("path/dataset.csv")
+```
+
+<br> 
+
+`write_rds()` preserves formatting as an rds file
+
+```{r eval = FALSE}
+dataset %>% write_rds("path/dataset.rds")
+```
+
+****
+
+### $\second{Initial Check}$
+
+#### $\third{- Contents}$
+
+`nrow()` returns the number of rows
+
+```{r}
+gapminder %>% nrow()
+```
+<br> 
+
+`ncol()` returns the number of columns 
+
+```{r}
+gapminder %>% ncol()
+```
+
+<br> 
+
+`names()` returns a list of all of the columns 
+
+```{r}
+gapminder %>% names()
+```
+
+<br> 
+
+`distinct()` returns a list of all unique values in a specified column 
+
+```{r}
+gapminder %>% distinct(continent)
+```
+
+<br> 
+
+#### $\third{- Summary Stats}$
+
+`summary()` gives basic stats on numeric columns, but I prefer this custom function
+
+```{r}
+col_summaries <- function(.data){
+  
+  all_cols <- .data %>% names()
+  
+  test_col <- function(.test_col){
+    test_data <- .data %>% 
+      as_tibble() %>%
+      rename(test = .test_col) %>% 
+      mutate_if(is.logical, as.character)
+    
+    if(dim(test_data %>% filter(!is.na(test)))[1] == 0){
+      test_data %>% 
+        summarize(column = .test_col,
+                  type = class(test_data$test),
+                  missing = sum(is.na(test)),
+                  unique_values = NA_real_,
+                  example = NA_character_,
+                  min = NA_real_,
+                  q25 = NA_real_,
+                  median = NA_real_,
+                  q75 = NA_real_,
+                  max = NA_real_)
+    } else if(class(test_data$test) %in% c("integer", "numeric")){
+      test_data %>% 
+        summarize(column = .test_col,
+                  type = class(test_data$test),
+                  missing = sum(is.na(test)),
+                  unique_values = NA_real_,
+                  example = NA_character_,
+                  min = min(test, na.rm = TRUE),
+                  q25 = quantile(test, 0.25, na.rm = TRUE),
+                  median = median(test, na.rm = TRUE),
+                  q75 = quantile(test, 0.75, na.rm = TRUE),
+                  max = max(test, na.rm = TRUE))
+    } else {
+      test_data %>% 
+        summarize(column = .test_col,
+                  type = class(test_data$test),
+                  missing = sum(is.na(test)),
+                  unique_values = n_distinct(test)) %>% 
+        bind_cols(test_data %>% 
+                    filter(!is.na(test)) %>% 
+                    select(test) %>% 
+                    head(1) %>% 
+                    rename(example = test)) %>% 
+        mutate(min = NA_real_,
+               q25 = NA_real_,
+               median = NA_real_,
+               q75 = NA_real_,
+               max = NA_real_ )
+      } 
+    }
+  
+  map_dfr(all_cols, test_col)
+}
+```
+
+```{r eval = FALSE}
+gapminder %>% col_summaries()
+```
+
+```{r echo = FALSE}
+gapminder %>% col_summaries() %>% output()
+```
+
+<br> 
+
+#### $\third{- Missing Values}$
+
+`na = ` or `recode` sets what counts as missing 
+
+```{r eval = FALSE}
+#When importing
+dataframe <- read_csv("datasource.csv", 
+                      na = c("", "NA", "UNKNOWN", 999))
+
+#When already read-in
+dateframe <- dataframe %>% 
+  mutate(char_col = recode(char_col, "NA" = NA_character_),
+         num_col = recode(num_col, 999 = NA_integer_))
+```
+
+<br> 
+
+`any(is.na())` checks whether there are ANY missing values
+
+```{r}
+#Overall
+any(is.na(gapminder))
+```
+
+```{r}
+#In a specific column
+any(is.na(gapminder$lifeExp))
+```
+
+<br>
+
+`summarize(sum(is.na()))` counts the missing values within each column
+
+```{r eval = FALSE}
+gapminder %>% 
+  summarize(observations = n(),
+            missing_lifeExp = sum(is.na(lifeExp)))
+```
+
+```{r echo = FALSE}
+gapminder %>% 
+  summarize(observations = n(),
+            missing_lifeExp = sum(is.na(lifeExp))) %>% output()
+```
+
+<br> 
+
+A list of expected values can also check completeness 
+
+```{r eval = FALSE}
+expected <- c("Africa" = 54, 
+              "Americas" = 35, 
+              "Asia" = 47,
+              "Europe" = 43,
+              "Oceania" = 14)
+
+gapminder %>% 
+  filter(year == 2007) %>% 
+  group_by(continent) %>% 
+  summarize(countries_represented = n()) %>% 
+  mutate(countries_expected = expected[continent],
+         missing_countries = countries_expected - countries_represented)
+```
+
+```{r echo = FALSE}
+expected <- c("Africa" = 54, 
+              "Americas" = 35, 
+              "Asia" = 47,
+              "Europe" = 43,
+              "Oceania" = 14)
+
+gapminder %>% 
+  filter(year == 2007) %>% 
+  group_by(continent) %>% 
+  summarize(countries_represented = n()) %>% 
+  mutate(countries_expected = expected[continent],
+         missing_countries = countries_expected - countries_represented) %>% output()
+```
+
+<br> 
+
+#### $\third{- Cross Tabs}$
+
+`table()` creates a cross tab count
+
+```{r}
+gap_07 <- gapminder %>% 
+  filter(year==2007) %>%
+  mutate(country_size = case_when(pop > 3.121e+07 ~ "large",
+                                  pop < 4.508e+06 ~ "small",
+                                  TRUE            ~ "average"),
+         country_size = factor(country_size, 
+                               ordered = TRUE, 
+                               levels = c("large", "average", "small")))
+
+table(gap_07$continent, gap_07$country_size)
+```
+
+<br> 
+
+#### $\third{- Frequency Tables}$
+
+`prop.table()` creates a frequency table, but I prefer this custom function for formatting
+
+```{r}
+gap_07 <- gapminder %>% 
+  filter(year==2007) %>%
+  mutate(country_size = case_when(pop > 3.121e+07 ~ "large",
+                                  pop < 4.508e+06 ~ "small",
+                                  TRUE            ~ "average"),
+         country_size = factor(country_size, 
+                               ordered = TRUE, 
+                               levels = c("large", "average", "small")))
+
+size_table <- table(gap_07$continent, gap_07$country_size)
+
+props <- function(col1, col2, prop_type){
+  cross_tab <- table(col1, col2) 
+  
+  if(prop_type == "overall"){
+    prop.table(cross_tab) %>% 
+      as.data.frame() %>% 
+      as_tibble() %>% 
+      spread(col2, Freq) %>%
+      janitor::adorn_totals("col") %>% 
+      janitor::adorn_totals("row") %>% 
+      as_tibble() %>% 
+      mutate_at(vars(-col1), scales::percent, accuracy = 0.1) %>% 
+      rename(` ` = col1)
+  } else if(prop_type == "row"){
+    prop.table(cross_tab, 2) %>% 
+      as.data.frame() %>% 
+      as_tibble() %>% 
+      spread(col2, Freq) %>%
+      janitor::adorn_totals("row") %>% 
+      as_tibble() %>% 
+      mutate_at(vars(-col1), scales::percent, accuracy = 0.1) %>% 
+      rename(` ` = col1)
+  } else{
+    prop.table(cross_tab, 1) %>% 
+      as.data.frame() %>% 
+      as_tibble() %>% 
+      spread(col2, Freq) %>%
+      janitor::adorn_totals("col") %>% 
+      as_tibble() %>% 
+      mutate_at(vars(-col1), scales::percent, accuracy = 0.1) %>% 
+      rename(` ` = col1)
+  }
+}
+```
+
+```{r eval = FALSE}
+#Overall Proportions
+props(gap_07$continent, gap_07$country_size, "overall")
+```
+
+```{r echo = FALSE}
+#Overall Proportions
+props(gap_07$continent, gap_07$country_size, "overall") %>% output()
+```
+
+```{r eval = FALSE}
+#Column Proportions
+props(gap_07$continent, gap_07$country_size, "col")
+```
+
+```{r echo = FALSE}
+#Column Proportions
+props(gap_07$continent, gap_07$country_size, "col") %>% output()
+```
+
+```{r eval = FALSE}
+#Row Proportions
+props(gap_07$continent, gap_07$country_size, "row")
+```
+
+```{r echo = FALSE}
+#Row Proportions
+props(gap_07$continent, gap_07$country_size, "row") %>% output()
+```
+
+<br> 
+
+#### $\third{- Correlation Tables}$
+
+`cor()` calculated the correlation between two variables, but this function will compare each variable to all other variables 
+
+```{r}
+library(reshape2)
+
+get_pretty_cormap <- function (.data, .numcols) {
+  cormat <- round(cor(select(.data, .numcols)), 2)
+  
+  reorder_cormat <- function(cormat){
+    dd <- as.dist((1-cormat)/2)
+    hc <- hclust(dd)
+    cormat <-cormat[hc$order, hc$order]}
+  cormat <- reorder_cormat(cormat)
+  
+  get_upper_tri <- function(cormat){
+    cormat[lower.tri(cormat)]<- NA
+    return(cormat)}
+  upper_tri <- get_upper_tri(cormat)
+  
+  melted_cormat <- melt(upper_tri, na.rm = TRUE)
+  
+  ggplot(melted_cormat, aes(Var2, Var1, fill = value)) +
+    geom_tile(color = "white") +
+    scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0, limit = c(-1,1), 
+                         space = "Lab", name = "Pearson\nCorrelation") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, size = 12, hjust = 1)) +
+    coord_fixed() +
+    geom_text(aes(Var2, Var1, label = value), color = "black", size = 4) +
+    theme(axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.border = element_blank(),
+          panel.background = element_blank(),
+          axis.ticks = element_blank(),
+          legend.justification = c(1, 0),
+          legend.position = c(0.6, 0.7),   
+          legend.direction = "horizontal") +
+    guides(fill = guide_colorbar(barwidth = 7, barheight = 1, title.position = "top", title.hjust = 0.5))}
+```
+
+```{r}
+get_pretty_cormap(gapminder, c("year", "lifeExp", "pop", "gdpPercap"))
+```
+
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
 
 # $\first{Tidy}$
@@ -75,6 +567,99 @@ Also see [tidycensus](new_tidycensus.html) and [SQL](new_sql.html)
 <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/tibble.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/dplyr.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/stringr.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/forcats.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/lubridate.png" height="150">
 
 ****
+
+### $\second{Values}$
+
+#### $\third{- Missing}$
+
+`filter(!is.na())` removes entire rows with missing values in the specified column
+
+```{r eval = FALSE}
+gapminder %>% 
+  filter(!is.na(lifeExp)) 
+```
+
+<br>
+
+`replace_na()` replaces missing values
+
+```{r eval = FALSE}
+gapminder %>% 
+  mutate(pop = replace_na(pop, 0))
+```
+
+<br>
+
+#### $\third{- Duplicates}$
+
+`distinct()` keeps unique rows and removes all others that are completely identical
+
+```{r eval = FALSE}
+data %>% 
+  distinct()
+```
+
+<br> 
+
+`distinct(col, .keep_all = TRUE)` (i.e., adding a column as an argument) just looks at the values within that column regardless of whether the other columns are the same (this will keep the first occurrence, so arrange as desired first)
+
+```{r eval = FALSE}
+#Most recent entry for each country
+gapminder %>% 
+  arrange(desc(year)) %>% 
+  distinct(country, .keep_all = TRUE) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+#Most recent entry for each country
+gapminder %>% 
+  arrange(desc(year)) %>% 
+  distinct(country, .keep_all = TRUE) %>% 
+  head() %>% output()
+```
+
+<br> 
+
+#### $\third{- Outliers}$
+
+Causes: 
+
+* Valid measurements that happen to be extreme
+* Variability in measurement
+* Experimental error
+* Data entry error
+
+```{r}
+#Visual Check
+boxplot(gap_07$pop)
+```
+
+All of the circles are technically outliers. We know that the two extremes (China and India) are, in fact, correct. If there was a third that was that extreme, it would be an error that should be removed or replaced. Similarly, if there was a negative population, that would also be an error that should be removed or replaced.
+
+<br> 
+
+```{r eval = FALSE}
+#3SD Check
+upper_out <- mean(gap_07$pop) + (3 * sd(gap_07$pop))
+lower_out <- mean(gap_07$pop) - (3 * sd(gap_07$pop))
+
+gap_07 %>% 
+  filter(pop > upper_out | pop < lower_out)
+```
+
+```{r echo = FALSE}
+#3SD Check
+upper_out <- mean(gap_07$pop) + (3 * sd(gap_07$pop))
+lower_out <- mean(gap_07$pop) - (3 * sd(gap_07$pop))
+
+gap_07 %>% 
+  filter(pop > upper_out | pop < lower_out) %>% output()
+```
+
+****
+
+### $\second{Initial Check}$
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
 
@@ -102,7 +687,7 @@ See [Statistics](new_stats_r.html) or [tidymodels](new_tidymodels.html)
 
 ****
 
-<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/markdown.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/shiny.png" height="150">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/rmarkdown.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/shiny.png" height="150">
 
 See [Markdown](new_markdown.html) or [Shiny](new_shiny.html)
 
