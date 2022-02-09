@@ -566,6 +566,14 @@ get_pretty_cormap(gapminder, c("year", "lifeExp", "pop", "gdpPercap"))
 
 <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/tibble.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/dplyr.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/stringr.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/forcats.png" height="150"> <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/lubridate.png" height="150">
 
+[Cheatsheet for Tidying Data](https://github.com/social-lorax/new_guides/blob/main/Cheatsheets/r_data_transformation.pdf)
+
+[Cheatsheet for Strings](https://github.com/social-lorax/new_guides/blob/main/Cheatsheets/r_strings.pdf)
+
+[Cheatsheet for Factors](https://github.com/social-lorax/new_guides/blob/main/Cheatsheets/r_factors.pdf)
+
+[Cheatsheet for Lubridates](https://github.com/social-lorax/new_guides/blob/main/Cheatsheets/r_lubridate.pdf)
+
 ****
 
 ### $\second{Values}$
@@ -659,7 +667,35 @@ gap_07 %>%
 
 ****
 
-### $\second{Initial Check}$
+### $\second{Tidy Data}$
+
+****
+
+### $\second{Selecting}$
+
+****
+
+### $\second{Columns}$
+
+****
+
+### $\second{Mutating}$
+
+****
+
+### $\second{Summarizing}$
+
+****
+
+### $\second{Strings}$
+
+****
+
+### $\second{Dates}$
+
+****
+
+### $\second{Joins}$
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
 
