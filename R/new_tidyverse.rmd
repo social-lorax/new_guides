@@ -576,6 +576,51 @@ get_pretty_cormap(gapminder, c("year", "lifeExp", "pop", "gdpPercap"))
 
 ****
 
+### $\second{Tidy Data}$
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/R/tidy1.png)
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/R/tidy2.png)
+
+<br> 
+
+#### $\third{- Gather}$
+
+```{r eval=FALSE}
+dataframe %>% 
+  gather(-c(cols to keep),
+         key = key name, 
+         value = value name, 
+         factor_key = TRUE)
+
+ratings %>% 
+  gather(-Season, 
+         key = Episode, 
+         value = Rating, 
+         factor_key = TRUE)
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/R/gather.png)
+
+<br> 
+
+#### $\third{- Spread}$
+
+```{r eval=FALSE}
+dataframe %>% 
+  spread(key = col to become new cols, 
+         value = col to become values under new cols, 
+         fill = value to fill for missing)
+
+roster %>% 
+  spread(key = Variable, 
+         value = Rating)
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/R/spread.png)
+
+****
+
 ### $\second{Values}$
 
 #### $\third{- Missing}$
@@ -667,27 +712,785 @@ gap_07 %>%
 
 ****
 
-### $\second{Tidy Data}$
-
-****
-
 ### $\second{Selecting}$
+
+#### $\third{- Filter (observations)}$
+
+`filter()` selects all observations (rows) with values matching the specification(s)
+
+|Code            |Meaning                         |
+|:---------------|:-------------------------------|
+|`==`            |Equal to                        |
+|`!=`            |Not equal to                    |
+|`>`             |Greater than                    | 
+|`>=`            |Greater than or equal to        | 
+|`<`             |Less than                       |
+|`<=`            |Less than or equal to           |
+|`%in% c()`      |Within the character vector     |
+|`!(. %in% c())` |Not within the character vector |
+|`is.na()`       |Is NA                           |
+|`!is.na()`      |Is not NA                       |
+|`between(x, y)` |Is between x and y              |
+|`,` or `&`      |And                             |
+|`|`             |Or                              |
+
+```{r eval = FALSE}
+gapminder %>% 
+  filter(between(year, 2000, 2020),
+         !(continent %in% c("Africa", "Americas", "Asia")),
+         !is.na(gdpPercap)) %>% 
+  filter(lifeExp > 81 |
+         gdpPercap > 40000) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+gapminder %>% 
+  filter(between(year, 2000, 2020),
+         !(continent %in% c("Africa", "Americas", "Asia")),
+         !is.na(gdpPercap)) %>% 
+  filter(lifeExp > 81 |
+         gdpPercap > 40000) %>% 
+  head() %>% output()
+```
+
+<br> 
+
+#### $\third{- Select (variables)}$
+
+`select()` selects all variables (columns) called for 
+
+* `starts_with("abc")` selects columns that begin with “abc”
+* `ends_with("xyz")` selects columns that end with “xyz”
+* `contains("ijk")` selects columns that contain “ijk”
+* `matches("(.)\\1")` selects columns that match a regular expression
+* `everything()` selects everything else (useful for reorganizing columns)
+
+```{r eval = FALSE}
+#Just
+gapminder %>% 
+  select(country, year, pop) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+#Just
+gapminder %>% 
+  select(country, year, pop) %>% 
+  head() %>% output()
+```
+
+```{r eval = FALSE}
+#Not
+gapminder %>% 
+  select(-c(continent, pop)) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+#Not
+gapminder %>% 
+  select(-c(continent, pop)) %>% 
+  head() %>% output()
+```
+
+```{r eval = FALSE}
+#Range from this to that
+gapminder %>% 
+  select(continent:pop) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+#Range from this to that
+gapminder %>% 
+  select(continent:pop) %>% 
+  head() %>% output()
+```
 
 ****
 
 ### $\second{Columns}$
 
+#### $\third{- Renaming}$
+
+`rename(new name = old name)` renames the column
+
+```{r eval = FALSE}
+gapminder %>%
+  rename(population = pop) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+gapminder %>%
+  rename(population = pop) %>% 
+  head() %>% output()
+```
+
+<br> 
+
+#### $\third{- Separating}$
+
+`separate()` splits each value within a column based on some separator 
+
+```{r eval = FALSE}
+gapminder %>% 
+  separate(col = lifeExp, 
+           into = c("Years", "Months"), 
+           sep = "[.]") %>%
+  mutate(Months = as.double(str_c("0.", Months)) * 12) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+gapminder %>% 
+  separate(col = lifeExp, 
+           into = c("Years", "Months"), 
+           sep = "[.]") %>%
+  mutate(Months = as.double(str_c("0.", Months)) * 12) %>% 
+  head() %>% output()
+```
+
+<br> 
+
+#### $\third{- Uniting}$
+
+`unite()` merges the values of two columns into a new column, placing some separator between the values
+
+```{r eval = FALSE}
+gapminder %>% 
+  unite(col = location, 
+        country, continent, 
+        sep = ", ") %>%
+  head()
+```
+
+```{r echo = FALSE}
+gapminder %>% 
+  unite(col = location, 
+        country, continent, 
+        sep = ", ") %>%
+  head() %>% output()
+```
+
 ****
 
 ### $\second{Mutating}$
+
+`mutate()` adds columns to the existing dataframe
+
+```{r eval = FALSE}
+gapminder %>% 
+  mutate(gdp = gdpPercap * as.double(pop)) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+gapminder %>% 
+  mutate(gdp = gdpPercap * as.double(pop)) %>% 
+  head() %>% output()
+```
+
+<br> 
+
+`transmute()` adds columns and then only selects the specified columns
+
+```{r eval = FALSE}
+gapminder %>% 
+  transmute(country, 
+            year, 
+            gdp = gdpPercap * as.double(pop)) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+gapminder %>% 
+  transmute(country, 
+            year, 
+            gdp = gdpPercap * as.double(pop)) %>% 
+  head() %>% output()
+```
+
+<br>
+
+#### $\third{- Recasting}$
+
+* `as.character()`
+* `as.double()`
+* `as.integer()`
+* `as.logical()`
+
+```{r eval = FALSE}
+gapminder %>% 
+  mutate(pop = as.double(pop)) %>% 
+  head()
+```
+
+
+```{r echo = FALSE}
+gapminder %>% 
+  mutate(pop = as.double(pop)) %>% 
+  head() %>% output()
+```
+
+<br> 
+
+#### $\third{- Factoring}$
+
+`factor()` recategorizes strings as categorical data; `ordered = TRUE` orders the categories by the `levels = c()` argument (otherwise it will be alphabetical)
+
+```{r eval = FALSE}
+gapminder %>% 
+  mutate(country = factor(country),
+         continent = factor(continent, 
+                            ordered = TRUE,
+                            levels = c("Asia", "Americas", "Europe", 
+                                       "Africa", "Oceania"))) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+gapminder %>% 
+  mutate(country = factor(country),
+         continent = factor(continent, 
+                            ordered = TRUE,
+                            levels = c("Asia", "Americas", "Europe", 
+                                       "Africa", "Oceania"))) %>% 
+  head() %>% output()
+```
+
+<br>
+
+#### $\third{- Cases}$
+
+`case_when()` creates a new field of categorical data (that still needs to be factored)
+
+```{r eval = FALSE}
+ gapminder %>% 
+  filter(year == 2007) %>%
+  mutate(country_size = case_when(pop > 3.121e+07 ~ "Large",
+                                  pop < 4.508e+06 ~ "Small",
+                                  TRUE            ~ "Average"),
+         country_size = factor(country_size,
+                               ordered = TRUE,
+                               levels = c("Small", "Average", "Large"))) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+ gapminder %>% 
+  filter(year == 2007) %>%
+  mutate(country_size = case_when(pop > 3.121e+07 ~ "Large",
+                                  pop < 4.508e+06 ~ "Small",
+                                  TRUE            ~ "Average"),
+         country_size = factor(country_size,
+                               ordered = TRUE,
+                               levels = c("Small", "Average", "Large"))) %>% 
+  head() %>% output()
+```
+
+<br>
+
+#### $\third{- Recoding Values}$
+
+`recode(old value = new value)` replaces all occurrences of the old value with the new value
+
+```{r eval = FALSE}
+ gapminder %>% 
+  mutate(continent = recode(continent, 
+                            "Asia" = "Asia & Pacific Islands",
+                            "Oceania" = "Australia & New Zealand")) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+ gapminder %>% 
+  mutate(continent = recode(continent, 
+                            "Asia" = "Asia & Pacific Islands",
+                            "Oceania" = "Australia & New Zealand")) %>% 
+  head() %>% output()
+```
+
+<br>
+
+A lookup table recodes all values faster:
+
+```{r eval = FALSE}
+library(hflights)
+
+hflights %>% 
+  count(UniqueCarrier) %>% 
+  arrange(desc(n)) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+library(hflights)
+
+hflights %>% 
+  count(UniqueCarrier) %>% 
+  arrange(desc(n)) %>% 
+  head() %>% output()
+```
+
+```{r eval = FALSE}
+airline_lookup_table <- c("AA" = "American",
+                          "AS" = "Alaska",
+                          "B6" = "JetBlue",
+                          "CO" = "Continental",
+                          "DL" = "Delta",
+                          "OO" = "SkyWest",
+                          "UA" = "United",
+                          "US" = "US_Airways", 
+                          "WN" = "Southwest", 
+                          "EV" = "Atlantic_Southeast", 
+                          "F9" = "Frontier", 
+                          "FL" = "AirTran", 
+                          "MQ" = "American_Eagle", 
+                          "XE" = "ExpressJet", 
+                          "YV" = "Mesa")
+
+hflights %>% 
+  mutate(UniqueCarrier = airline_lookup_table[UniqueCarrier]) %>%
+  count(UniqueCarrier) %>% 
+  arrange(desc(n)) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+airline_lookup_table <- c("AA" = "American",
+                          "AS" = "Alaska",
+                          "B6" = "JetBlue",
+                          "CO" = "Continental",
+                          "DL" = "Delta",
+                          "OO" = "SkyWest",
+                          "UA" = "United",
+                          "US" = "US_Airways", 
+                          "WN" = "Southwest", 
+                          "EV" = "Atlantic_Southeast", 
+                          "F9" = "Frontier", 
+                          "FL" = "AirTran", 
+                          "MQ" = "American_Eagle", 
+                          "XE" = "ExpressJet", 
+                          "YV" = "Mesa")
+
+hflights %>% 
+  mutate(UniqueCarrier = airline_lookup_table[UniqueCarrier]) %>%
+  count(UniqueCarrier) %>% 
+  arrange(desc(n)) %>% 
+  head() %>% output()
+```
+
+<br> 
+
+#### $\third{- Leading/Lagging Values}$
+
+First order with `arrange()` and `arrange(desc())`, then `lead()` and `lag()` pull the leading or lagging value
+
+```{r eval = FALSE}
+gapminder %>% 
+  filter(country == "United States",
+         year > 1990) %>% 
+  arrange(year) %>% 
+  transmute(year,
+            gdpPercap,
+            prior_gdpPercap = lag(gdpPercap),
+            next_gdpPercap = lead(gdpPercap))
+```
+
+```{r echo = FALSE}
+gapminder %>% 
+  filter(country == "United States",
+         year > 1990) %>% 
+  arrange(year) %>% 
+  transmute(year,
+            gdpPercap,
+            prior_gdpPercap = lag(gdpPercap),
+            next_gdpPercap = lead(gdpPercap)) %>% output()
+```
+
+<br> 
+
+#### $\third{- Rolling Analysis}$
+
+First order with `arrange()` and `arrange(desc())`, then `cum_()` does a rolling analysis 
+
+```{r eval = FALSE}
+gapminder %>% 
+  filter(country == "United States",
+         year > 1990) %>% 
+  arrange(year) %>% 
+  transmute(year,
+            gdpPercap,
+            rolling_sum = cumsum(gdpPercap), 
+            rolling_mean = cummean(gdpPercap), 
+            min_to_date = cummin(gdpPercap),
+            max_to_date = cummax(gdpPercap))
+```
+
+```{r echo = FALSE}
+gapminder %>% 
+  filter(country == "United States",
+         year > 1990) %>% 
+  arrange(year) %>% 
+  transmute(year,
+            gdpPercap,
+            rolling_sum = cumsum(gdpPercap), 
+            rolling_mean = cummean(gdpPercap), 
+            min_to_date = cummin(gdpPercap),
+            max_to_date = cummax(gdpPercap)) %>% 
+  output()
+```
+
+<br>
+
+#### $\third{- Whole Column Analysis}$
+
+Calling a column by name analyzes the whole column
+
+```{r eval = FALSE}
+gapminder %>% 
+  filter(year == 2007) %>% 
+  transmute(country,
+            continent,
+            lifeExp,
+            world_lifeExp = mean(lifeExp, na.rm = TRUE),
+            above_world_lifeExp = lifeExp > world_lifeExp,
+            pop) %>% 
+  arrange(desc(pop)) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+gapminder %>% 
+  filter(year == 2007) %>% 
+  transmute(country,
+            continent,
+            lifeExp,
+            world_lifeExp = mean(lifeExp, na.rm = TRUE),
+            above_world_lifeExp = lifeExp > world_lifeExp,
+            pop) %>% 
+  arrange(desc(pop)) %>% 
+  head() %>% output()
+```
+
+<br>
+
+#### $\third{- Rankings}$
+
+* `ntile()` categorizes the data into n even groups
+* `rank()` ranks the column
+
+```{r eval = FALSE}
+gapminder %>% 
+  filter(year == 2007) %>% 
+  transmute(country,
+            continent,
+            lifeExp,
+            lifeExpQuantile = ntile(desc(lifeExp), 4),
+            lifeExpRank = rank(desc(lifeExp)),
+            pop) %>% 
+  arrange(desc(pop)) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+gapminder %>% 
+  filter(year == 2007) %>% 
+  transmute(country,
+            continent,
+            lifeExp,
+            lifeExpQuantile = ntile(desc(lifeExp), 4),
+            lifeExpRank = rank(desc(lifeExp)),
+            pop) %>% 
+  arrange(desc(pop)) %>% 
+  head() %>% output()
+```
+
+
+<br>
+
+#### $\third{- Totals}$
+
+The `janitor` package can `adorn_totals()`
+
+```{r eval = FALSE}
+#Row total
+gapminder %>% 
+  filter(continent == "Oceania",
+         year > 1990) %>% 
+  select(country, year, pop) %>% 
+  spread(year, pop) %>% 
+  janitor::adorn_totals("col") %>% 
+  as_tibble()
+```
+
+```{r echo = FALSE}
+#Row total
+gapminder %>% 
+  filter(continent == "Oceania",
+         year > 1990) %>% 
+  select(country, year, pop) %>% 
+  spread(year, pop) %>% 
+  janitor::adorn_totals("col") %>% 
+  as_tibble() %>% output()
+```
+
+```{r eval = FALSE}
+#Column total
+gapminder %>% 
+  filter(continent == "Oceania",
+         year > 1990) %>% 
+  select(country, year, pop) %>% 
+  spread(year, pop) %>% 
+  janitor::adorn_totals("row") %>% 
+  as_tibble()
+```
+
+```{r echo = FALSE}
+#Column total
+gapminder %>% 
+  filter(continent == "Oceania",
+         year > 1990) %>% 
+  select(country, year, pop) %>% 
+  spread(year, pop) %>% 
+  janitor::adorn_totals("row") %>% 
+  as_tibble() %>% output()
+```
+
+```{r eval = FALSE}
+#Both totals
+gapminder %>% 
+  filter(continent == "Oceania",
+         year > 1990) %>% 
+  select(country, year, pop) %>% 
+  spread(year, pop) %>% 
+  janitor::adorn_totals("row") %>%
+  janitor::adorn_totals("col") %>%
+  as_tibble()
+```
+
+```{r echo = FALSE}
+#Both totals
+gapminder %>% 
+  filter(continent == "Oceania",
+         year > 1990) %>% 
+  select(country, year, pop) %>% 
+  spread(year, pop) %>% 
+  janitor::adorn_totals("row") %>%
+  janitor::adorn_totals("col") %>%
+  as_tibble() %>% output()
+```
+
+<br>
+
+#### $\third{- Grouped Analysis}$
+
+`group_by` can perform any analysis within a group instead of over the whole column
+
+```{r eval = FALSE}
+gapminder %>% 
+  filter(year == 2007) %>%
+  transmute(country,
+            continent,
+            lifeExp,
+            overall_quartile = ntile(desc(lifeExp), 4)) %>% 
+  group_by(continent) %>% 
+  mutate(continent_quantile = ntile(desc(lifeExp), 4)) %>% 
+  ungroup() %>% 
+  arrange(continent) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+gapminder %>% 
+  filter(year == 2007) %>%
+  transmute(country,
+            continent,
+            lifeExp,
+            overall_quartile = ntile(desc(lifeExp), 4)) %>% 
+  group_by(continent) %>% 
+  mutate(continent_quantile = ntile(desc(lifeExp), 4)) %>% 
+  ungroup() %>% 
+  arrange(continent) %>% 
+  head() %>% output()
+```
+
+<br> 
+
+#### $\third{- Multiple Columns}$
+
+`mutate_all`, `mutate_at`, and `mutate_if` analyze multiple columns simultaneously with the same function
+
+```{r eval=FALSE}
+#All 
+gapminder %>% 
+  mutate_all(as.character) %>% 
+  head()
+```
+
+```{r echo=FALSE}
+gapminder %>% mutate_all(as.character) %>% head() %>% output()
+```
+
+```{r eval=FALSE}
+#Just
+gapminder %>% 
+  mutate_at(vars(lifeExp, gdpPercap), round, 1) %>% 
+  head()
+```
+
+```{r echo=FALSE}
+gapminder %>% mutate_at(vars(lifeExp, gdpPercap), round, 1) %>% head() %>% output()
+```
+
+```{r eval=FALSE}
+#All but
+gapminder %>% 
+  mutate_at(vars(-country, -continent), as.double) %>% 
+  head()
+```
+
+```{r echo=FALSE}
+gapminder %>% mutate_at(vars(-country, -continent), as.double) %>% head() %>% output()
+```
+
+```{r eval=FALSE}
+#Like
+gapminder %>% 
+  mutate_at(vars(matches("gdp")), round, 1) %>% 
+  head()
+```
+
+```{r echo=FALSE}
+gapminder %>% mutate_at(vars(matches("gdp")), round, 1) %>% head() %>% output()
+```
+
+```{r eval=FALSE}
+#If
+gapminder %>% 
+  mutate_if(is.numeric, scales::comma, accuracy = 0.1) %>% 
+  head()
+```
+
+```{r echo=FALSE}
+gapminder %>% mutate_if(is.numeric, scales::comma, accuracy = 0.1) %>% head() %>% output()
+```
 
 ****
 
 ### $\second{Summarizing}$
 
+`summarize()` groups and returns a single summary statistic
+
+```{r eval=FALSE}
+gapminder %>% 
+  filter(year == 2007) %>% 
+  group_by(continent) %>% 
+  summarize(count = n(), 
+            missing = sum(is.na(lifeExp)),
+            unique_countries = n_distinct(country),
+            low_lifeExp = min(lifeExp, na.rm = TRUE),
+            high_lifeExp = max(lifeExp, na.rm = TRUE),
+            mean_lifeExp = mean(lifeExp, na.rm = TRUE),
+            median_lifeEx = median(lifeExp, na.rm = TRUE),
+            above_world_mean = sum(lifeExp > mean(gapminder %>% 
+                                                    filter(year == 2007) %>% 
+                                                    .$lifeExp,
+                                                  na.rm = TRUE)),
+            share_above_world_mean = above_world_mean / count) %>% 
+  ungroup()
+```
+
+```{r echo=FALSE}
+gapminder %>% filter(year == 2007) %>% group_by(continent) %>% summarize(count = n(), missing = sum(is.na(lifeExp)), unique_countries = n_distinct(country), low_lifeExp = min(lifeExp, na.rm = TRUE), high_lifeExp = max(lifeExp, na.rm = TRUE), mean_lifeExp = mean(lifeExp, na.rm = TRUE), median_lifeEx = median(lifeExp, na.rm = TRUE), above_world_mean = sum(lifeExp > mean(gapminder %>% filter(year == 2007) %>% .$lifeExp, na.rm = TRUE)), share_above_world_mean = above_world_mean / count) %>% ungroup() %>% output()
+```
+
 ****
 
 ### $\second{Strings}$
+
+#### $\third{- Trimming Spaces}$
+
+`str_trim()` cuts out spaces at the beginning and end of the string
+
+```{r}
+str_trim("  this is a test     ")
+```
+
+<br> 
+
+#### $\third{- Padding}$
+
+`str_pad()` adds a number (`width`) of characters (`pad`) at the beginning (`left`) or end (`right`) of a string
+
+```{r}
+county_codes <- c("1", "51", "201")
+
+str_pad(county_codes, 
+        width = 3, 
+        side = "left", 
+        pad = "0")
+```
+
+<br>
+
+#### $\third{- Extract Number}$
+
+`parse_number()` drops all non-numeric characters 
+
+```{r}
+parse_number("$1,234,567")
+```
+
+<br>
+
+#### $\third{- Replace}$
+
+`str_replace(string, old, new)` swaps out `old` for `new` characters
+
+```{r}
+#Replace First
+str_replace("bananas","a","o")
+
+#Replace All
+str_replace_all("bananas","a","o")
+```
+
+<br> 
+
+`str_remove(string, old)` just drops the `old` characters
+
+```{r}
+#Remove  First
+str_remove("bananas","a")
+
+#Remove All
+str_remove_all("bananas","a")
+```
+
+<br>
+
+#### $\third{- Capitalization}$
+
+`str` has some capitalization conventions (though setting all to lower is best for matching)
+
+```{r}
+text <- "nEw YoRk CiTy"
+
+#All Lower
+str_to_lower(text)
+
+#All Upper
+str_to_upper(text)
+
+#First Word Capitalized
+str_to_sentence(text)
+
+#All Words Capitalized
+str_to_title(text)
+```
 
 ****
 
