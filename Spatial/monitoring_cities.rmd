@@ -39,26 +39,11 @@ output <- function(data) {
 
 ### $\second{Cities from Space}$
 
-#### $\third{- Population}$ 
+#### $\third{- Night Lights}$
 
-The Gridded Population of the World, (GPWv4)
+<br> 
 
-* Models the distribution of human population (counts and densities) on a continuous global raster surface
-* Population input data were collected at the most detailed spatial resolution available from the results of the 2010 round of Population and Housing Censuses, which occurred between 2005 and 2014
-* Year estimates available: 2000, 2005, 2010, 2015, 2020
-
-|Observations |Count |Density |
-|-------------|------|--------|
-|![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/gpw1.jpg)|![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/gpw2.jpg)|![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/gpw3.jpg)|
-
-
-```
-//Load Data
-var pop_collection = ee.ImageCollection("CIESIN/GPWv411/GPW_UNWPP-Adjusted_Population_Count")
-    .select('unwpp-adjusted_population_count');
-
-```
-
+#### $\third{- Vegetation}$ 
 
 ***
 
@@ -76,6 +61,47 @@ var pop_collection = ee.ImageCollection("CIESIN/GPWv411/GPW_UNWPP-Adjusted_Popul
 
 ### $\second{Cities and Citizens}$
 
+#### $\third{- Population}$ 
+
+The Gridded Population of the World, (GPWv4)
+
+* Models the distribution of human population (counts and densities) on a continuous global raster surface
+* Population input data were collected at the most detailed spatial resolution available from the results of the 2010 round of Population and Housing Censuses, which occurred between 2005 and 2014
+* Year estimates available: 2000, 2005, 2010, 2015, 2020
+
+|Observations |Count |Density |
+|-------------|------|--------|
+|![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/gpw1.jpg)|![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/gpw2.jpg)|![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/gpw3.jpg)|
+
+
+```
+//Load data
+var pop_collection = ee.ImageCollection("CIESIN/GPWv411/GPW_UNWPP-Adjusted_Population_Count")
+    .select('unwpp-adjusted_population_count');
+    
+//Choose date range
+var T1_start = '2000-01-01';
+var T1_ends = '2000-12-31';
+
+var T2_start = '2020-01-01';
+var T2_ends = '2020-12-31';
+
+//Pull population for date range
+var T1_pop = pop_collection.filterDate(T1_start, T1_ends).first();
+var T2_pop  = pop_collection.filterDate(T2_start, T2_ends).first(); 
+
+//Calculate population change 
+var T2T1_pop_change = T2_pop.subtract(T1_pop);
+
+//Plot
+Map.setCenter(-74.0060, 40.7128, 9); //New York, United States
+Map.addLayer(T1_pop, {min: 0, max: 2000, palette: [ 'ffffff', 'red' ]}, 'Population T1');
+Map.addLayer(T2_pop, {min: 0, max: 2000, palette: [ 'ffffff', 'red' ]}, 'Population T2');
+Map.addLayer(T2T1_pop_change, { min:-300, max: 300, palette: ['blue','black','red']}, 'Pop Change T1-T2');
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/gpw4.jpg)
+
 <div align="center">
 
 <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
@@ -91,8 +117,3 @@ var pop_collection = ee.ImageCollection("CIESIN/GPWv411/GPW_UNWPP-Adjusted_Popul
 <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
 
 </div>
-
-
-
-
-
