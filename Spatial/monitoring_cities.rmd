@@ -47,6 +47,11 @@ The Gridded Population of the World, (GPWv4)
 * Population input data were collected at the most detailed spatial resolution available from the results of the 2010 round of Population and Housing Censuses, which occurred between 2005 and 2014
 * Year estimates available: 2000, 2005, 2010, 2015, 2020
 
+|Observations |Count |Density |
+|-------------|------|--------|
+|![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/gpw1.jpg)|![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/gpw2.jpg)|![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/gpw3.jpg)|
+
+
 ```
 //Load Data
 var pop_collection = ee.ImageCollection("CIESIN/GPWv411/GPW_UNWPP-Adjusted_Population_Count")
