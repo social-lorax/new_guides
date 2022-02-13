@@ -1446,7 +1446,7 @@ parse_number("$1,234,567")
 
 <br>
 
-#### $\third{- Replace}$
+#### $\third{- Replacing}$
 
 `str_replace(string, old, new)` swaps out `old` for `new` characters
 
@@ -1496,9 +1496,579 @@ str_to_title(text)
 
 ### $\second{Dates}$
 
+```{r}
+library(lubridate)
+```
+
+<br> 
+
+A **date-time** is a point on the timeline stored as the number of sections since `1970-01-01 00:00:00 UTC`  
+
+```{r}
+as_datetime(1511870400) 
+```
+
+<br>
+
+A **date** is a point on the timeline stored as the number of days since `1970-01-01`  
+
+```{r}
+as_date(17498)
+```
+
+<br>
+
+A **time** is a point on the timeline stored as the number of seconds since `00:00:00`  
+
+```{r}
+hms::as_hms(10230)
+```
+
+<br>
+
+#### $\third{- Current}$
+
+`now()` returns the date-time 
+
+```{r}
+now()
+```
+
+<br> 
+
+`today()` returns the date 
+
+```{r}
+today()
+```
+
+<br>
+
+#### $\third{- Parsing}$
+
+The functions match the order of the components. For example, `08/07/06` could be: 
+
+* Aug 7, 2006 
+* Jul 8, 2006
+* Jul 6, 2008
+* Jun 7, 2008
+
+```{r}
+mdy("08/07/06")
+dmy("08/07/06")
+ymd("08/07/06")
+ydm("08/07/06")
+```
+
+<br>
+
+It also works for more complicated renderings like "The 4th of July, 2018"
+
+```{r}
+dmy("The 4th of July, 2018")
+```
+
+<br>
+
+And for time
+
+```{r}
+mdy_hms("08/07/06 10:09:30")
+```
+
+<br>
+
+For more complex strings, the format can be specified: 
+
+* `y` = year (2021 or 21, but defaults to current century)
+* `m` = numerical month (1-12 or 01-12)
+* `b` = month name (January or Jan)
+* `d` = day of the month (1-31 or 01-31)
+* `w` = numerical day of the week (0-6 with Sunday as 0)
+* `a` = day of the week name (Monday or Mon)
+
+* `_` = split between date and time 
+
+* `H` = 24 hour (0-24 or 00-24)
+* `I` = am/pm hour (1-12 or 01-12)
+* `p` = am or pm when using `I`
+* `M` = minute (0-59 or 00-59)
+* `s` = second (0-61 or 00-61)
+
+```{r}
+parse_date_time("Monday June 1st 2010 at 4pm", orders = "amdy_Ip")
+```
+
+<br> 
+
+#### $\third{- Time Zones}$
+
+`tz()` checks the timezone 
+
+```{r}
+tz(ymd_hms("2017-03-11 12:00:00"))
+```
+
+<br>
+
+`tz = ` sets the timezone
+
+```{r}
+ymd_hms("2017-03-11 12:00:00", tz = "America/Los_Angeles")
+```
+
+<br> 
+
+`force_tz()` changes an incorrect timezone (without changing the time value)
+
+```{r}
+force_tz(ymd_hms("2017-03-11 12:00:00"), tzone = "America/New_York")
+```
+
+<br> 
+
+`with_tz` converts to a new timezone (thus changing the time value)
+
+```{r}
+with_tz(ymd_hms("2017-03-11 12:00:00"), tzone = "America/New_York")
+```
+
+<br> 
+
+#### $\third{- Extracting Elements}$
+
+* `date()` = drops the time
+* `year()` = year
+* `month()` = month
+* `day()` = number day of the month
+* `yday()` = number day of the year (1-365)
+* `wday()` = day of the week
+* `hour()` = hour
+* `min()` = minute
+* `leap_year()` = true/false for leap year
+* `dst()` = true/false for daylight savings
+* `quarter()` = quarter of year
+* `semester()` = half of year
+
+* `label = TRUE` for word instead of number
+* `abbr = TRUE` for abbreviated word
+
+```{r} 
+str_c("Today is day ", day(today()),
+      " of the month of ", month(today(), label = TRUE, abbr = FALSE),
+      ", which is a ", wday(today(), label = TRUE, abbr = FALSE),
+      ". It is also day ", yday(today()), 
+      " of ", year(today()),
+      ".") 
+```
+
+<br> 
+
+#### $\third{- Rounding}$
+
+`round_date()` gives the nearest `unit`
+
+```{r}
+round_date(ymd("2021-06-30"), unit = "month")
+```
+
+<br> 
+
+`ceiling_date()` rounds up
+
+```{r}
+ceiling_date(ymd_hm("2021-06-30 12:50"), unit = "15 minutes")
+```
+
+<br>
+
+`floor_date()` rounds down
+
+```{r}
+floor_date(ymd_hm("2021-06-30 12:50"), unit = "hour")
+```
+
+<br> 
+
+#### $\third{- Adding Time}$
+
+Time does not behave like general number lines. To evaluate, you must ask which is more important: the datetime in the real world or the length of time (duration)?
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/R/r_date_math.png)
+
+* `seconds()` / `dseconds()`
+* `minutes()` / `dminutes()`
+* `hours()` / `dhours()`
+* `days()` / `ddays()`
+* `weeks()` / `dweeks()`
+* `months()` / `dmonths()`
+* `years()` / `dyears()`
+
+```{r eval=FALSE}
+#Normal Day
+normal_day <- ymd_hm("2018-01-01 24:00", tz = "America/New_York")
+
+period <- normal_day + hours(3)
+
+duration <- normal_day + dhours(3)
+
+tibble(Difference = difftime(period, duration, units = "hours"),
+       Period = period,
+       Duration = duration)
+```
+
+```{r echo=FALSE}
+normal_day <- ymd_hm("2018-01-01 24:00", tz = "America/New_York")
+period <- normal_day + hours(3)
+duration <- normal_day + dhours(3)
+tibble(Difference = difftime(period, duration, units = "hours"), Period = period, Duration = duration) %>% output()
+```
+
+<br> 
+
+```{r eval=FALSE}
+#Daylight Savings
+daylight_savings_start <- ymd_hm("2018-03-10 24:00", tz = "America/New_York")
+
+period <- daylight_savings_start + hours(3)
+
+duration <- daylight_savings_start + dhours(3)
+
+tibble(Difference = difftime(period, duration, units = "hours"),
+       Period = period,
+       Duration = duration)
+```
+
+```{r echo=FALSE}
+enter_daylight_savings <- ymd_hm("2018-03-10 24:00", tz = "America/New_York")
+period <- enter_daylight_savings + hours(3)
+duration <- enter_daylight_savings + dhours(3)
+tibble(Difference = difftime(period, duration, units = "hours"),
+       Period = period,
+       Duration = duration) %>% output()
+```
+
+<br> 
+
+```{r eval=FALSE}
+#Exit Daylight Savings
+daylight_savings_end <- ymd_hm("2018-11-03 24:00", tz = "America/New_York")
+
+period <- daylight_savings_end + hours(3)
+
+duration <- daylight_savings_end + dhours(3)
+
+tibble(Difference = difftime(period, duration, units = "hours"),
+       Period = period,
+       Duration = duration)
+```
+
+```{r echo=FALSE}
+daylight_savings_end <- ymd_hm("2018-11-03 24:00", tz = "America/New_York")
+period <- daylight_savings_end + hours(3)
+duration <- daylight_savings_end + dhours(3)
+tibble(Difference = difftime(period, duration, units = "hours"), Period = period, Duration = duration) %>% output()
+```
+
+<br> 
+
+```{r eval=FALSE}
+#Normal Year
+normal_year <- ymd("2018-09-20", tz = "America/New_York")
+
+period <- normal_year + years(1)
+
+duration <- normal_year + years(1)
+
+tibble(Difference = difftime(period, duration, units = "days"),
+       Period = period,
+       Duration = duration)
+```
+
+
+```{r echo=FALSE}
+normal_year <- ymd("2018-09-20", tz = "America/New_York")
+period <- normal_year + years(1)
+duration <- normal_year + years(1)
+tibble(Difference = difftime(period, duration, units = "days"), Period = period, Duration = duration) %>% output()
+```
+
+<br> 
+
+```{r eval=FALSE}
+#Leap Year
+leap_year <- ymd("2019-09-20", tz = "America/New_York")
+
+period <- leap_year + years(1)
+
+duration <- leap_year + dyears(1)
+
+tibble(Difference = difftime(period, duration, units = "days"),
+       Period = period,
+       Duration = duration)
+```
+
+```{r echo=FALSE}
+leap_year <- ymd("2019-09-20", tz = "America/New_York")
+period <- leap_year + years(1)
+duration <- leap_year + dyears(1)
+tibble(Difference = difftime(period, duration, units = "days"), Period = period, Duration = duration) %>% output()
+```
+
+<br>
+
+For months, imaginary dates (e.g. Feb 31) need to be dealt with: 
+
+```{r}
+ymd("2019-1-31") + months(1)
+ymd("2019-1-31") %>% add_with_rollback(months(1))
+ymd("2019-1-31") %>% add_with_rollback(months(1), roll_to_first = TRUE)
+ymd("2019-1-31") + dmonths(1)
+```
+
+<br> 
+
+#### $\third{- Difference Between Times}$
+
+`difftime()` measures the duration between two real datetimes 
+
+* `secs`
+* `mins`
+* `hours`
+* `days`
+* `weeks`
+
+```{r}
+#Normal Day
+difftime(ymd_hm("2018-01-02 03:00", tz = "America/New_York"),
+         ymd_hm("2018-01-01 24:00", tz = "America/New_York"), 
+         unit = "days")
+```
+
+```{r}
+#Enter Daylight Savings
+difftime(ymd_hm("2018-03-11 03:00", tz = "America/New_York"),
+         ymd_hm("2018-03-10 24:00", tz = "America/New_York"), 
+         unit = "days")
+```
+
+```{r}
+#Exit Daylight Savings
+difftime(ymd_hm("2018-11-04 03:00", tz = "America/New_York"),
+         ymd_hm("2018-11-03 24:00", tz = "America/New_York"), 
+         unit = "days")
+```
+
+<br> 
+
+#### $\third{- Intervals}$
+
+`interval()` creates an interval 
+
+```{r}
+ryan <- interval(ymd("1990-11-04"), today())
+ryan
+```
+
+<br> 
+
+`int_length()` measures the length
+
+```{r}
+int_length(ryan) %>% dseconds()
+```
+
+<br> 
+
+`int_shift()` modifies the interval 
+
+```{r}
+int_shift(ryan, days(5))
+```
+
+<br> 
+
+`%within%` determines if a date is within the interval
+
+```{r}
+the_90s <- interval(ymd("1990-01-01"), ymd("1999-12-31"))
+
+today() %within% the_90s
+```
+
+<br> 
+
+`int_overlaps()` determines if two intervals overlap
+
+```{r}
+the_1900s <- interval(ymd("1900-01-01"), ymd("1999-12-31"))
+
+the_90s %within% the_1900s
+the_1900s %within% the_90s
+int_overlaps(the_90s, the_1900s)
+```
+
 ****
 
-### $\second{Joins}$
+### $\second{Combining Data}$
+
+#### $\third{- Joins}$
+
+* `inner_join()`
+* `full_join()`
+* `left_join()`
+* `right_join()`
+
+```{r eval=FALSE}
+# Basic
+joined_data <- data1 %>%
+  inner_join(data2, by = "common_col")
+
+# Multiple keys 
+joined_data <- data1 %>%
+  inner_join(data2, by = c("common_col1", "common_col2")
+
+# Key with different name
+joined_data <- data1 %>%
+  inner_join(data2, by = c("col from df1" = "col from df2"))
+```
+
+<br> 
+
+#### $\third{- Filter Joins}$
+
+```{r}
+sec_council <- tibble(country = c("United States", "United Kingdom", "France", 
+                                  "Russia", "China"))
+```
+
+<br> 
+
+`semi_join()` returns data from one dataset that is present in a second dataset
+
+```{r eval=FALSE}
+gapminder %>% 
+  filter(year == 2007) %>% 
+  semi_join(sec_council, by = "country") 
+```
+
+```{r echo=FALSE}
+gapminder %>% filter(year == 2007) %>% semi_join(sec_council, by = "country") %>% output()
+```
+
+<br> 
+
+`anti_join()` returns data from one dataset that is NOT present in a second dataset
+
+```{r eval=FALSE}
+gapminder %>% 
+  filter(year == 2007) %>% 
+  anti_join(sec_council, by = "country") %>% 
+  head()
+```
+
+```{r echo=FALSE}
+gapminder %>% filter(year == 2007) %>% anti_join(sec_council, by = "country") %>% head() %>% output()
+```
+
+<br>
+
+#### $\third{- Binding}$
+
+```{r}
+df1 <- tibble("A" = c(1, 2, 3),
+              "B" = c(6, 5, 4))
+
+df2 <- tibble("A" = c(4, 5, 6),
+              "B" = c(3, 2, 1),
+              "C" = c("L", "M", "N"))
+
+df3 <- tibble("B" = c(4, 5, 6),
+              "C" = c("1", "2", "3"))
+```
+
+
+<br>
+
+`bind_rows()` tacks on new rows 
+
+```{r eval=FALSE}
+df1 %>% 
+  bind_rows(df2)
+```
+
+```{r echo=FALSE}
+df1 %>%  bind_rows(df2) %>% output()
+```
+
+<br>
+
+`bind_cols()` tacks on new columns 
+
+```{r eval=FALSE}
+df1 %>% 
+  bind_cols(df3)
+```
+
+```{r echo=FALSE}
+df1 %>% bind_cols(df3) %>% output()
+```
+
+<br> 
+
+#### $\third{- Sets}$
+
+```{r}
+country_z <- gapminder %>% 
+  filter(year == 2007,
+         str_detect(str_to_lower(country), "z"))
+
+country_w <- gapminder %>% 
+  filter(year == 2007,
+         str_detect(str_to_lower(country), "w"))
+```
+
+<br> 
+
+`union()` returns all, removing duplicates 
+
+```{r eval=FALSE}
+country_z %>% 
+  union(country_w) %>% 
+  head()
+```
+
+```{r echo=FALSE}
+country_z %>% dplyr::union(country_w) %>% head() %>% output()
+```
+
+<br> 
+
+`intersect()` returns only observations in both 
+
+```{r eval=FALSE}
+country_z %>% 
+  intersect(country_w) %>% 
+  head()
+```
+
+```{r echo=FALSE}
+country_z %>% dplyr::intersect(country_w) %>% head() %>% output()
+```
+
+<br> 
+
+`setdiff()` returns only observations in the first that are not in the second
+
+```{r eval=FALSE}
+country_z %>%
+  setdiff(country_w) %>% 
+  head()
+```
+
+```{r echo=FALSE}
+country_z %>% dplyr::setdiff(country_w) %>% head() %>% output()
+```
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
 
