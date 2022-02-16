@@ -45,6 +45,17 @@ output <- function(data) {
 
 #### $\third{- Vegetation}$ 
 
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/veg.png)
+
+|NAIP |Sentinel-2 |Landsat (1-9) |
+|-----|-----|-----|
+|<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/naip.jpg" width="250"> |<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/sentinel-2.jpg" width="250"> |<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/landsat-9.jpg" width="250"> |
+|Continental US |Global |Global |
+|2006, 2009, 2011, 2013, 2015, 2017, 2019 |2016 - present |1999 - present |
+|Yearly mosaic |Revisit time of 10 days (5 days from 2019) |Revisit time of 16 days |
+|1m resolution |10m and 20m resolution |30m resolution |
+|4 spectral bands (R, G, B, IR)|13 spectral bands |11 spectral bands | 
+
 ***
 
 ### $\second{Cities from the Sky}$

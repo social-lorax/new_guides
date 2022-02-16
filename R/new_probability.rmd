@@ -1,0 +1,255 @@
+---
+output: 
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    number_sections: false
+    df_print: kable
+knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
+---
+
+\newcommand\first[1]{\color{darkblue}{\textbf{#1}}}
+\newcommand\second[1]{\color{dodgerblue}{\textbf{#1}}}
+\newcommand\third[1]{\color{skyblue}{\textrm{#1}}}
+
+[Return to Main Page](new_r_index.html)
+
+```{r include=FALSE}
+library(kableExtra)
+library(tidyverse)
+
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+
+output <- function(data) {
+  knitr::kable(data) %>% 
+    kable_styling(full_width = F)
+  }
+```
+
+Basic Probability 
+
+Single Event
+
+Theoretical 
+* Calculate all options 
+* Assume all options are equally likely 
+* Divide successes over total 
+
+```{r}
+#Coin flip 
+options <- 2 #heads or tails 
+success <- 1 #heads 
+
+probability <- success/options
+probability
+```
+
+Experimental 
+* Conduct many experiments 
+* Count successes 
+* Divide successes over total 
+
+```{r}
+#Coin flip 
+flips <- rbinom(100000, 1, 0.5)
+success <- sum(flips == 1)
+
+probability <- success/length(flips)
+probability
+```
+
+Multiple Independent Events 
+
+Intersection 
+Joint Probability = P(A & B) = P(X ∩ Y)
+P(A=head & B=heads)
+
+Theoretical (long)
+* Calculate all options 
+* Assume all options are equally likely 
+* Divide successes over total 
+
+```{r}
+#Coin flipped twice for HT 
+options <- 4 #HT, HH, TH, TT 
+success <- 1 #HT
+
+probability <- success/options
+probability
+```
+
+Theoretical (short)
+* Calculate probability of A and of B
+* Multiply together 
+
+```{r}
+#Coin flipped twice for HT
+options <- 2 #heads or tails 
+success_a <- 1 #heads
+success_b <- 1 #tails
+
+probability <- (success_a/options) * (success_b/options)
+probability
+```
+
+Experimental 
+* Conduct many experiments 
+* Count successes 
+* Divide successes over total 
+
+```{r}
+#Coin flipped twice for HT
+flip1 <- rbinom(100000, 1, 0.5)
+flip2 <- rbinom(100000, 1, 0.5)
+success <- sum(flip1 & !flip2)
+
+probability <- success/length(flip1)
+probability
+```
+
+Union 
+
+P(A or B) = P(X ∪ Y)
+P(A=heads or B=heads)
+
+Theoretical (long)
+* Calculate all options 
+* Assume all options are equally likely 
+* Divide successes over total 
+
+```{r}
+#Coin flipped twice for HT 
+options <- 4 #HT, HH, TH, TT 
+success <- 3 #HT, HH, TH
+
+probability <- success/options
+probability
+```
+
+Theoretical (short)
+* Calculate probability of A and of B
+* Add P(A) to P(B) and subtract P(A & B)
+
+```{r}
+#Coin flipped twice for HT
+options <- 2 #heads or tails 
+success_a <- 1 #heads
+success_b <- 1 #tails
+
+probability_a <- success_a/options
+probability_b <- success_b/options
+probability_ab <- (success_a/options) * (success_b/options)
+
+probability_a + probability_b - probability_ab
+```
+
+Experimental 
+* Conduct many experiments 
+* Count successes 
+* Divide successes over total 
+
+```{r}
+#Coin flipped twice for HT
+flip1 <- rbinom(100000, 1, 0.5)
+flip2 <- rbinom(100000, 1, 0.5)
+success <- sum(flip1 | !flip2)
+
+probability <- success/length(flip1)
+probability
+```
+
+Binomial Distribution
+
+* Independent experiments with a Boolean-valued outcome (e.g., coin flip)
+* Probability of success (e.g., heads) = `p`
+* Probability of failure (e.g., tails) = `q` = 1 - `p`
+* Repeated for `n` experiments 
+* A single experiment (`n` = 1) is a Bernoulli trial
+
+
+`rbinom()` simulates a Bernoulli trial, but has an interesting naming scheme:
+
+* `n` = number of runs 
+* `size` = number of experiments per run
+* `p` = probability of success
+
+```{r}
+#Flipping a coin 10 times, 10,000 times
+rbinom(n = 10000,
+       size = 10,
+       p = 0.5) %>% 
+  tibble() %>% 
+  ggplot(aes(x = .)) + 
+  geom_histogram(bins = 11, center = 0, fill = "gray40", col = "white") + 
+  scale_x_continuous(breaks = c(0:10)) + 
+  labs(title = "Binomial Distribution of 10 Coin Flips",
+       x = "Number of Heads",
+       y = "Number of Trials") + 
+  theme_classic()
+```
+
+`dbinom()` calculates the probability of getting a certain number of successes
+
+* `x` = number of successes
+* `size` = number of experiments
+* `p` = probability of success
+
+```{r}
+#Probability of exactly 5 heads
+dbinom(x = 5,
+       size = 10,
+       p = 0.5)
+```
+
+`pbinom()` calculates the cumulative probability of getting a certain number of successes or less
+
+* `q` = number of successes
+* `size` = number of experiments
+* `p` = probability of success
+
+```{r}
+#Probability of 5 or fewer heads
+pbinom(q = 5,
+       size = 10,
+       p = 0.5)
+```
+
+The expected value (`E[x]`) = `size * p`
+
+```{r}
+#Theoretical 
+10 * 0.5
+```
+
+```{r}
+#Experimental
+rbinom(n = 10000,
+       size = 10,
+       p = 0.5) %>% 
+  mean()
+```
+
+The variance (`Var(X)`) = `size * p * (1 - p)`
+
+```{r}
+#Theoretical 
+10 * 0.5 * (1 - 0.5)
+```
+
+```{r}
+#Experimental
+rbinom(n = 10000,
+       size = 10,
+       p = 0.5) %>% 
+  var()
+```
+
+
+
+
+
+
+
+
