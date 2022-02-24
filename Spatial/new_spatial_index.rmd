@@ -86,7 +86,7 @@ Common CRSs include:
 
 ### [Google Earth Engine](google.html)
 
-### R
+### [R](new_r_spatial.html)
 
 ### Python
 

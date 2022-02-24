@@ -1,0 +1,964 @@
+---
+output: 
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    number_sections: false
+    df_print: kable
+---
+
+\newcommand\first[1]{\color{darkblue}{\textbf{#1}}}
+\newcommand\second[1]{\color{dodgerblue}{\textbf{#1}}}
+\newcommand\third[1]{\color{skyblue}{\textrm{#1}}}
+
+```{r include=FALSE}
+knitr::opts_chunk$set(comment = NA, warning=FALSE, message=FALSE)
+```
+
+[Return to Main Page](index.html)
+
+<div align="center">
+
+<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/logos/r_sf.gif?raw=true" height="250"> 
+
+</div>
+
+# $\first{sf}$
+
+***
+
+Used for processing spatial data and basic visualization
+
+```{r}
+library(tidyverse)
+library(sf)
+library(raster)
+```
+
+****
+
+### $\second{Importing}$
+
+<br>
+
+#### $\third{- Reading in Data}$ 
+
+Vector data (in any spatial form) is read in with `read_sf`...
+
+```{r}
+url <- "https://raw.githubusercontent.com/social-lorax/howto_codebooks/master/Sheets_Py/Borough%20Boundaries.geojson"
+boros <- read_sf(url) 
+```
+
+...or by transforming data using `st_as_sf()`
+
+```{r eval = FALSE}
+spatial <- read_csv("pathway/to/spatial.csv") %>% 
+  st_as_sf()
+```
+
+<br> 
+
+Raster data is read in using `raster()` if it is single-band...
+
+```{r}
+url <- "https://github.com/social-lorax/howto_codebooks/blob/master/Sheets_R/canopy.tif?raw=true"
+canopy <- raster(url)
+```
+
+...and `brick()` if it is multi-band
+
+```{r}
+url <- "https://github.com/social-lorax/howto_codebooks/blob/master/Sheets_R/manhattan.tif?raw=true"
+manhattan <- brick(url)
+```
+
+****
+
+### $\second{Removing Geometry}$
+
+Having a geometry can be annoying for other functions, so `st_set_geometry(NULL)` removes it
+
+```{r eval = FALSE}
+non_spatial <- spatial %>% 
+  st_set_geometry(NULL)
+```
+
+****
+
+### $\second{Geocoding}$
+
+```{r}
+boro_halls <- tibble(hall = c("New York City Hall", "Manhattan Municipal Building", "Bronx County Courthouse",
+                              "Brooklyn Borough Hall", "Queens Borough Hall", "Staten Island Borough Hall"),
+                     street = c("New York City Hall, New York, NY 10007", "31 Chambers St, New York, NY 10007",
+                                "851 Grand Concourse, Bronx, NY 10451", "209 Joralemon St, Brooklyn, NY 11201",
+                                "120-55 Queens Blvd, Queens, NY 11424", "10 Richmond Terrace, Staten Island, NY 10301"))
+
+boro_halls
+```
+
+<br> 
+
+#### $\third{- Cleaning Messy Addresses}$ 
+
+```{r}
+#remotes::install_github("slu-openGIS/postmastr")
+library(postmastr)
+
+boro_halls <- boro_halls %>% 
+  pm_identify(var = "street")
+
+boro_halls_unique <- boro_halls %>% 
+  pm_prep(var = "street", type = "street")
+
+#Check ZIP Code
+boro_halls_unique %>% pm_postal_all()
+```
+
+```{r}
+boro_halls_unique <- boro_halls_unique %>% 
+  pm_postal_parse()
+
+#Check State
+nyDict <- pm_dictionary(locale = "us", type = "state", filter = "NY", case = c("title", "upper"))
+
+boro_halls_unique %>% pm_state_all(dictionary = nyDict)
+```
+
+```{r}
+boro_halls_unique <- boro_halls_unique %>% 
+  pm_state_parse()
+
+#Check City
+defaultDict <- pm_dictionary(locale = "us", type = "city", filter = "NY")
+specificDict <- pm_append(type = "city",
+                          input = c("New York", "New York City", "NYC",     "Bronx", "The Bronx", "Brooklyn", "Queens", "Jamaica", "Staten Island"),
+                          output = c(NA       , "New York"     , "New York", NA    , "Bronx"    , NA        , NA      , "Queens" , NA))
+
+boro_halls_unique %>% pm_city_all(dictionary = specificDict)
+```
+
+```{r}
+boro_halls_unique <- boro_halls_unique %>% 
+  pm_city_parse(dictionary = specificDict)
+
+#Check Number
+boro_halls_unique %>% pm_house_all()
+```
+
+```{r}
+#Check Missing
+boro_halls_unique %>% pm_house_none()
+```
+
+```{r}
+boro_halls_unique <- boro_halls_unique %>% 
+  pm_house_parse()
+
+#Check Street Direction (e.g. East Broadway)
+boro_halls_unique %>% pm_streetDir_all()
+```
+
+```{r}
+#Check Missing
+boro_halls_unique %>% pm_streetDir_none()
+```
+
+```{r}
+#Check Street Suffix 
+boro_halls_unique %>% pm_streetSuf_all()
+```
+
+```{r}
+#Check Missing
+boro_halls_unique %>% pm_streetSuf_none()
+```
+
+```{r}
+boro_halls_unique <- boro_halls_unique %>% 
+  pm_streetSuf_parse()
+
+#Street is assumed 
+boro_halls_unique <- boro_halls_unique %>% 
+  pm_street_parse()
+
+#Reassemble
+boro_halls_parsed <- pm_replace(boro_halls_unique, source = boro_halls) %>% 
+  pm_rebuild(output = "full", keep_parsed = "no")
+
+boro_halls_parsed
+```
+
+<br>
+
+#### $\third{- Geolocating}$ 
+
+```{r}
+library(tidygeocoder)
+
+processed <- boro_halls_parsed %>% 
+  geocode(address = pm.address, method = "osm", verbose = TRUE, unique_only = TRUE)
+
+boro_halls <- boro_halls_parsed %>% 
+  full_join(processed, by = c("pm.address" = "address" )) %>% 
+  st_as_sf(coords = c("long", "lat"), crs = 4326)
+
+boro_halls
+```
+
+****
+
+### $\second{Projection}$
+
+<br>
+
+#### $\third{- Checking}$ 
+
+For vector data, you can just call the data or use `st_crs()`
+
+```{r eval=FALSE}
+boro_halls
+```
+
+![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/st_info.png?raw=true)
+
+
+```{r}
+boro_halls %>% st_crs()
+```
+
+<br>
+
+For raster data, just use `crs()`
+
+```{r}
+canopy %>% crs()
+```
+
+<br>
+
+#### $\third{- Reprojecting}$ 
+
+|Name                               |Code|
+|:----------------------------------|:---|
+|World Geodetic System 1984 (WGS 84)|4326|
+|NAD83 / New York Long Island       |2263|
+
+For vector data, use `st_transform()`
+
+```{r eval}
+boro_halls_2263 <- boro_halls %>% 
+  st_transform(2263)
+
+boros_2263 <- boros %>% 
+  st_transform(2263)
+```
+
+<br> 
+
+For raster data, use `projectRaster()` 
+
+```{r}
+canopy_2263 <- canopy %>% 
+  projectRaster(crs = 2263)
+```
+
+****
+
+### $\second{Simplifying}$
+
+For vector data, use `st_simplify()` (you need to transform out of lat/long first but can transform back after)
+
+```{r}
+object.size(boros)
+```
+
+```{r}
+boros_simple <- boros %>% 
+  st_transform(2263) %>% 
+  st_simplify(preserveTopology = TRUE,
+              dTolerance = 100) %>% 
+  st_transform(4326)
+
+object.size(boros_simple)
+```
+
+```{r}
+str_c(round(100 * (116320 - 1372240) / 1372240, 2), "%")
+```
+
+```{r}
+plot(boros$geometry)
+```
+
+```{r}
+plot(boros_simple$geometry)
+```
+
+<br> 
+
+For raster data, use `aggregate()`
+
+```{r}
+manhattan_simple <- manhattan %>% 
+  aggregate(fact = 5, fun = mean)
+```
+
+```{r}
+res(manhattan)
+```
+
+```{r}
+res(manhattan_simple)
+```
+
+<br> 
+
+```{r}
+ncell(manhattan)
+```
+
+```{r}
+ncell(manhattan_simple)
+```
+
+<br> 
+
+```{r}
+plotRGB(manhattan)
+```
+
+```{r}
+plotRGB(manhattan_simple)
+```
+
+****
+
+### $\second{Plotting}$
+
+```{r echo = FALSE}
+boros <- boros %>% 
+  mutate(population = c(2405464, 2736074, 1694251, 1472654, 495747))
+```
+
+<br>
+
+#### $\third{- Basic}$ 
+
+```{r}
+ggplot() + 
+  geom_sf(data = boros, aes(fill = population)) + 
+  geom_sf(data = boro_halls, color = "red", size = 2) + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        rect = element_blank()) + 
+  scale_fill_viridis_c()
+```
+
+<br>
+
+#### $\third{- Basemap}$ 
+
+```{r}
+library(ggspatial)
+```
+
+Options: 
+
+![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/ggspatial_options.png?raw=true)
+
+
+Bounding box to zoom:
+
+[![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/bounding_box.png?raw=true)](https://boundingbox.klokantech.com/)
+
+```{r}
+boro_halls %>% 
+  ggplot() + 
+  annotation_map_tile(type = "cartolight", zoomin = 0) +
+  geom_sf(color = "red", size = 1.5) + 
+  coord_sf(xlim = c(-74.2591, -73.7002), 
+           ylim = c(40.4774, 40.9162), 
+           expand = FALSE) +
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        rect = element_blank())
+```
+
+****
+
+### $\second{Analysis}$
+
+#### $\third{- Centroids}$
+
+`st_centroid()` creates a point at the center of each polygon
+
+```{r}
+boros_centers <- boros_2263 %>% 
+  st_centroid()
+
+ggplot() + 
+  geom_sf(data = boros_2263) +
+  geom_sf(data = boros_centers, color = "blue", size = 2) + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        rect = element_blank()) 
+```
+
+<br> 
+
+#### $\third{- Buffering}$
+
+First check the projection to get the units you are working with (here, US survey foot, which is about 0.999998 feet)
+
+```{r}
+boro_halls_2263 %>% st_crs()
+```
+
+`st_buffer()` will buffer around a feature (though you cannot add units, so you have to know!)
+
+```{r}
+buffers <- boro_halls_2263 %>% 
+  st_buffer(dist = 5280)
+
+ggplot() + 
+  geom_sf(data = boros_2263) + 
+  geom_sf(data = buffers, fill = "red", alpha = 0.5) + 
+  geom_sf(data = boro_halls, color = "black", size = 2) + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        rect = element_blank()) 
+```
+
+<br> 
+
+#### $\third{- Distances}$ 
+
+`st_distance()` returns a matrix of the distance between each input to each output
+
+```{r}
+boro_halls_2263 %>% 
+  st_distance(boros_centers)
+```
+
+More processing is needed to find, for example, the closest point
+
+```{r}
+hall_center <- boro_halls_2263 %>% 
+  st_distance(boros_centers) %>%
+  as_tibble()
+
+names(hall_center) <- boros_centers$boro_name
+
+hall_center %>% 
+  mutate(hall = boro_halls_2263$hall) %>% 
+  gather(-hall, key = boro_center, value = distance) %>% 
+  mutate(distance = as.double(distance)) %>% 
+  arrange(hall, distance) %>% 
+  distinct(hall, .keep_all = TRUE) %>% 
+  full_join(boro_halls_2263, by = "hall")
+
+```
+
+<br> 
+
+#### $\third{- Area}$
+
+`st_area()` returns the area of each polygon (make sure to check the CRS for the units!)
+
+```{r}
+boros_2263 %>% 
+  st_area() %>% 
+  as_tibble() %>% 
+  transmute(boro = boros_2263$boro_name,
+            area = as.double(value)) 
+```
+
+<br> 
+
+#### $\third{- Length}$
+
+`st_area()` returns the length of a line 
+
+```{r}
+library(tigris)
+
+roads <- tigris::roads(state = "NY", county = c("Bronx", "Kings", "New York", "Queens", "Richmond"), progress_bar = FALSE) %>% 
+  st_transform(2263)
+
+bedford <- roads %>% 
+  filter(str_detect(FULLNAME, "Bedford Ave"),
+         !(LINEARID %in% c("110425921352", "110444047995"))) %>% 
+  st_union()
+
+ggplot() + 
+  geom_sf(data = boros_2263) + 
+  geom_sf(data = bedford, color = "yellow", size = 1) + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        rect = element_blank())
+```
+
+```{r}
+bedford %>% 
+  st_length()
+```
+
+<br> 
+
+#### $\third{- Dissolving}$
+
+`st_union()` takes multiple entities and creates a single entity 
+
+```{r}
+mn_buffer <- boro_halls_2263 %>% 
+  filter(hall == "Manhattan Municipal Building") %>% 
+  st_buffer(dist = 1000) %>% 
+  st_transform(4326)
+
+nyc_buffer <- boro_halls_2263 %>% 
+  filter(hall == "New York City Hall") %>% 
+  st_buffer(dist = 1000) %>% 
+  st_transform(4326)
+
+ggplot() + 
+  annotation_map_tile(type = "cartolight", zoomin = 0) +
+  geom_sf(data = mn_buffer, fill = "red", color = "black", alpha = 0.5, ) + 
+  geom_sf(data = nyc_buffer, fill = "blue", color = "black", alpha = 0.5) + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        rect = element_blank()) 
+```
+
+```{r}
+joined_buffer <- mn_buffer %>% 
+  st_union(nyc_buffer)
+
+ggplot() + 
+  annotation_map_tile(type = "cartolight", zoomin = 0) +
+  geom_sf(data = joined_buffer, fill = "purple", color = "black", alpha = 0.5, ) + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        rect = element_blank()) 
+```
+
+<br> 
+
+#### $\third{- Spatial Joins}$
+
+`st_join()` returns everything, there is also `st_intersects()` and `st_contains` for more control
+
+```{r}
+rand_points <- tibble(lat = c(40.8845, 40.7202, 40.5905, 40.6366),
+                      long = c(-73.7477, -73.9846, -74.0572, -73.7812)) %>% 
+  st_as_sf(coords  = c("long", "lat"), crs = 4326) %>% 
+  st_transform(crs = 2263)
+
+rand_points %>% 
+  st_join(boros_2263)
+```
+
+```{r}
+ggplot() + 
+  geom_sf(data = boros_2263) + 
+  geom_sf(data = rand_points, color = "black", size = 2) + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        rect = element_blank()) 
+```
+
+<br> 
+
+```{r}
+bk <- boros_2263 %>% filter(boro_name == "Brooklyn")
+
+bk_intersect <- bk %>% st_intersects(roads)
+bk_intersect <- roads[bk_intersect[[1]],]
+
+bk_contained <- bk %>% st_contains(roads)
+bk_contained <- roads[bk_contained[[1]],]
+
+ggplot() + 
+  geom_sf(data = bk) + 
+  geom_sf(data = bk_intersect, color = "blue", size = 1) + 
+  geom_sf(data = bk_contained, color = "yellow", size = 1, alpha = 0.5) + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        rect = element_blank()) 
+```
+
+<br> 
+
+#### $\third{- Clipping}$ 
+
+`st_intersection()` clips one entity based on how much of it intersects with another entity 
+
+```{r}
+boro_clips <- buffers %>% 
+  filter(hall == "Bronx County Courthouse") %>% 
+  st_intersection(boros_2263)
+
+ggplot() + 
+  annotation_map_tile(type = "cartolight", zoomin = 0) +
+  geom_sf(data = boro_clips, fill = "purple", color = "black", alpha = 0.5, ) + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        rect = element_blank()) 
+```
+
+<br> 
+
+#### $\third{- Bounding Box}$ 
+
+`st_make_grid()` creates the smallest box possible containing all elements
+
+```{r}
+boro_box <- boro_halls %>% 
+  st_make_grid(n = 1)
+
+ggplot() + 
+  geom_sf(data = boros) + 
+  geom_sf(data = boro_box, fill = "orange", alpha = 0.5) + 
+  geom_sf(data = boro_halls, color = "black", size = 2) + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        rect = element_blank()) 
+```
+
+<br> 
+
+#### $\third{- Convex Hull}$ 
+
+`st_convex_hull()` creates the smallest shape possible containing all elements
+
+```{r}
+hull <- boro_halls %>% 
+  st_union() %>% 
+  st_convex_hull()
+
+ggplot() + 
+  geom_sf(data = boros) + 
+  geom_sf(data = hull, fill = "orange", alpha = 0.5) + 
+  geom_sf(data = boro_halls, color = "black", size = 2) + 
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        rect = element_blank()) 
+```
+
+<br> 
+
+#### $\third{- Masking Rasters}$ 
+
+`mask()` and `crop()` together clip a raster 
+
+```{r}
+canopy_2263 %>% 
+  plot()
+```
+
+```{r}
+canopy_2263 %>% 
+  mask(boros_2263) %>% 
+  crop(boros_2263) %>% 
+  plot()
+```
+
+<br> 
+
+#### $\third{- Overlaying Rasters}$ 
+
+`overlay()` with a function can manipulate a raster
+
+```{r}
+f <- function(rast) {
+  rast > 60 & rast < 100
+}
+
+canopy_2263 %>% 
+  overlay(fun = f) %>%
+  plot()
+```
+
+<br> 
+
+#### $\third{- Extracting Rasters}$ 
+
+`extract()` pulls aggregated raster information 
+
+```{r}
+mean_canopy <- canopy_2263 %>% 
+  extract(boros_2263, fun = mean)
+
+median_canopy <- canopy_2263 %>% 
+  extract(boros_2263, fun = median)
+
+max_canopy <- canopy_2263 %>% 
+  extract(boros_2263, fun = median)
+
+boros %>% 
+  mutate(mean_canopy = mean_canopy,
+         median_canopy = median_canopy)
+```
+
+
+![](https://raw.githubusercontent.com/social-lorax/howto_codebooks/master/images/underlines/R_underline.png)
+
+<div align="center">
+
+![](https://raw.githubusercontent.com/social-lorax/howto_codebooks/master/images/r_leaflet.png)
+
+</div>
+
+# $\first{Leaflet}$
+
+***
+
+Used for creating interactive maps
+
+```{r}
+library(leaflet)
+library(leafpop)
+library(leaflet.mapboxgl) # remotes::install_github("rstudio/leaflet.mapboxgl")
+```
+
+****
+
+### $\second{Basic Map}$
+
+```{r}
+leaflet() %>% 
+  addTiles() %>%
+  addMarkers(lng = -74.000060, lat = 40.730910)
+```
+
+****
+
+### $\second{Zoom}$
+
+Far (zoom = 10)
+
+```{r}
+leaflet() %>% 
+  addTiles() %>%
+  setView(lng = -74.000060, lat = 40.730910, zoom = 10) %>% 
+  addMarkers(lng = -74.000060, lat = 40.730910)
+```
+
+<br> 
+
+Close (zoom = 100)
+
+```{r}
+leaflet() %>% 
+  addTiles() %>%
+  setView(lng = -74.000060, lat = 40.730910, zoom = 100) %>% 
+  addMarkers(lng = -74.000060, lat = 40.730910)
+```
+
+****
+
+### $\second{Markers}$
+
+```{r}
+boro_hall_points <- boro_halls %>% 
+  st_transform(4326) %>% 
+  st_coordinates() 
+
+boro_halls <- boro_halls %>%  
+  st_set_geometry(NULL) %>% 
+  bind_cols(tibble(long = boro_hall_points[,1],
+                   lat = boro_hall_points[,2]))
+```
+
+<br> 
+
+#### $\third{- Pin}$ 
+
+```{r}
+boro_halls %>% 
+  leaflet() %>% 
+  addTiles() %>%
+  addMarkers(lng = ~long, lat = ~lat)
+```
+
+<br> 
+
+#### $\third{- Colored Circle}$ 
+
+```{r}
+boro_halls %>% 
+  leaflet() %>% 
+  addTiles() %>%
+  addCircleMarkers(radius = 6,
+                   color = "red",
+                   fillOpacity = 0.8,
+                   stroke = FALSE)
+```
+
+****
+
+### $\second{Labels}$
+
+```{r}
+ny <- paste(sep = "<br/>",
+            "<b><a href='https://www1.nyc.gov/'>City Hall</a></b>",
+                 "City Hall Park",
+                 "New York, NY 10007")
+
+bx <- paste(sep = "<br/>",
+            "<b><a href='https://bronxboropres.nyc.gov/'>Bronx Borough Hall</a></b>",
+                 "851 Grand Concourse",
+                 "Bronx, NY 10451")
+
+bk <- paste(sep = "<br/>",
+            "<b><a href='https://www.brooklyn-usa.org/'>Brooklyn Borough Hall</a></b>",
+                 "209 Joralemon St",
+                 "Brooklyn, NY 11201")
+
+mn <- paste(sep = "<br/>",
+            "<b><a href='https://www.manhattanbp.nyc.gov/'>Manhattan Borough Hall</a></b>",
+                 "31 Chambers St",
+                 "New York, NY 10007")
+
+qn <- paste(sep = "<br/>",
+            "<b><a href='https://queensbp.org/'>Queens Borough Hall</a></b>",
+                 "120-55 Queens Blvd",
+                 "Queens, NY 11424")
+
+si <- paste(sep = "<br/>",
+            "<b><a href='https://www.statenislandusa.com/'>Staten Island Borough Hall</a></b>",
+                 "10 Richmond Terrace",
+                 "Staten Island, NY 10301")
+
+boro_halls <- boro_halls %>% 
+  mutate(label = c(ny, mn, bx, bk, qn, si))
+```
+
+<br> 
+
+#### $\third{- Popups}$
+
+```{r}
+boro_halls %>% 
+  leaflet() %>% 
+  addTiles() %>%
+  addMarkers(lng = ~long, lat = ~lat,
+             popup = ~label)
+```
+
+<br> 
+
+#### $\third{- Hover}$
+
+```{r}
+labels <- sprintf(str_glue("{boro_halls$hall}<br>{boro_halls$street}")) %>% 
+  lapply(htmltools::HTML)
+
+boro_halls %>% 
+  leaflet() %>% 
+  addTiles() %>%
+  addMarkers(lng = ~long, lat = ~lat,
+             label = labels)
+```
+
+<br> 
+
+#### $\third{- Formatting}$
+
+```{r}
+leaflet() %>% 
+  addTiles() %>% 
+  setView(-118.456554, 34.09, 13) %>%
+  addMarkers(lng = -118.456554, lat = 34.105,
+             label = "Default Label",
+             labelOptions = labelOptions(noHide = T)) %>%
+  addMarkers(lng = -118.456554, lat = 34.095,
+             label = "Label w/o surrounding box",
+             labelOptions = labelOptions(noHide = T, 
+                                         textOnly = TRUE)) %>%
+  addMarkers(lng = -118.456554, lat = 34.085,
+             label = "label w/ textsize 15px",
+             labelOptions = labelOptions(noHide = T, 
+                                         textsize = "15px")) %>%
+  addMarkers(lng = -118.456554, lat = 34.075,
+             label = "Label w/ custom CSS style",
+             labelOptions = labelOptions(noHide = T, 
+                                         direction = "bottom",
+                                         style = list("color" = "red",
+                                                      "font-family" = "serif",
+                                                      "font-style" = "italic",
+                                                      "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                                      "font-size" = "12px",
+                                                      "border-color" = "rgba(0,0,0,0.5)")))
+
+```
+
+****
+
+### $\second{Polygons}$
+
+```{r}
+#First getting data from the census to plot (see section on census data)
+library(tidycensus)
+population <- get_acs(geography = "county",
+                      state = "NY",
+                      variables = c(population = "B01003_001"),
+                      year = 2019, 
+                      survey = "acs5",
+                      geometry = TRUE,
+                      progress_bar = FALSE) %>% 
+  mutate(pretty_estimate = scales::comma(estimate),
+         legend_value = estimate / 10000) %>% 
+  st_as_sf()
+```
+
+```{r}
+pal <- colorBin("viridis", domain = population$legend_value)
+
+labels <- sprintf("<strong>%s</strong><br/>Population: %s",
+                  population$NAME, population$pretty_estimate) %>% 
+  lapply(htmltools::HTML)
+
+population %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addPolygons(fillColor = ~pal(legend_value),
+              fillOpacity = 0.7,
+              color = "white",
+              weight = 1,
+              opacity = 1,
+              smoothFactor = 0.5,
+              highlight = highlightOptions(weight = 5,
+                                           color = "white",
+                                           fillOpacity = 0.7,
+                                           bringToFront = TRUE),
+              label = labels,
+              labelOptions = labelOptions(style = list("font-weight" = "normal", 
+                                                       padding = "3px 8px"),
+                                          textsize = "15px",
+                                          direction = "auto")) %>% 
+  addLegend(pal = pal, 
+            values = ~legend_value, 
+            opacity = 0.7, 
+            title = "Population (10K)",
+            position = "bottomright")
+```
+
+![](https://raw.githubusercontent.com/social-lorax/howto_codebooks/master/images/underlines/R_underline.png)
+
+[Return to Main Page](index.html)
