@@ -1,0 +1,46 @@
+---
+output: 
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    number_sections: false
+    df_print: kable
+knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
+---
+
+\newcommand\first[1]{\color{darkblue}{\textbf{#1}}}
+\newcommand\second[1]{\color{dodgerblue}{\textbf{#1}}}
+\newcommand\third[1]{\color{skyblue}{\textrm{#1}}}
+
+![](https://github.com/social-lorax/howto_codebooks/blob/master/images/index/main_cat.gif?raw=true)
+
+These are the codebooks I have created while learning to code.  
+Feel free to use them and reach out with suggestions - ryan.m.brenner@gmail.com.
+
+![](https://github.com/social-lorax/howto_codebooks/blob/master/images/index/underline.gif?raw=true)
+
+# $\first{Data Analysis}$
+
+<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/index/head_analysis.png?raw=true" width="500">
+
+### [Data Home](data.html)
+
+![](https://github.com/social-lorax/howto_codebooks/blob/master/images/index/underline.gif?raw=true)
+
+# $\first{Geospatial Analysis}$
+
+<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/index/head_geospatial.png?raw=true" width="500">
+
+### [Spatial Home](spatial.html)
+
+![](https://github.com/social-lorax/howto_codebooks/blob/master/images/index/underline.gif?raw=true)
+
+# $\first{Communication}$
+
+<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/index/head_comms.png?raw=true" width="500">
+
+### [Markdown](markdown.html)
+
+![](https://github.com/social-lorax/howto_codebooks/blob/master/images/index/underline.gif?raw=true)
