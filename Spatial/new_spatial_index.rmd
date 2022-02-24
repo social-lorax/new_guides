@@ -14,9 +14,9 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 \newcommand\second[1]{\color{dodgerblue}{\textbf{#1}}}
 \newcommand\third[1]{\color{skyblue}{\textrm{#1}}}
 
-<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/head_geospatial.png" width="500">
-
 <div align="center">
+
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/head_geospatial.png" width="500">
 
 <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
 
@@ -24,7 +24,7 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 
 # $\first{Spatial Data}$
 
-***
+****
 
 ### $\second{Components}$
 
@@ -67,16 +67,26 @@ Common CRSs include:
 * NAD83 (EPSG: 4269) is the most commonly used by U.S. federal agencies
 * The New York State Plane Long Island Zone (EPSG: 2263) is the most accurate for NYC
 
-***
-
-<br> 
+****
 
 ### $\second{Types}$
 
-* Vector: comprised of vertices and paths 
-* Raster: comprised of pixels
+* **Vector**: comprised of vertices and paths 
+* **Raster**: comprised of pixels
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/spatial_types.png)
+
+****
+
+### $\second{Programs}$
+
+* QGIS
+* [Google Earth Engine](google.html)
+* R
+* Python
+
+Also see [Monitoring Cities](monitoring_cities.html)
+
 
 <div align="center">
 
@@ -87,11 +97,13 @@ Common CRSs include:
 
 # $\first{Census}$
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/census/censusareas.jpg?raw=true)
+****
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Census/censusareas.jpg)
 
 ### $\second{GEOID}$
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/census/censusnum.jpg?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Census/censusnum.jpg)
 
 ****
 
@@ -101,7 +113,7 @@ Common CRSs include:
 
 Census regions are groupings of states and the District of Columbia that subdivide the United States for the presentation of census data. The Census Bureau defines four census regions and identifies each one with a single-digit census code- Northeast (1), Midwest (2), South (3), and West (4). Puerto Rico and the Island Areas are not part of any census region.
 
-<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/census/region.png?raw=true" width="500">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Census/region.png" width="500">
 
 <br> 
 
@@ -109,7 +121,7 @@ Census regions are groupings of states and the District of Columbia that subdivi
 
 Census divisions are groupings of states and the District of Columbia that subdivide the census regions for the presentation of census data. The Census Bureau defines nine census divisions and identifies each one with a single-digit census code- New England (1), Middle Atlantic (2), East North Central (3), West North Central (4), South Atlantic (5), East South Central (6), West South Central (7), Mountain (8), and Pacific (9). Puerto Rico and the Island Areas are not part of any census division.
 
-<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/census/division.png?raw=true" width="500">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Census/division.png" width="500">
 
 <br>
 
@@ -119,7 +131,7 @@ States and equivalent entities are the primary governmental divisions of the Uni
 
 * New York = 36
 
-<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/census/state.png?raw=true" width="500">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Census/state.png" width="500">
 
 <br>
 
@@ -133,7 +145,7 @@ Counties and their equivalents are the primary division of states providing comp
 * Queens = 081
 * Richmond (Staten Island) = 085
 
-<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/census/county.png?raw=true" width="500">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Census/county.png" width="500">
 
 <br>
 
@@ -141,7 +153,7 @@ Counties and their equivalents are the primary division of states providing comp
 
 County subdivisions are the primary divisions of counties and statistical equivalent entities. They are either legal entities (minor civil divisions) or statistical entities (census county divisions, census subareas, and unorganized territories). The two main types of county subdivisions are minor civil divisions (MCD) and census county divisions (CCD). MCDs are legal entities that provide governmental and/or administrative services, and are most commonly known as towns and townships. CCDs are statistical entities established cooperatively by the Census Bureau and state and local officials. Census subareas occur only in Alaska and unorganized territories (UT) are defined by the Census Bureau for areas where portions of counties, or equivalent entities, are not already included in an MCD.
 
-<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/census/countysub.png?raw=true" width="500">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Census/countysub.png" width="500">
 
 <br>
 
@@ -149,7 +161,7 @@ County subdivisions are the primary divisions of counties and statistical equiva
 
 Census tracts are small, relatively permanent statistical subdivisions of a county or county equivalent and generally have a population size between 1,200 and 8,000 people, with an optimum size of 4,000 people. The Census Bureau created census tracts to provide a stable set of boundaries for statistical comparison from census to census. Census tracts occasionally split due to population growth or merge when there is substantial population decline. Local governments have the opportunity to review census tract boundaries prior to each decennial census through the Participants Statistical Areas Program. In general, census tracts can either merge or split based on population changes but cannot be completely changed in order to maintain data comparability over time. If a local participant is not available, the Census Bureau will update the boundaries.
 
-<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/census/tract.png?raw=true" width="500">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Census/tract.png" width="500">
 
 <br>
 
@@ -157,7 +169,7 @@ Census tracts are small, relatively permanent statistical subdivisions of a coun
 
 Block groups are statistical divisions of census tracts and generally contain between 600 and 3,000 people. Local participants delineate most block groups prior to each decennial census through the Participant Statistical Areas Program. If a local participant is not available, the Census Bureau will define them. Since block groups consist of a cluster of census blocks, they control block numbering. At the time of block delineation, all of the blocks that fall within a block group will start with the same number. For example, census blocks 2001, 2002, 2003, … 2999 in census tract 1310.02 belong to block group 2.
 
-<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/census/blockgroup.png?raw=true" width="500">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Census/blockgroup.png" width="500">
 
 <br>
 
@@ -165,7 +177,7 @@ Block groups are statistical divisions of census tracts and generally contain be
 
 Census Blocks are the smallest geographic areas that the Census Bureau uses to tabulate decennial data. Blocks are statistical areas bounded by visible features, such as streets, roads, streams, and railroad tracks, and by nonvisible boundaries, such as selected property lines and city, township, school district, and county limits. Generally, census blocks are small in area; for example, a block in a city bounded on all sides by streets. Census blocks cover the entire territory of the United States, Puerto Rico, and the Island Areas. Census blocks nest within all other tabulated census geographic entities and are the basis for all tabulated data. Blocks are defined once a decade and data are available only from the decennial census 100% data (age, sex, race, Hispanic/Latino origin, relationship to householder, and own/rent house). In between decennial censuses, blocks may split due to boundary changes but these blocks do not have any statistical data associated with them available.
 
-<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/census/block.png?raw=true" width="500">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Census/block.png" width="500">
 
 ****
 
@@ -177,7 +189,7 @@ The Census Bureau identifies two types of places; incorporated places and census
 
 * New York City = 3651000
 
-<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/census/place.png?raw=true" width="500">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Census/place.png" width="500">
 
 <br>
 
@@ -187,7 +199,7 @@ The Office of Management and Budget (OMB) defines metropolitan and micropolitan 
 
 * New York City = 5600
 
-<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/census/metro_micro.png?raw=true" width="500">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Census/metro_micro.png" width="500">
 
 <br>
 
@@ -197,7 +209,7 @@ Combined statistical areas (CSA) consist of two or more adjacent metropolitan an
 
 * New York-Northern New Jersey-Long Island = 5602
 
-<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/census/combinedstatarea.png?raw=true" width="500">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Census/combinedstatarea.png" width="500">
 
 <br> 
 
@@ -205,7 +217,7 @@ Combined statistical areas (CSA) consist of two or more adjacent metropolitan an
 
 Urban Area is the term for urbanized areas (UAs) and urban clusters (UCs). UAs consist of densely developed area that contains 50,000 or more people. UCs consist of densely developed area that has a least 2,500 people but fewer than 50,000 people. The Census Bureau defines urban areas once a decade after the population totals for the decennial census are available, and classifies all territory, population, and housing units located within a UA or UC as urban and all area outside of a UA or UC as rural. Urban areas are used as the cores on which core based statistical areas are defined.
 
-<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/census/urbanarea.png?raw=true" width="500">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Census/urbanarea.png" width="500">
 
 <br>
 
@@ -213,7 +225,7 @@ Urban Area is the term for urbanized areas (UAs) and urban clusters (UCs). UAs c
 
 Congressional districts are electoral districts that elect a single member of congress to the House of Representatives. There are 435 congressional districts in the U.S. and the Census Bureau’s decennial census counts determine the number of congressional districts given to each state. The District of Columbia, Puerto Rico, and each Island Area (American Samoa, Guam, Northern Mariana Islands, and U.S. Virgin Islands) are assigned one nonvoting delegate each.
 
-<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/census/congressionaldist.png?raw=true" width="500">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Census/congressionaldist.png" width="500">
 
 <br>
 
@@ -223,7 +235,7 @@ Public use microdata areas (PUMAs) are geographic areas defined to be used with 
 
 * In NYC, these approximate Community Districts
 
-<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/census/PUMA.png?raw=true" width="500">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Census/PUMA.png" width="500">
 
 <br>
 
@@ -231,7 +243,7 @@ Public use microdata areas (PUMAs) are geographic areas defined to be used with 
 
 ZIP Code® tabulation areas (ZCTAs) are generalized areal representations of U.S. Postal Service (USPS) ZIP Code service areas. The Census Bureau collects ZIP Code data for housing units and many non-residential addresses from the USPS and from various field operations. Based on this ZIP Code data, the Census Bureau aggregates census blocks with the same ZIP Code to form ZCTAs. The Census Bureau then labels each ZCTA with the five-digit ZIP Code number used by the USPS.
 
-<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/census/ZCTA.png?raw=true" width="500">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Census/ZCTA.png" width="500">
 
 <div align="center">
 
@@ -239,74 +251,83 @@ ZIP Code® tabulation areas (ZCTAs) are generalized areal representations of U.S
 
 </div>
 
-
 # $\first{New York City}$
+
+****
 
 ### $\second{NY Counties}$
 
 [More on NY county development](https://social-lorax.github.io/guides/ny_boundaries.html)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/ny_counties.gif?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/ny_counties.gif)
+
+****
+
+### $\second{Metro Region}$
+
+[Regional Planning Association](https://rpa.org/)
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/rpa.png)
 
 ****
 
 ### $\second{City}$
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_ny.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_ny.png)
 
 ***
 
 ### $\second{Borough/County}$
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_borough.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_borough.png)
 
-***
+****
 
 ### $\second{Community District}$
 
 * Created by the City through local law in 1975 to serve as political units
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_cds.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_cds.png)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_cds_bx.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_cds_bx.png)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_cds_bk.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_cds_bk.png)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_cds_mn.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_cds_mn.png)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_cds_qn.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_cds_qn.png)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_cds_si.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_cds_si.png)
 
-***
+****
 
 ### $\second{Sub-Borough Area/PUMA}$
 
 * The Census' approximation of Community Districts 
 * Statistical areas defined for Public Use Microdata Sample (PUMS)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_sbas.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_sbas.png)
 
-***
+****
 
 ### $\second{Neighborhood Tabulation Area}$
 
 * Created by the City to project populations at a small area level (min 15,000 people) for PlaNYC
 * Based on Census Tracts (meaning they line up with PUMAs and not Community Districts)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_nta.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_nta.png)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_nta_bx.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_nta_bx.png)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_nta_bk.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_nta_bk.png)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_nta_mn.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_nta_mn.png)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_nta_qn.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_nta_qn.png)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_nta_si.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_nta_si.png)
 
-***
+****
 
 ### $\second{ZIP Codes}$
 
@@ -315,9 +336,9 @@ ZIP Code® tabulation areas (ZCTAs) are generalized areal representations of U.S
 * Not coterminous with census tracts, CDs, SBAs, or even boroughs
 * Approximated by the Census as ZCTAs 
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_zip.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_zip.png)
 
-***
+****
 
 ### $\second{Borough, Block, and Lot (BBL)}$
 
@@ -325,7 +346,7 @@ ZIP Code® tabulation areas (ZCTAs) are generalized areal representations of U.S
 * Ideally one building sits on a single lot that has one owner who pays taxes on the building
 * Search by property or BBL [here](https://a836-pts-access.nyc.gov/care/forms/htmlframe.aspx?mode=content/home.htm)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_bbl.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_bbl.png)
 
 ***
 
@@ -334,7 +355,7 @@ ZIP Code® tabulation areas (ZCTAs) are generalized areal representations of U.S
 * Created by the Department of Buildings to uniquely identify every individual building
 * Process = Building permit filed with DOB > DOB creates temporary BIN (TBIN) > DOB issues a Certificate of Occupancy > DOB adds BIN to address database (PAD) > DoITT adds building footprint
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_bin.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_bin.png)
 
 ***
 
@@ -342,7 +363,17 @@ ZIP Code® tabulation areas (ZCTAs) are generalized areal representations of U.S
 
 * Comprehensive land use dataset and key [here](https://www1.nyc.gov/site/planning/data-maps/open-data/dwn-pluto-mappluto.page)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_pluto.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_pluto.png)
+
+****
+
+### $\second{Transit}$
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_mta_subway.jpg)
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_mta_north.png)
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_mta_lirr.png)
 
 <div align="center">
 
@@ -355,21 +386,29 @@ ZIP Code® tabulation areas (ZCTAs) are generalized areal representations of U.S
 
 ### $\second{MA Counties}$
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/ma_counties.gif?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/ma_counties.gif)
+
+****
+
+### $\second{Metro Region}$
+
+[Metropolitan Area Planning Council](https://www.mapc.org/)
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/mapc.png)
 
 ****
 
 ### $\second{City}$
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/boston_satellite.jpg?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/boston_satellite.jpg)
 
 <br> 
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/boston_map.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/boston_map.png)
 
 <br> 
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/boston_map2.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/boston_map2.png)
 
 ****
 
@@ -377,16 +416,16 @@ ZIP Code® tabulation areas (ZCTAs) are generalized areal representations of U.S
 
 * Created by USPS for the purposes of sorting and delivering mail
 * Not related to neighborhoods, political districts, or demographics
-* Not coterminous with census tracts, CDs, SBAs, or even boroughs
+* Not coterminous with census tracts, CDs, SBAs, or even counties
 * Approximated by the Census as ZCTAs 
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/boston_zips.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/boston_zips.png)
 
-***
+****
 
 ### $\second{Transit}$
 
-<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/boston_mbta.png?raw=true" width="1000">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/boston_mbta.png" width="1000">
 
 <div align="center">
 
