@@ -7,13 +7,20 @@ output:
     toc_depth: 4
     number_sections: false
     df_print: kable
+knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 ---
 
 \newcommand\first[1]{\color{darkblue}{\textbf{#1}}}
 \newcommand\second[1]{\color{dodgerblue}{\textbf{#1}}}
 \newcommand\third[1]{\color{skyblue}{\textrm{#1}}}
 
-<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/index/head_geospatial.png?raw=true" width="500">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/head_geospatial.png" width="500">
+
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
+
+</div>
 
 # $\first{Spatial Data}$
 
@@ -32,9 +39,9 @@ Coordinates are commonly listed as latitude and longitude
 * Latitude = position North to South
 * Longitude = position East to West
 
-<img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/latlong.jpg?raw=true" width="500">
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/latlong.jpg" width="500">
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/latlong2.jpg?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/latlong2.jpg)
 
 |Type     |Latitude  |Longitude |
 |:--------|:---------|:---------|
@@ -52,7 +59,7 @@ Thus: (-123.2803, 44.57808)
 
 When visualizing a 3D Earth onto a 2D map, a projection determines how it will be distorted. 
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/crs.png?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/crs.png)
 
 Common CRSs include: 
 
@@ -66,9 +73,17 @@ Common CRSs include:
 
 ### $\second{Types}$
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/spatial_types.png?raw=true)
+* Vector: comprised of vertices and paths 
+* Raster: comprised of pixels
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/index/underline.gif?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/spatial_types.png)
+
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
+
+</div>
+
 
 # $\first{Census}$
 
@@ -218,7 +233,12 @@ ZIP Code® tabulation areas (ZCTAs) are generalized areal representations of U.S
 
 <img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/census/ZCTA.png?raw=true" width="500">
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/index_underline.gif?raw=true)
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
+
+</div>
+
 
 # $\first{New York City}$
 
@@ -324,7 +344,12 @@ ZIP Code® tabulation areas (ZCTAs) are generalized areal representations of U.S
 
 ![](https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/nyc_pluto.png?raw=true)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/index_underline.gif?raw=true)
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
+
+</div>
+
 
 # $\first{Boston}$
 
@@ -363,4 +388,9 @@ ZIP Code® tabulation areas (ZCTAs) are generalized areal representations of U.S
 
 <img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/spatial/boston_mbta.png?raw=true" width="1000">
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/index_underline.gif?raw=true)
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
+
+</div>
+
