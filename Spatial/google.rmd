@@ -29,6 +29,449 @@ output <- function(data) {
 
 <div align="center">
 
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/GoogleEarthEngine.jpg" height="250">
+
+For more info see the [Beginner's Cookbook](https://developers.google.com/earth-engine/tutorials/community/beginners-cookbook)
+
+
 <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
 
 </div>
+
+# $\first{Basics}$
+
+***
+
+### $\second{Data}$
+
+#### $\third{- Declaring Variables}$
+
+* `ee.String('This is a string. Or is it? It is.')`
+* `ee.Number(5)`
+* `ee.Array([[5, 2, 3], [-2, 7, 10], [6, 6, 9]])`
+* `ee.List([5, 'five', 6, 'six'])`
+* `ee.Dictionary({five: 5, six: 6})`
+* `ee.Geometry` (handmade geometries)
+* `ee.Feature` (existing geometries)
+* `ee.FeatureCollection` (groups of features)
+* `ee.Image` (raster)
+* `ee.ImageCollection` (group of rasters)
+
+```
+var variableName = ee.ContainerType(value);
+```
+
+<br> 
+
+#### $\third{- Displaying Metadata}$
+
+* Shows up in the console
+
+```
+print(variableName);
+```
+
+****
+
+### $\second{Mapping}$
+
+#### $\third{- Centering Map}$
+
+* Zoom level varies from 0 (no zoom) to 20 (highest zoom level)
+
+```
+Map.setCenter(long, lat, zoomLevel);
+```
+
+<br> 
+
+#### $\third{- Adding Layers}$
+
+```
+Map.addLayer(variableName, {color: 'red'}, 'layer name');
+```
+
+****
+
+### $\second{Functions}$
+
+#### $\third{- Creating}$
+
+```
+function functionName(Arguments) {
+statements;
+};
+```
+
+<br> 
+
+#### $\third{- Calling}$
+
+```
+var result = functionName(input);
+```
+
+<br> 
+
+#### $\third{- Mapping over Collection}$
+
+```
+var result = input.map(functionName);
+```
+
+****
+
+### $\second{Filtering}$
+
+*****
+
+#### $\third{- Calling a Filter}$
+
+```
+var filter = ee.Filter...
+var subsetVariable = variableName.filter(filter);
+```
+
+<br> 
+
+#### $\third{- Combining Filters}$
+
+```
+var newFilterAnd = ee.Filter.and(listOfFilters);
+var newFilterOr = ee.Filter.or(listOfFilters);
+var inverseFilter = ee.Filter.not(filter);
+```
+
+<br>
+
+#### $\third{- Single Value}$
+
+* Equal to: `ee.Filter.eq()`
+* Not equal to: `ee.Filter.neq()`
+* Greater than: `ee.Filter.gt()`
+* Greater than or equal to: `ee.Filter.gte()`
+* Less than: `ee.Filter.lt()`
+* Less than or equal to: `ee.Filter.lte()`
+
+```
+var valueFilter = ee.Filter.eq('colName', value);
+```
+
+<br>
+
+#### $\third{- String}$
+
+* Contains string: `ee.Filter.stringContains()`
+* Starts with string: `ee.Filter.stringStartsWith()`
+* Ends with string: `ee.Filter.stringEndsWith()`
+
+```
+var txtFilter = ee.Filter.stringContains('colName', 'string');
+```
+
+<br>
+
+#### $\third{- Numeric Range}$
+
+```
+var rangeFilter = ee.Filter.rangeContains('colName', minValue, maxValue);
+```
+
+<br> 
+
+#### $\third{- Date Range}$
+
+* Dates can just be strings (e.g., '2022-02-22')
+
+```
+var dateFilter = ee.Filter.calendarRange(startDate, stopDate);
+```
+
+<br> 
+
+```
+var dateImage = imageName.filterDate(startDate, stopDate);
+```
+
+<br> 
+
+#### $\third{- List}$
+
+```
+var rangeFilter = ee.Filter.inList('colName', [val1, val2, val3]);
+```
+
+<br>
+
+#### $\third{- Spatially}$
+
+```
+var boundsFilter = ee.Filter.bounds(boundGeo);
+```
+
+<br>
+
+```
+var boundsImage = imageName.filterBounds(boundGeo);
+```
+
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
+
+</div>
+
+# $\first{Features (Vectors)}$
+
+*****
+
+### $\second{Creating Geometries}$
+
+#### $\third{- Points}$
+
+```
+var poi = ee.Geometry.Point(long, lat);
+```
+
+<br>
+
+#### $\third{- Lines}$
+
+```
+var lineStr = ee.Geometry.LineString([[long, lat], 
+                                      [long, lat], 
+                                      [long, lat]]);
+```
+
+<br>
+
+#### $\third{- Rectangles}$
+
+```
+var rect = ee.Geometry.Rectangle(minlong, minlat, 
+                                 maxlong, maxlat);
+```
+
+<br>
+
+#### $\third{- Polygons}$
+
+```
+var poly = ee.Geometry.Polygon([[[long, lat], [long, lat], 
+                                 [long, lat], [long, lat]]]);
+```
+
+*****
+
+### $\second{Analysis}$
+
+* The default unit is meters
+
+<br> 
+
+#### $\third{- Lenth}$
+
+```
+var lineLen = variableName.geometry().length();
+```
+
+<br> 
+
+#### $\third{- Perimeter}$
+
+```
+var geoPeri = variableName.geometry().perimeter();
+```
+
+<br> 
+
+#### $\third{- Area}$
+
+```
+var geoArea = variableName.geometry().area();
+```
+
+*****
+
+### $\second{Transformations}$
+
+#### $\third{- Simplifying}$
+
+```
+var simpGeo = variableName.simplify();
+```
+
+<br> 
+
+#### $\third{- Buffering}$
+
+```
+var buffGeo = variableName.buffer(radius);
+```
+
+<br> 
+
+#### $\third{- Centroids}$
+
+```
+var centrGeo = variableName.centroid();
+```
+
+<br> 
+
+#### $\third{- Bounding Rectangles}$
+
+```
+var bounGeo = variableName.bounds();
+```
+
+<br> 
+
+#### $\third{- Tight Boundings}$
+
+```
+var convexGeo = variableName.convexHull();
+```
+
+<br> 
+
+#### $\third{- Relating Features}$
+
+* All form a new layer with no internal borders 
+
+**Merge**
+
+```
+\\ Keep everything (full join)
+var unGeo = variable1.union(variable2);
+```
+
+<br> 
+
+**Intersect**
+
+```
+\\ Keep the overlap (inner join)
+var interGeo = variable1.intersection(variable2);
+```
+
+<br> 
+
+**Difference**
+
+```
+\\ Keep the difference (left join)
+var diffGeo = variable1.difference(variable2);
+```
+
+
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
+
+</div>
+
+# $\first{Images (Rasters)}$
+
+*****
+
+### $\second{Basic Operations}$
+
+#### $\third{- Selecting Band}$
+
+```
+var band = image.select(bandName);
+```
+
+<br> 
+
+#### $\third{- Masking}$
+
+* Equal to: `.eq()`
+* Not equal to: `.neq()`
+* Greater than: `.gt()`
+* Greater than or equal to: `.gte()`
+* Less than: `.lt()`
+* Less than or equal to: `.lte()`
+
+```
+var mask = image.eq(value);
+var masked = image.updateMask(mask);
+```
+
+<br> 
+
+#### $\third{- Calculations}$
+
+* `.add()`
+* `.subtract()`
+* `.multiply()`
+* `.divide()`
+* `.max()`
+* `.min()`
+* `.abs()`
+* `.round()`
+* `.floor()`
+* `.ceil()`
+* `.sqrt()` 
+* `.exp()`
+* `.log()`
+* `.log10()`
+
+```
+var results = image.add(value);
+```
+
+*****
+
+### $\second{Reducers}$
+
+* `ee.Reducer.mean()`
+* `ee.Reducer.stdDev()`
+* `ee.Reducer.max()`
+* `ee.Reducer.min()`
+* `ee.Reducer.first()`
+
+
+<br> 
+
+#### $\third{- Collection to Image}$
+
+```
+var outputImage = imCollection.reduce(reducer);
+```
+
+<br> 
+
+```
+var avgImage = temporalCollection.filterDate(startDate, stopDate).mean()
+```
+
+<br> 
+
+#### $\third{- Image to Statistic}$
+
+```
+var outputDictionary = varImage.reduceRegion(reducer, geometry, scale);
+print(outputDictionary);
+```
+
+<br> 
+
+```
+var sumStats = varImage.reduceRegion(
+  {reducer: ee.Reducer.mean()
+            .combine({reducer2: ee.Reducer.stdDev(), sharedInputs: true})
+            .combine({reducer2: ee.Reducer.percentile({percentiles:[25,50,75]}), sharedInputs: true})
+            .combine({reducer2: ee.Reducer.count(), sharedInputs: true}),
+  geometry: ROI.geometry(),
+  scale: 30});
+```
+
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
+
+</div>
+
+[Return to Main Page](new_spatial_index.html)
