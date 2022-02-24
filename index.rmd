@@ -14,12 +14,12 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 \newcommand\second[1]{\color{dodgerblue}{\textbf{#1}}}
 \newcommand\third[1]{\color{skyblue}{\textrm{#1}}}
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/index/main_cat.gif?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/main_cat.gif)
 
 These are the codebooks I have created while learning to code.  
 Feel free to use them and reach out with suggestions - ryan.m.brenner@gmail.com.
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/index/underline.gif?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
 
 # $\first{Data Analysis}$
 
@@ -27,15 +27,17 @@ Feel free to use them and reach out with suggestions - ryan.m.brenner@gmail.com.
 
 ### [Data Home](data.html)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/index/underline.gif?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
 
 # $\first{Geospatial Analysis}$
 
 <img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/index/head_geospatial.png?raw=true" width="500">
 
-### [Spatial Home](spatial.html)
+### [Spatial Home](new_spatial_index.html)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/index/underline.gif?raw=true)
+### [Monitoring Cities](monitoring_cities.html)
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
 
 # $\first{Communication}$
 
@@ -43,4 +45,4 @@ Feel free to use them and reach out with suggestions - ryan.m.brenner@gmail.com.
 
 ### [Markdown](markdown.html)
 
-![](https://github.com/social-lorax/howto_codebooks/blob/master/images/index/underline.gif?raw=true)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
