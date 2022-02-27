@@ -33,17 +33,19 @@ output <- function(data) {
 
 </div>
 
-# $\first{Layers}$
+# $\first{Cities from Space}$
 
-***
+****
 
-### $\second{Cities from Space}$
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/cities_space.jpg)
 
-#### $\third{- Night Lights}$
+****
 
-<br> 
+### $\second{Night Lights}$
 
-#### $\third{- Vegetation}$ 
+****
+
+### $\second{Surface Classification}$
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/veg.png)
 
@@ -58,21 +60,93 @@ output <- function(data) {
 
 ***
 
-### $\second{Cities from the Sky}$
+### $\second{Surface Temperature}$
+
+****
+
+### $\second{Surface Modeling}$
+
+Radar imagery from space enables full-field observation of the earth, even where the signal is obstructed by cloud cover. The scattering of the radar pulse arriving on Earth is a function of surface morphology. For example, urban centers and sharp-edged objects (such as buildings, ships, or steep mountains) have high backscatter signals while water absorbs the pulse with low reflection. Analysis of the return signal's phase can be used to map the Earth’s surface elevation (including buildings, trees, etc.) and can be used to map changes to the Earth surface (e.g., earthquakes, landslides, or subsidence due to tunneling, etc.). 
+
+#### $\third{- Digital Surface Model (DSM)}$ 
+
+<br> 
+
+#### $\third{- Digital Elevation Model (DEM)}$ 
+
+(*Sometimes more accurately known as Digital Terrain model or DTM*)
+
+
+
+
+
+
+
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
+
+</div>
+
+# $\first{Cities from the Sky}$
+
+Aerial platforms, temporal-spatial tradeoffs, characterization and change detection, national record and inventories
+
+****
+
+### $\second{Lab}$
+
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
+
+</div>
+
+# $\first{Cities from Space}$
 
 ***
 
-### $\second{Cities from Rooftops}$
+<div align="center">
 
-***
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
 
-### $\second{Cities from Streets}$
+</div>
 
-***
+# $\first{Cities from Rooftops}$
 
-### $\second{Cities and Citizens}$
+Ground-based observation platforms, spectral characterization, temporal characterization, agency records.
 
-#### $\third{- Population}$ 
+****
+
+### $\second{Lab}$
+
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
+
+</div>
+
+# $\first{Cities from Streets}$
+
+Fixed and mobile sensing platforms, sensor networks, data acquisition and processing.
+
+****
+
+### $\second{Lab}$
+
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
+
+</div>
+
+# $\first{Cities and Citizens}$
+
+Citizens as sensors, mobile sensing.
+
+****
+
+### $\second{Population Density}$
 
 The Gridded Population of the World, (GPWv4)
 
