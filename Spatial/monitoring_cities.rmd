@@ -68,17 +68,25 @@ output <- function(data) {
 
 Radar imagery from space enables full-field observation of the earth, even where the signal is obstructed by cloud cover. The scattering of the radar pulse arriving on Earth is a function of surface morphology. For example, urban centers and sharp-edged objects (such as buildings, ships, or steep mountains) have high backscatter signals while water absorbs the pulse with low reflection. Analysis of the return signal's phase can be used to map the Earth’s surface elevation (including buildings, trees, etc.) and can be used to map changes to the Earth surface (e.g., earthquakes, landslides, or subsidence due to tunneling, etc.). 
 
+<br>
+
 #### $\third{- Digital Surface Model (DSM)}$ 
+
+Captures both the natural and built/artificial features of the environment
+
+|Copernicus (TerraSAR-X & TanDEM-X) |Shuttle Radar Topography Mission (SRTM) |Advanced Land Observing Satellite (ALOS) |
+|-----|-----|-----|
+|<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/copernicus.jpg" width="250"> |<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/srtm.jpg" width="250"> |<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/alos.jpg" width="250"> |
+|Worldwide at 30m planar resolution |Worldwide at 30m planar resolution |Worldwide at 30m planar resolution |
+|2019 |2000 |2012 |
 
 <br> 
 
 #### $\third{- Digital Elevation Model (DEM)}$ 
 
-(*Sometimes more accurately known as Digital Terrain model or DTM*)
+Represents the bare-Earth surface, removing all natural and built features. A Digital Terrain model (DTM) augments a DEM by including vector features of the natural terrain, such as rivers and ridges.
 
-
-
-
+* USGS DTM is available across the US at 10 meter Resolution. There are areas in the US where 1m data is also available.
 
 
 

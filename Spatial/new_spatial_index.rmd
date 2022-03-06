@@ -38,22 +38,43 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 
 Coordinates are commonly listed as latitude and longitude
 
-* Latitude = position North to South
-* Longitude = position East to West
+* **Latitude** = position North to South
+* **Longitude** = position East to West
 
 <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/latlong.jpg" width="500">
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/latlong2.jpg)
 
-|Type     |Latitude  |Longitude |
+|Scale     |Latitude  |Longitude |
 |:--------|:---------|:---------|
-|Standard |44.57808N |123.2803W |
-|Coding   |44.57808  |-123.2803 |
-|         |+N, -S    |+E, -W    |
+|Degrees Decimal |40.7128° N |74.0060° W |
+|Coding   |40.7128  (+N, -S) |-74.0060 (+E, -W)|
+|Degree, Minute, Second |40° 42′ 46′′ N |74° 0′ 21′′ W |
 
-Often it is written as: (longitude, latitude)  
+Often it is written as: (latitude, longitude) or (40.7128, -74.0060) 
 
-Thus: (-123.2803, 44.57808)
+<br>
+
+**Convert Decimal to DMS**
+
+40.7128
+
+1. Take the whole number as the degrees: 40°
+2. Multiply the decimal by 60: 0.7128 * 60 = 42.768
+3. Take the whole number as the minutes: 40° 42'
+4. Multiply the decimal by 60: 0.768 * 60 = 46.08
+5. Take the whole number as the seconds: 40° 42' 46''
+
+<br> 
+
+**Convert DMS to Decimal**
+
+40° 42' 46''
+
+1. Take the whole number: 40
+2. Divide the minutes by 60: 42 / 60 = 0.7
+3. Divide the seconds by 3600: 46 / 3600 = 0.0128
+4. Add together: 40.7128
 
 <br> 
 
@@ -65,7 +86,7 @@ When visualizing a 3D Earth onto a 2D map, a projection determines how it will b
 
 Common CRSs include: 
 
-* WGS84 (EPSG: 4326) is used by organizations that provide GIS data for the entire globe or many countries (e.g., Google Earth) 
+* WGS84 (EPSG: 4326) is used when projecting the entire globe or many countries (e.g., Google Earth) 
 * NAD83 (EPSG: 4269) is the most commonly used by U.S. federal agencies
 * The New York State Plane Long Island Zone (EPSG: 2263) is the most accurate for NYC
 
