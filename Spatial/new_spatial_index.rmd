@@ -80,15 +80,28 @@ Often it is written as: (latitude, longitude) or (40.7128, -74.0060)
 
 #### $\third{CRS/Projection}$
 
-When visualizing a 3D Earth onto a 2D map, a projection determines how it will be distorted. 
+The Earth is closer to an oblate spheroid than a sphere. 
 
-![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/crs.png)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/earth_shape.png)
 
-Common CRSs include: 
+When visualizing a 3D Earth onto a 2D map, the projection determines how it will be distorted.
 
-* WGS84 (EPSG: 4326) is used when projecting the entire globe or many countries (e.g., Google Earth) 
-* NAD83 (EPSG: 4269) is the most commonly used by U.S. federal agencies
-* The New York State Plane Long Island Zone (EPSG: 2263) is the most accurate for NYC
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/projection.png)
+
+|Class |Method |Example |Pros  |Cons  |
+|:-----|:------|:-------|:-----|:-----|
+|Conical |![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/proj_conical.png)|Albers Equal Area Conic, Lambert Conformal Conic |Well-suited for large east-west regions because distortion is constant along parallels |Poorly-suited for large north-south regions because distance at the bottom of the image suffers with the most distortion |
+|Cylindrical |![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/proj_cylindrical.png)|Mercator, Miller |Little distortion in shape, consistency in direction, and  rectangular | Distorts the size of objects as the latitude increases from the Equator to the poles |
+|Azimuthal |![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/proj_azimuthal.png)|Gnomonic, stereographic, orthographic |All points on the map are at proportionally correct distances and at the correct azimuth (direction) from the center point |Shapes are distorted |
+
+Common CRS's include: 
+
+
+|Projection |Code |Use |
+|:----------|:----|:----|:---|
+|World Geodetic System (WGS84) |`EPSG: 4326` |When projecting the entire globe or many countries (e.g., Google Earth) |
+|North American Datum (NAD83) |`EPSG: 4269` |Most commonly used map of U.S. federal agencies |
+|The New York State Plane Long Island Zone |`EPSG: 2263` |The most accurate for NYC |
 
 ****
 
