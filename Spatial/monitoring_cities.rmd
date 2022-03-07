@@ -114,9 +114,50 @@ var VIIRS_change = VIIRS_T2.subtract(VIIRS_T1);
 Map.addLayer(VIIRS_T1, {min:0, max:128}, 'VIIRS T1');
 Map.addLayer(VIIRS_T2, {min:0, max:128}, 'VIIRS T2');
 Map.addLayer(VIIRS_change, {min:-20, max:20 , palette: ['blue', 'white', 'red']}, 'VIIRS T2-T1');
+
+//*--------------------------------------
+//Notes:
+//DMSP used 6 bit numbers (0 - 64) while VIIRS usss 7 bit number (0-128)
+//The gain for DMSP is high so there will be saturation in bright areas
 ```
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/night1.png)
+
+```
+//Select ROI
+var ROI = ee.FeatureCollection("users/rmb623/nyc");
+Map.addLayer(ROI, {}, 'ROI', 0);
+Map.centerObject(ROI, 9);
+
+//Calculate ROI area in km2
+print('ROI Area km2', ROI.geometry().area().divide(1e6));
+
+//DMSP ROI
+var DMSP_chart = ui.Chart.image.seriesByRegion(
+  DMSP, 
+  ROI.geometry(), 
+  ee.Reducer.mean())
+  .setOptions({title: 'DMSP Night Light Radiance',
+               hAxis: {title: 'Year', titleTextStyle: {italic: false, bold: true}},
+               vAxis: {title: 'Intensity', minValue: 0},
+               colors: ['red']});
+print(DMSP_chart);
+
+//VIIRS ROI
+var VIIRS_chart = ui.Chart.image.seriesByRegion(
+  VIIRS, 
+  ROI.geometry(), 
+  ee.Reducer.mean())
+  .setOptions({title: 'VIIRS Night Light Radiance',
+               hAxis: {title: 'Month', titleTextStyle: {italic: false, bold: true}},
+               vAxis: {title: 'Intensity', minValue: 0},
+               colors: ['red']});
+print(VIIRS_chart);
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/night2.png)
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/night3.png)
 
 ****
 
