@@ -165,14 +165,131 @@ print(VIIRS_chart);
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/veg.png)
 
-|NAIP |Sentinel-2 |Landsat (1-9) |
-|-----|-----|-----|
-|<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/naip.jpg" width="250"> |<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/sentinel-2.jpg" width="250"> |<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/landsat-9.jpg" width="250"> |
-|Continental US |Global |Global |
-|2006, 2009, 2011, 2013, 2015, 2017, 2019 |2016 - present |1999 - present |
-|Yearly mosaic |Revisit time of 10 days (5 days from 2019) |Revisit time of 16 days |
-|1m resolution |10m and 20m resolution |30m resolution |
-|4 spectral bands (R, G, B, IR)|13 spectral bands |11 spectral bands | 
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/ndvi.png)
+
+|Name |National Agriculture Imagery (NAIP) |Sentinel-2 |Landsat (1-9) |
+|:----|:-----|:-----|:-----|
+|**Satellite** |<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/naip.jpg" width="200"> |<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/sentinel-2.jpg" width="200"> |<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/landsat-9.jpg" width="200"> |
+|**Availability** |2006, 2009, 2011, 2013, 2015, 2017, 2019 |2016 - present |1999 - present |
+|**Coverage** |Continental US |Global |Global |
+|**Spatial Resolution** |1 m | 10 m |30m |
+|**Temporal Resolution** |Yearly mosaic |10 days (5 days from 2019) |16 days |
+|**Spectral Bands** |4 |13 |11 | 
+|**NDVI Bands** |R + IR |B4 (665 nm) + B8 (833 nm) |B4 (660 nm) + B5 (860 nm) |
+
+```
+// --------------------------------
+// ----- NAIP ---------------------
+// --------------------------------
+//Select ROI
+var ROI = ee.FeatureCollection("users/rmb623/nyc");
+Map.addLayer(ROI, {}, 'ROI', 0);
+Map.centerObject(ROI, 9);
+
+//Select time
+//Yearly mosaics of 2006, 2009, 2011, 2013, 2015, 2017, 2019
+var N_T1_a = '2011-01-01';
+var N_T1_b = '2011-12-31';
+var N_T2_a = '2015-01-01';
+var N_T2_b = '2015-12-31';
+
+//Get RGB visual imagery for ROI
+var NAIP = ee.ImageCollection('USDA/NAIP/DOQQ')
+    .filterBounds(ROI);
+var NAIP_T1 = NAIP.filterDate(N_T1_a, N_T1_b).mosaic().clip(ROI);
+var NAIP_T2 = NAIP.filterDate(N_T2_a, N_T2_b).mosaic().clip(ROI);
+
+//Plot red, green, and blue bands
+Map.addLayer(NAIP_T1, {min: 0, max: 255, bands:['R','G','B']}, 'NAIP T1', 0);
+Map.addLayer(NAIP_T2, {min: 0, max: 255, bands:['R','G','B']}, 'NAIP T2', 1);
+
+//Calculate NDVI using red (R) and Near Infrared Band (N) 
+var NDVI_NAIP_T1 = NAIP_T1.normalizedDifference(['N', 'R']).rename('NDVI_NAIP');
+var NDVI_NAIP_T2 = NAIP_T2.normalizedDifference(['N', 'R']).rename('NDVI_NAIP');
+
+//Plot NDVI
+Map.addLayer(NDVI_NAIP_T1, {min: -0.4, max: 0.6, palette: ['brown','white', 'green']}, 'NAIP NDVI T1 1m', 0);
+Map.addLayer(NDVI_NAIP_T2, {min: -0.4, max: 0.6, palette: ['brown','white', 'green']}, 'NAIP NDVI T2 1m', 1);
+
+//Plot NDVI histogram between T1 and T2
+var NDVI_T1_T2 = NDVI_NAIP_T1.addBands(NDVI_NAIP_T2);
+var ndvi_naip = ui.Chart.image.histogram(
+  {image: NDVI_T1_T2, 
+   region: ROI, 
+   scale: 3, 
+   maxPixels: 1e13})
+  .setSeriesNames(['NAIP T1', 'NAIP T2'])
+  .setOptions({title: 'NAIP NDVI Histograms for T1 and T2',
+               hAxis: {title: 'NDVI', titleTextStyle: {italic: false, bold: true}},
+               vAxis: {title: 'Count', titleTextStyle: {italic: false, bold: true}},
+               colors: ['cf513e', '1d6b99'],
+               opacity:[0.1,0.2]});
+print(ndvi_naip);
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/ndvi1.png)
+
+```
+// --------------------------------
+// ----- Sentinel -----------------
+// --------------------------------
+//Select ROI
+var ROI = ee.FeatureCollection("users/rmb623/nyc");
+Map.addLayer(ROI, {}, 'ROI', 0);
+Map.centerObject(ROI, 9);
+
+//Select time
+//Revisit time of 10 days 2016-2018, 5 days 2019-present
+var S_T1_a = '2016-5-01';
+var S_T1_b = '2016-9-30';
+var S_T2_a = '2020-5-01';
+var S_T2_b = '2020-9-30';
+
+//Function to mask clouds using the detected cloud band "QA60"
+var maskcloud_s2 = function(image) {
+  var QA60 = image.select(['QA60']);
+    return image
+    .updateMask(QA60.lt(1));
+};
+
+//Get RGB visual imagery for ROI
+var sentinel = ee.ImageCollection('COPERNICUS/S2')
+  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 10)) // filter to only less cloudy images
+  .filterBounds(ROI)
+  .map(maskcloud_s2); // apply the function to all images
+
+//Use median instead of mosaic to ensure that the low lying clouds are removed 
+var sentinel_T1 = sentinel.filterDate(S_T1_a,S_T1_b).median().clip(ROI);
+var sentinel_T2 = sentinel.filterDate(S_T2_a,S_T2_b).median().clip(ROI);
+
+//Plot red (B4), green (B3), and blue (B2) bands
+Map.addLayer(sentinel_T1 ,{bands:['B4','B3','B2'], min:0,max:2500}, 'Sentinel 2 T1', 0);
+Map.addLayer(sentinel_T2 ,{bands:['B4','B3','B2'], min:0,max:2500}, 'Sentinel 2 T2', 0);
+
+//Calculate NDVI using red (B4) and Near Infrared Band (B8)
+var ndvi_sentinel_t1 = sentinel_T1.normalizedDifference(['B8', 'B4']).rename('NDVI_Sentinel');
+var ndvi_sentinel_t2 = sentinel_T2.normalizedDifference(['B8', 'B4']).rename('NDVI_Sentinel');
+
+Map.addLayer(ndvi_sentinel_t1, {min:-0.3, max:0.8, palette: ['brown', 'white', 'green']}, 'Sentinel 2 NDVI T1 10m', 0);
+Map.addLayer(ndvi_sentinel_t2, {min:-0.3, max:0.8, palette: ['brown', 'white', 'green']}, 'Sentinel 2 NDVI T2 10m', 0);
+
+//Plot NDVI histogram between T1 and T2
+var NDVI_T1_T2 = ndvi_sentinel_t1.addBands(ndvi_sentinel_t2);
+var ndvi_sentinel = ui.Chart.image.histogram(
+  {image: NDVI_T1_T2, 
+   region: ROI, 
+   scale: 10, 
+   maxPixels: 1e13})
+   .setSeriesNames(['SENTINEL T1', 'SENTINEL T2'])
+   .setOptions({title: 'SENTINEL 2 NDVI Histograms for T1 and T2',
+                hAxis: {title: 'NDVI', titleTextStyle: {italic: false, bold: true}},
+                vAxis: {title: 'Count', titleTextStyle: {italic: false, bold: true}},
+                colors: ['cf513e', '1d6b99']});
+print(ndvi_sentinel);
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/ndvi2.png)
+
 
 ***
 
