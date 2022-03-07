@@ -33,11 +33,13 @@ output <- function(data) {
 
 </div>
 
-# $\first{Cities from Space}$
+# $\first{Remote Sensing}$
 
 ****
 
-![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/cities_space.jpg)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/cities_space1.png)
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/cities_space2.jpg)
 
 ****
 
