@@ -290,6 +290,71 @@ print(ndvi_sentinel);
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/ndvi2.png)
 
+```
+// --------------------------------
+// ----- LANDSAT ------------------
+// --------------------------------
+//Select ROI
+var ROI = ee.FeatureCollection("users/rmb623/nyc");
+Map.addLayer(ROI, {}, 'ROI', 0);
+Map.centerObject(ROI, 9);
+
+//Select time
+//Revisit time of 16 days 1999 - present
+var L_T1_a = '2003-5-01';
+var L_T1_b = '2003-9-30';
+var L_T2_a = '2015-5-01';
+var L_T2_b = '2015-9-30';
+
+//Function to mask clouds
+var maskcloud_L = function(image) {
+  var qa = image.select('pixel_qa');
+  // If the cloud bit (5) is set and the cloud confidence (7) is high
+  // or if the cloud shadow bit is set (3), then it's a bad pixel.
+  var cloud = qa.bitwiseAnd(1 << 5)
+                  .and(qa.bitwiseAnd(1 << 7))
+                  .or(qa.bitwiseAnd(1 << 3));
+  // Remove edge pixels that don't occur in all bands
+  var mask2 = image.mask().reduce(ee.Reducer.min());
+  return image.updateMask(cloud.not()).updateMask(mask2);
+};
+
+//Get RGB visual imagery for ROI
+var landsat = ee.ImageCollection('LANDSAT/LE07/C01/T1_SR')
+  .map(maskcloud_L)
+  .filterBounds(ROI);
+  
+var landsat_T1 = landsat.filterDate(L_T1_a,L_T1_b).median().clip(ROI);
+var landsat_T2 = landsat.filterDate(L_T2_a,L_T2_b).median().clip(ROI);
+
+//Plot red (B3), green (B2), and blue (B1) bands
+Map.addLayer(landsat_T1 ,{bands:['B3','B2','B1'], min:0,max:2500}, 'Landsat 7 T1', 0);
+Map.addLayer(landsat_T2 ,{bands:['B3','B2','B1'], min:0,max:2500}, 'Landsat 7 T2', 0);
+
+//Calculate NDVI using red (B3) and Near Infrared Band (B4)
+var landsat_ndvi_t1 = landsat_T1.normalizedDifference(['B4', 'B3']).rename('NDVI_Landsat_T1');
+var landsat_ndvi_t2 = landsat_T2.normalizedDifference(['B4', 'B3']).rename('NDVI_Landsat_T2');
+
+Map.addLayer(landsat_ndvi_t1, {min:-0.15, max:0.7, palette: ['brown', 'white', 'green']}, 'Landsat NDVI T1 30m', 0);
+Map.addLayer(landsat_ndvi_t2, {min:-0.15, max:0.7, palette: ['brown', 'white', 'green']}, 'Landsat NDVI T2 30m', 0);
+
+//Plot NDVI histogram between T1 and T2
+var NDVI_T1_T2 = landsat_ndvi_t1.addBands(landsat_ndvi_t2);
+var ndvi_landsat = ui.Chart.image.histogram({
+  image: NDVI_T1_T2, 
+  region: ROI, 
+  scale: 30, 
+  maxPixels: 1e13})
+  .setSeriesNames(['LANDSAT T1', 'LANDSAT T2'])
+  .setOptions({title: 'LANDSAT NDVI Histograms for T1 and T2',
+               hAxis: {title: 'NDVI', titleTextStyle: {italic: false, bold: true}},
+               vAxis: {title: 'Count', titleTextStyle: {italic: false, bold: true}},
+               colors: ['cf513e', '1d6b99'],
+               opacity:0});
+print(ndvi_landsat);
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/ndvi3.png)
 
 ***
 
