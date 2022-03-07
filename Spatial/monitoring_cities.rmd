@@ -82,8 +82,8 @@ var DMSP_T2 = DMSP.filterDate(DMSP_T2_a, DMSP_T2_b).mean()
 var DMSP_change = DMSP_T2.subtract(DMSP_T1);
 
 //Display maps
-Map.addLayer(DMSP_T1, {min:10, max:45}, 'DMSP T1');
-Map.addLayer(DMSP_T2, {min:10, max:45}, 'DMSP T2');
+Map.addLayer(DMSP_T1, {min:0, max:64}, 'DMSP T1');
+Map.addLayer(DMSP_T2, {min:0, max:64}, 'DMSP T2');
 Map.addLayer(DMSP_change, {min:-20, max:20 , palette: ['blue', 'white', 'red']}, 'DMSP T2-T1 rad');
 
 
@@ -111,11 +111,12 @@ var VIIRS_T2 = VIIRS.filterDate(VIIRS_T2_a, VIIRS_T2_b).mean()
 var VIIRS_change = VIIRS_T2.subtract(VIIRS_T1);
 
 //Display maps
-Map.addLayer(VIIRS_T1, {min:0, max:10}, 'VIIRS T1');
-Map.addLayer(VIIRS_T2, {min:0, max:10}, 'VIIRS T2');
+Map.addLayer(VIIRS_T1, {min:0, max:128}, 'VIIRS T1');
+Map.addLayer(VIIRS_T2, {min:0, max:128}, 'VIIRS T2');
 Map.addLayer(VIIRS_change, {min:-20, max:20 , palette: ['blue', 'white', 'red']}, 'VIIRS T2-T1');
 ```
 
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/night1.png)
 
 ****
 
@@ -273,6 +274,7 @@ Map.addLayer(T2T1_pop_change, { min:-300, max: 300, palette: ['blue','black','re
 //Select ROI
 var ROI = ee.FeatureCollection("users/rmb623/nyc");
 Map.addLayer(ROI, {}, 'ROI', 0);
+Map.centerObject(ROI, 9);
 
 //Summary statistics  
 var changeStats = T2T1_pop_change.reduceRegion(
@@ -284,21 +286,16 @@ var changeStats = T2T1_pop_change.reduceRegion(
   
 print(changeStats);
 
-//Plotting total population
+//Plot total population
 var pop_total = ui.Chart.image.series(
   pop_collection, 
   ROI, 
-  ee.Reducer.sum()); //.mean() can be used for denisty
-
-//Set chart attributes (title, axis title, etc)
-pop_total.setOptions({
-  title: 'Total Population of NYC',
-  vAxis: {textStyle: {fontSize: 14}},
-  hAxis: {title: 'Year', format: 'yyyy', gridlines: {count: 7}, 
-  titleTextStyle: {italic: false, bold: true, fontSize:14}, 
-  textStyle: {fontSize: 14}
-  }});
-
+  ee.Reducer.sum()) //.mean() can be used for denisty
+  .setOptions({title: 'Total Population of NYC',
+               vAxis: {textStyle: {fontSize: 14}},
+               hAxis: {title: 'Year', format: 'yyyy', gridlines: {count: 7}, 
+               titleTextStyle: {italic: false, bold: true, fontSize:14}, 
+               textStyle: {fontSize: 14}}});
 print(pop_total);
 ```
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/gpw5.png)
