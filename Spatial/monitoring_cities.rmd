@@ -195,6 +195,40 @@ Map.addLayer(T2T1_pop_change, { min:-300, max: 300, palette: ['blue','black','re
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/gpw4.jpg)
 
+```
+//Select ROI
+var ROI = ee.FeatureCollection("users/rmb623/nyc");
+Map.addLayer(ROI, {}, 'ROI', 0);
+
+//Summary statistics  
+var changeStats = T2T1_pop_change.reduceRegion(
+  {reducer: ee.Reducer.mean()
+            .combine({reducer2: ee.Reducer.stdDev(), sharedInputs: true})
+            .combine({reducer2: ee.Reducer.percentile({percentiles:[25,50,75]}), sharedInputs: true})
+            .combine({reducer2: ee.Reducer.count(), sharedInputs: true}),
+  geometry: ROI.geometry()});
+  
+print(changeStats);
+
+//Plotting total population
+var pop_total = ui.Chart.image.series(
+  pop_collection, 
+  ROI, 
+  ee.Reducer.sum()); //.mean() can be used for denisty
+
+//Set chart attributes (title, axis title, etc)
+pop_total.setOptions({
+  title: 'Total Population of NYC',
+  vAxis: {textStyle: {fontSize: 14}},
+  hAxis: {title: 'Year', format: 'yyyy', gridlines: {count: 7}, 
+  titleTextStyle: {italic: false, bold: true, fontSize:14}, 
+  textStyle: {fontSize: 14}
+  }});
+
+print(pop_total);
+```
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/gpw5.png)
+
 <div align="center">
 
 <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
