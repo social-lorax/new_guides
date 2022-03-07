@@ -45,6 +45,78 @@ output <- function(data) {
 
 ### $\second{Night Lights}$
 
+|Name |Defense Meteorological Satellite Program (DMSP), Operational Line Scanner(OLS) |Suomi National Polar Orbiting Partnership (NPP), Visible Infrared Imaging Radiometer Suite (VIIRS) |
+|:------|:----------|:----------|
+|**Satellite** |<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/dmsp.jpg" width="250"> |<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/suomi-npp.jpg" width="250"> |
+|**Availability** |1992 to 2014 |2011 to Present |
+|**Spatial Resolution** |1 km |0.5 km |
+|**Temporal Resolution** |Daily (yearly on GEE) |Daily (monthly on GEE) |
+|**Radiance Digital Number (DN)** |6 bit numbers (0 - 64) |7 bit numbers (0 - 128) |
+
+```
+//Use SRTM elevation data to remove pixels that represent oceans
+var elev = ee.Image('srtm90_v4');
+var elevation_mask = elev.mask();
+
+
+//---DMSP---
+//Select time
+//DMSP is avaiable between 1992 and 2012 (yearly)
+var DMSP_T1_a = '1993-01-01';
+var DMSP_T1_b = '1993-12-31';
+var DMSP_T2_a = '2012-01-01';
+var DMSP_T2_b = '2012-12-31';
+
+//Load data
+var DMSP = ee.ImageCollection('NOAA/DMSP-OLS/NIGHTTIME_LIGHTS')
+            .select('stable_lights');
+
+//Transform to Image using .mean as reducer and .updateMask to remove ocean pixels
+var DMSP_T1 = DMSP.filterDate(DMSP_T1_a, DMSP_T1_b).mean()
+                  .updateMask(elevation_mask); 
+                  
+var DMSP_T2 = DMSP.filterDate(DMSP_T2_a, DMSP_T2_b).mean()
+                  .updateMask(elevation_mask);
+
+//Calculate change 
+var DMSP_change = DMSP_T2.subtract(DMSP_T1);
+
+//Display maps
+Map.addLayer(DMSP_T1, {min:10, max:45}, 'DMSP T1');
+Map.addLayer(DMSP_T2, {min:10, max:45}, 'DMSP T2');
+Map.addLayer(DMSP_change, {min:-20, max:20 , palette: ['blue', 'white', 'red']}, 'DMSP T2-T1 rad');
+
+
+//---VIRRS---
+//Select time
+//VIRRS is available between 2012 and present (monthly)
+var VIIRS_T1_a = '2012-09-01';
+var VIIRS_T1_b = '2012-10-31';
+var VIIRS_T2_a = '2020-09-01';
+var VIIRS_T2_b = '2020-10-31';
+
+//Load data
+var VIIRS = ee.ImageCollection('NOAA/VIIRS/DNB/MONTHLY_V1/VCMCFG')
+                  .filterDate('2012-01-01', '2021-12-31')
+                  .select('avg_rad');
+
+// Transform to Image using .mean as reducer and .updateMask to remove ocean pixels
+var VIIRS_T1 = VIIRS.filterDate(VIIRS_T1_a, VIIRS_T1_b).mean()
+                  .updateMask(elevation_mask);
+
+var VIIRS_T2 = VIIRS.filterDate(VIIRS_T2_a, VIIRS_T2_b).mean()
+                  .updateMask(elevation_mask);
+
+//Calculate change 
+var VIIRS_change = VIIRS_T2.subtract(VIIRS_T1);
+
+//Display maps
+Map.addLayer(VIIRS_T1, {min:0, max:10}, 'VIIRS T1');
+Map.addLayer(VIIRS_T2, {min:0, max:10}, 'VIIRS T2');
+Map.addLayer(VIIRS_change, {min:-20, max:20 , palette: ['blue', 'white', 'red']}, 'VIIRS T2-T1');
+```
+
+
 ****
 
 ### $\second{Surface Classification}$
