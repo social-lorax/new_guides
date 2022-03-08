@@ -161,7 +161,7 @@ print(VIIRS_chart);
 
 ****
 
-### $\second{Surface Classification}$
+### $\second{Normalized Difference Vegetation Index}$
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/veg.png)
 
@@ -355,6 +355,32 @@ print(ndvi_landsat);
 ```
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/ndvi3.png)
+
+```
+//NDVI calculation for timeseries
+var ndvi_func = function (i) {
+      var ndvi = i.normalizedDifference (['B4', 'B3']).rename ('NDVI');
+      return i.addBands(ndvi);
+    };
+
+var ndvi_landsat = landsat
+  .map(ndvi_func)
+  .filterDate('2000-01-01','2020-12-31'); 
+
+var timeseries = ui.Chart.image.seriesByRegion({
+  imageCollection: ndvi_landsat,
+  regions: ROI,
+  reducer: ee.Reducer.mean(),
+  band: 'NDVI',
+  scale: 30})
+  .setOptions({title: 'LANDSAT 7 - NDVI',
+               hAxis: {title: 'Year', titleTextStyle: {italic: false, bold: true}},
+               vAxis: {title: 'NDVI', titleTextStyle: {italic: false, bold: true}},
+               colors: ['red']});
+print(timeseries);
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/ndvi4.png)
 
 ***
 
