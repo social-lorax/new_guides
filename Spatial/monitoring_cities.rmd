@@ -601,7 +601,35 @@ var chart = ui.Chart.feature.byFeature({
 print(chart);
 ```
 
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/urban_heat3.jpg)
 
+****
+
+### $\second{Synthetic Apperture Radar}$
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/sar1.png)
+
+**Surface Roughness and Backscattering**
+
+The strength of the return, or backscatter, is partially based upon relative roughness of the surface imaged. The smoother the surface, the more reflection away from the sensor, while rough surfaces give a much stronger return towards the imaging platform.
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/sar2.png)
+
+However, there are additional types of bounce mechanisms beyond specular and diffuse. In vegetation, volumetric scattering occurs when signals bounce around inside the vegetation imaged. In urban areas, the double bounce mechanism causes a strong bounce back to the sensor.
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/sar3.png)
+
+**Wavelength**
+
+The wavelength of the SAR system influences the amount of ground penetration that occurs. X-band has the least penetration, scattering from the top of the canopy in vegetated areas. All three bands will penetrate dry sand, with stronger returns from both C-band and L-band. L-band has the most penetration overall, with returns from the ground in vegetated areas, strong returns from substances under dry alluvium, and deep penetration of ice and snow.
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/sar4.png)
+
+**Polarization**
+
+Polarization refers to the direction of travel of an electromagnetic wave. A horizontal wave is transmitted so that it oscillates in a plane parallel to the surface imaged, while a vertical wave oscillates in a plane perpendicular to the surface imaged. There are four different polarization combinations commonly used by SAR sensors: VV, VH, HV and HH. The first letter indicates the polarization used to transmit the signal and the second letter indicates the polarization of the measured return. Polarimetry is an emerging field of SAR processing, used in a number of applications such as measuring vegetation properties, oceanography, geology, and disaster response.
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/sar5.png)
 
 ****
 
