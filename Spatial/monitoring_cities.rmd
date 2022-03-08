@@ -39,6 +39,8 @@ output <- function(data) {
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/cities_space1.png)
 
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/cities_space3.png)
+
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/cities_space2.jpg)
 
 ****
@@ -385,6 +387,9 @@ print(timeseries);
 ***
 
 ### $\second{Surface Temperature}$
+
+
+
 
 ****
 
