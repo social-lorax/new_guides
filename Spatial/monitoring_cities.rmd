@@ -71,7 +71,7 @@ var DMSP_T2_b = '2012-12-31';
 
 //Load data
 var DMSP = ee.ImageCollection('NOAA/DMSP-OLS/NIGHTTIME_LIGHTS')
-            .select('stable_lights');
+             .select('stable_lights');
 
 //Transform to Image using .mean as reducer and .updateMask to remove ocean pixels
 var DMSP_T1 = DMSP.filterDate(DMSP_T1_a, DMSP_T1_b).mean()
@@ -99,15 +99,15 @@ var VIIRS_T2_b = '2020-10-31';
 
 //Load data
 var VIIRS = ee.ImageCollection('NOAA/VIIRS/DNB/MONTHLY_V1/VCMCFG')
-                  .filterDate('2012-01-01', '2021-12-31')
-                  .select('avg_rad');
+              .filterDate('2012-01-01', '2021-12-31')
+              .select('avg_rad');
 
 // Transform to Image using .mean as reducer and .updateMask to remove ocean pixels
 var VIIRS_T1 = VIIRS.filterDate(VIIRS_T1_a, VIIRS_T1_b).mean()
-                  .updateMask(elevation_mask);
+                    .updateMask(elevation_mask);
 
 var VIIRS_T2 = VIIRS.filterDate(VIIRS_T2_a, VIIRS_T2_b).mean()
-                  .updateMask(elevation_mask);
+                    .updateMask(elevation_mask);
 
 //Calculate change 
 var VIIRS_change = VIIRS_T2.subtract(VIIRS_T1);
@@ -140,8 +140,10 @@ var DMSP_chart = ui.Chart.image.seriesByRegion(
   ROI.geometry(), 
   ee.Reducer.mean())
   .setOptions({title: 'DMSP Night Light Radiance',
-               hAxis: {title: 'Year', titleTextStyle: {italic: false, bold: true}},
-               vAxis: {title: 'Intensity', minValue: 0},
+               hAxis: {title: 'Year', 
+                       titleTextStyle: {italic: false, bold: true}},
+               vAxis: {title: 'Intensity', 
+                       minValue: 0},
                colors: ['red']});
 print(DMSP_chart);
 
@@ -151,8 +153,10 @@ var VIIRS_chart = ui.Chart.image.seriesByRegion(
   ROI.geometry(), 
   ee.Reducer.mean())
   .setOptions({title: 'VIIRS Night Light Radiance',
-               hAxis: {title: 'Month', titleTextStyle: {italic: false, bold: true}},
-               vAxis: {title: 'Intensity', minValue: 0},
+               hAxis: {title: 'Month', 
+                       titleTextStyle: {italic: false, bold: true}},
+               vAxis: {title: 'Intensity', 
+                       minValue: 0},
                colors: ['red']});
 print(VIIRS_chart);
 ```
@@ -174,7 +178,7 @@ print(VIIRS_chart);
 |**Satellite** |<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/naip.jpg" width="200"> |<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/sentinel-2.jpg" width="200"> |<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/landsat-9.jpg" width="200"> |
 |**Availability** |2006, 2009, 2011, 2013, 2015, 2017, 2019 |2016 - present |1999 - present |
 |**Coverage** |Continental US |Global |Global |
-|**Spatial Resolution** |1 m | 10 m |30m |
+|**Spatial Resolution** |1 m | 10 m |30 m |
 |**Temporal Resolution** |Yearly mosaic |10 days (5 days from 2019) |16 days |
 |**Spectral Bands** |4 |13 |11 | 
 |**NDVI Bands** |R + IR |B4 (665 nm) + B8 (833 nm) |B4 (660 nm) + B5 (860 nm) |
@@ -196,8 +200,7 @@ var N_T2_a = '2015-01-01';
 var N_T2_b = '2015-12-31';
 
 //Get RGB visual imagery for ROI
-var NAIP = ee.ImageCollection('USDA/NAIP/DOQQ')
-    .filterBounds(ROI);
+var NAIP = ee.ImageCollection('USDA/NAIP/DOQQ').filterBounds(ROI);
 var NAIP_T1 = NAIP.filterDate(N_T1_a, N_T1_b).mosaic().clip(ROI);
 var NAIP_T2 = NAIP.filterDate(N_T2_a, N_T2_b).mosaic().clip(ROI);
 
@@ -215,15 +218,17 @@ Map.addLayer(NDVI_NAIP_T2, {min: -0.4, max: 0.6, palette: ['brown','white', 'gre
 
 //Plot NDVI histogram between T1 and T2
 var NDVI_T1_T2 = NDVI_NAIP_T1.addBands(NDVI_NAIP_T2);
-var ndvi_naip = ui.Chart.image.histogram(
-  {image: NDVI_T1_T2, 
+var ndvi_naip = ui.Chart.image.histogram({
+   image: NDVI_T1_T2, 
    region: ROI, 
    scale: 3, 
    maxPixels: 1e13})
   .setSeriesNames(['NAIP T1', 'NAIP T2'])
   .setOptions({title: 'NAIP NDVI Histograms for T1 and T2',
-               hAxis: {title: 'NDVI', titleTextStyle: {italic: false, bold: true}},
-               vAxis: {title: 'Count', titleTextStyle: {italic: false, bold: true}},
+               hAxis: {title: 'NDVI', 
+                       titleTextStyle: {italic: false, bold: true}},
+               vAxis: {title: 'Count', 
+                       titleTextStyle: {italic: false, bold: true}},
                colors: ['cf513e', '1d6b99'],
                opacity:[0.1,0.2]});
 print(ndvi_naip);
@@ -277,16 +282,18 @@ Map.addLayer(ndvi_sentinel_t2, {min:-0.3, max:0.8, palette: ['brown', 'white', '
 
 //Plot NDVI histogram between T1 and T2
 var NDVI_T1_T2 = ndvi_sentinel_t1.addBands(ndvi_sentinel_t2);
-var ndvi_sentinel = ui.Chart.image.histogram(
-  {image: NDVI_T1_T2, 
-   region: ROI, 
-   scale: 10, 
-   maxPixels: 1e13})
-   .setSeriesNames(['SENTINEL T1', 'SENTINEL T2'])
-   .setOptions({title: 'SENTINEL 2 NDVI Histograms for T1 and T2',
-                hAxis: {title: 'NDVI', titleTextStyle: {italic: false, bold: true}},
-                vAxis: {title: 'Count', titleTextStyle: {italic: false, bold: true}},
-                colors: ['cf513e', '1d6b99']});
+var ndvi_sentinel = ui.Chart.image.histogram({
+  image: NDVI_T1_T2, 
+  region: ROI, 
+  scale: 10, 
+  maxPixels: 1e13})
+  .setSeriesNames(['SENTINEL T1', 'SENTINEL T2'])
+  .setOptions({title: 'SENTINEL 2 NDVI Histograms for T1 and T2',
+               hAxis: {title: 'NDVI', 
+                       titleTextStyle: {italic: false, bold: true}},
+               vAxis: {title: 'Count', 
+                       titleTextStyle: {italic: false, bold: true}},
+               colors: ['cf513e', '1d6b99']});
 print(ndvi_sentinel);
 ```
 
@@ -322,10 +329,7 @@ var maskcloud_L = function(image) {
 };
 
 //Get RGB visual imagery for ROI
-var landsat = ee.ImageCollection('LANDSAT/LE07/C01/T1_SR')
-  .map(maskcloud_L)
-  .filterBounds(ROI);
-  
+var landsat = ee.ImageCollection('LANDSAT/LE07/C01/T1_SR').map(maskcloud_L).filterBounds(ROI);
 var landsat_T1 = landsat.filterDate(L_T1_a,L_T1_b).median().clip(ROI);
 var landsat_T2 = landsat.filterDate(L_T2_a,L_T2_b).median().clip(ROI);
 
@@ -349,8 +353,10 @@ var ndvi_landsat = ui.Chart.image.histogram({
   maxPixels: 1e13})
   .setSeriesNames(['LANDSAT T1', 'LANDSAT T2'])
   .setOptions({title: 'LANDSAT NDVI Histograms for T1 and T2',
-               hAxis: {title: 'NDVI', titleTextStyle: {italic: false, bold: true}},
-               vAxis: {title: 'Count', titleTextStyle: {italic: false, bold: true}},
+               hAxis: {title: 'NDVI', 
+                       titleTextStyle: {italic: false, bold: true}},
+               vAxis: {title: 'Count', 
+                       titleTextStyle: {italic: false, bold: true}},
                colors: ['cf513e', '1d6b99'],
                opacity:0});
 print(ndvi_landsat);
@@ -365,9 +371,7 @@ var ndvi_func = function (i) {
       return i.addBands(ndvi);
     };
 
-var ndvi_landsat = landsat
-  .map(ndvi_func)
-  .filterDate('2000-01-01','2020-12-31'); 
+var ndvi_landsat = landsat.map(ndvi_func).filterDate('2000-01-01','2020-12-31'); 
 
 var timeseries = ui.Chart.image.seriesByRegion({
   imageCollection: ndvi_landsat,
@@ -376,8 +380,10 @@ var timeseries = ui.Chart.image.seriesByRegion({
   band: 'NDVI',
   scale: 30})
   .setOptions({title: 'LANDSAT 7 - NDVI',
-               hAxis: {title: 'Year', titleTextStyle: {italic: false, bold: true}},
-               vAxis: {title: 'NDVI', titleTextStyle: {italic: false, bold: true}},
+               hAxis: {title: 'Year', 
+                       titleTextStyle: {italic: false, bold: true}},
+               vAxis: {title: 'NDVI', 
+                       titleTextStyle: {italic: false, bold: true}},
                colors: ['red']});
 print(timeseries);
 ```
@@ -388,6 +394,212 @@ print(timeseries);
 
 ### $\second{Surface Temperature}$
 
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/urban_heat.jpg" width="500">
+
+|Name |Moderate Resolution Imaging Spectroradiometer (MODIS) on board Aqua and Terra |Thermal Infrared Sensor (TIRS) on board Landsat-8  |
+|:----|:-----|:-----|
+|**Satellite** |<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/modis.jpg" width="250"> |<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/landsat-9.jpg" width="250"> |
+|**Spatial Resolution** |1 km | 30 m |
+|**Temporal Resolution** |daily, but provided in 8 days aggregates |16 days |
+|**Collection Time** |~11:30 am and ~11:30 pm local time |~10:30 am local time |
+
+```
+// --------------------------------
+// ----- MODIS --------------------
+// --------------------------------
+//Select ROI
+var ROI = ee.FeatureCollection("users/rmb623/nyc");
+Map.addLayer(ROI, {}, 'ROI', 0);
+Map.centerObject(ROI, 9);
+
+//Select time
+var T1 = "2016-07-01";
+var T2 = "2016-07-10";
+
+//Create heat palette
+var pal = ['040274', '040281', '0502a3', '0502b8', '0502ce', '0502e6',
+           '0602ff', '235cb1', '307ef3', '269db1', '30c8e2', '32d3ef',
+           '3be285', '3ff38f', '86e26f', '3ae237', 'b5e22e', 'd6e21f',
+           'fff705', 'ffd611', 'ffb613', 'ff8b13', 'ff6e08', 'ff500d',
+           'ff0000', 'de0101', 'c21301', 'a71001', '911003'];
+
+//Function to convert K to C 
+function celcius_modis(img){
+  return img.multiply(0.02).subtract(273.15)
+    .rename(['modis_day_celcius', 'modis_night_celcius'])
+    .copyProperties(img, img.propertyNames());
+}
+
+//Load data (MODIS/MOD11A2 for pre-2017)
+var modis = ee.ImageCollection('MODIS/MOD11A2')
+              .filterDate(T1 , T2)
+              .select(['LST_Day_1km', 'LST_Night_1km']) 
+              .map(celcius_modis);
+
+//Separate day and night
+var modis_day = modis.select('modis_day_celcius').mean().clip(ROI);
+var modis_night = modis.select('modis_night_celcius').mean().clip(ROI);
+
+Map.addLayer(modis_day, {min:20, max:40 , palette: pal}, 'Modis Day');  
+Map.addLayer(modis_night, {min:20, max:40 , palette: pal}, 'Modis Night');
+
+//Load another collection (MODIS/006/MOD11A2 for 2000-present)
+var modis_chart = ee.ImageCollection('MODIS/006/MOD11A2')
+                    .filterDate('2010-01-01', '2021-12-31') 
+                    .select(['LST_Day_1km','LST_Night_1km'])
+                    .map(celcius_modis);
+
+//Create timeseries for day (red) and night (blue)
+var heat_time = ui.Chart.image.series({
+  imageCollection: modis_chart,
+  region: ROI,
+  reducer: ee.Reducer.mean(), 
+  scale: 1000})
+  .setOptions({title: 'MODIS DAY & NIGHT (celcius)',
+               hAxis: {title: 'Year', 
+                       titleTextStyle: {italic: false, bold: true}},
+               vAxis: {title: 'Temperature (°C)',
+                       titleTextStyle: {italic: false, bold: true}},
+               colors: ['red', 'blue']});
+print(heat_time);
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/urban_heat1.jpg)
+
+```
+// --------------------------------
+// ----- LANDSAT ------------------
+// --------------------------------
+//Select ROI
+var ROI = ee.FeatureCollection("users/rmb623/nyc");
+Map.addLayer(ROI, {}, 'ROI', 0);
+Map.centerObject(ROI, 9);
+
+//Select time
+var T1 = "2016-07-01";
+var T2 = "2016-07-10";
+
+//Create heat palette
+var pal = ['040274', '040281', '0502a3', '0502b8', '0502ce', '0502e6',
+           '0602ff', '235cb1', '307ef3', '269db1', '30c8e2', '32d3ef',
+           '3be285', '3ff38f', '86e26f', '3ae237', 'b5e22e', 'd6e21f',
+           'fff705', 'ffd611', 'ffb613', 'ff8b13', 'ff6e08', 'ff500d',
+           'ff0000', 'de0101', 'c21301', 'a71001', '911003'];
+
+//Function applying scalling and offset factor
+function celcius_landsat(img){
+  return img.addBands(img.multiply(0.00341802) // scale
+                         .add(149.0) // offset
+                         .subtract(273.15)
+                         .rename('landsat_day_celcius'));
+}
+
+//Load data, selecting images with less than 15% cloud cover 
+var landsat = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')
+                .filter(ee.Filter.lt('CLOUD_COVER',15)) 
+                .select('ST_B10')
+                .map(celcius_landsat) 
+                .select('landsat_day_celcius');
+
+//Filter by date (T1 - T2)
+var landsat_day = landsat.filterDate(T1,T2).mean().clip(ROI);
+Map.addLayer(landsat_day, {min:20, max:45 , palette: pal}, 'Landsat Day');
+
+//Plot time series
+var landsat_chart = landsat.filterDate('2010-01-01', '2021-12-31');
+
+var landsat_time = ui.Chart.image.series({
+  imageCollection: landsat_chart,
+  region: ROI,
+  reducer: ee.Reducer.max(), 
+  scale: 1000})
+  .setOptions({title: 'LANDSAT DAY (celcius)',
+               hAxis: {title: 'Year', 
+                       titleTextStyle: {italic: false, bold: true}},
+               vAxis: {title: 'Temperature (°C)',
+                       titleTextStyle: {italic: false, bold: true}},
+               colors: ['red']});
+print(landsat_time);
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/urban_heat2.jpg)
+
+```
+// --------------------------------
+// ----- Profile Line -------------
+// --------------------------------
+//Create a point profile line 
+function getRange(start, end, step) {  
+    var range = [];  
+    while (step > 0 ? end >= start : end <= start) {  
+        range.push(start);  
+        start += step;  
+    }  
+return range;  
+}
+
+var y = 40.6809; // the latitude of the profile line  
+var x1 = -74.0119; // the longitude of profile line beginning point  
+var x2 = -73.7325; // the longitude of profile line end point  
+var N = 1000; // the number of samples on the profile line  
+
+//Get coordinate points
+var R = getRange(x1,x2,(x2-x1)/N);  
+
+//Transform coordinates into a FeatureCollection
+var points = ee.FeatureCollection( R.map(function(i){
+  var point = ee.Geometry.Point([ee.Number(i), ee.Number(y)]) // create a new point feature with R[i] as longitude and y as latitude
+  return(ee.Feature(point).set({
+    lon:ee.Number(i), // add attributes lon
+    lat:ee.Number(y) // add attributes lat
+  })) 
+}))
+
+Map.addLayer(points, {}, 'points');
+
+//Stack all bands
+var stack = modis_day
+  .addBands([modis_night, landsat_day])
+  .rename(['modis_day', 'modis_night', 'landsat_day']);
+
+//Get temperature at each point
+var collection = stack.reduceRegions({
+  reducer: ee.Reducer.max(),  
+  collection: points,  
+  scale: 1}); 
+
+//Plot a scatter plot of the Modis profile line
+var chart = ui.Chart.feature.byFeature({
+  features: collection,
+  xProperty: 'lon', // use longitude as the X axis
+  yProperties: ['modis_day','modis_night']})  // use Temperature as the y axis
+  .setChartType('ScatterChart')
+  .setOptions({title: 'Temperature Profile Line Modis',
+               hAxis: {title: 'Longitude', 
+                       titleTextStyle: {italic: false, bold: true},
+               viewWindow: {min: x1, max: x2}}, // x axis limit to start & end of the line
+               vAxis: {title: 'Temperature (°C)',
+                       titleTextStyle: {italic: false, bold: true}},
+               pointSize: 1,
+               colors: ['red', 'blue']});
+print(chart);
+
+//Plot a scatter plot of the Landsat profile line
+var chart = ui.Chart.feature.byFeature({
+  features: collection,
+  xProperty: 'lon', // use longitude as the X axis
+  yProperties: ['landsat_day']})  // use Temperature as the y axis
+  .setChartType('ScatterChart')
+  .setOptions({title: 'Temperature Profile Line Landsat',
+               hAxis: {title: 'Longitude', 
+                       titleTextStyle: {italic: false, bold: true},
+               viewWindow: {min: x1, max: x2}}, // x axis limit to start & end of the line
+               vAxis: {title: 'Temperature (°C)',
+                       titleTextStyle: {italic: false, bold: true}},
+               pointSize: 1,
+               colors: [ 'orange']});
+print(chart);
+```
 
 
 
