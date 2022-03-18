@@ -128,7 +128,7 @@ boro_halls_unique <- boro_halls %>%
 
 ```{r}
 #Check
-boro_halls_unique %>% pm_postal_all()
+boro_halls_unique %>% pm_postal_none()
 ```
 
 ```{r}
@@ -145,7 +145,7 @@ boro_halls_unique <- boro_halls_unique %>%
 #Check
 nyDict <- pm_dictionary(locale = "us", type = "state", filter = "NY", case = c("title", "upper"))
 
-boro_halls_unique %>% pm_state_all(dictionary = nyDict)
+boro_halls_unique %>% pm_state_none(dictionary = nyDict)
 ```
 
 ```{r}
@@ -168,7 +168,7 @@ specificDict <- pm_append(type = "city",
                           output = c(NA       , "New York"     , "New York", NA     , "Bronx"    , 
                                      NA       , NA      , "Queens" , NA))
 
-boro_halls_unique %>% pm_city_all(dictionary = specificDict)
+boro_halls_unique %>% pm_city_none(dictionary = specificDict)
 ```
 
 ```{r}
@@ -183,11 +183,6 @@ boro_halls_unique <- boro_halls_unique %>%
 
 ```{r}
 #Check
-boro_halls_unique %>% pm_house_all()
-```
-
-```{r}
-#Check Missing
 boro_halls_unique %>% pm_house_none()
 ```
 
@@ -203,11 +198,6 @@ boro_halls_unique <- boro_halls_unique %>%
 
 ```{r}
 #Check 
-boro_halls_unique %>% pm_streetDir_all()
-```
-
-```{r}
-#Check Missing
 boro_halls_unique %>% pm_streetDir_none()
 ```
 
@@ -219,11 +209,6 @@ boro_halls_unique %>% pm_streetDir_none()
 
 ```{r}
 #Check
-boro_halls_unique %>% pm_streetSuf_all()
-```
-
-```{r}
-#Check Missing
 boro_halls_unique %>% pm_streetSuf_none()
 ```
 
@@ -269,6 +254,35 @@ boro_halls <- boro_halls_parsed %>%
   st_as_sf(coords = c("long", "lat"), crs = 4326)
 
 boro_halls
+```
+
+<br> 
+
+#### $\third{- NYC Geocoding}$ 
+
+```{r eval = FALSE}
+#install.packages("remotes")
+remotes::install_github("austensen/geoclient")
+geoclient::geoclient_api_key("key")
+```
+```{r}
+geoclient::geo_search_data(boro_halls_parsed, street) %>% 
+  transmute(address = input_location, 
+            no_results, 
+            bbl,
+            bin = buildingIdentificationNumber,
+            tract = censusTract2010,
+            block = censusBlock2010,
+            cd_name = communityDistrict,
+            cd_num = communityDistrictNumber,
+            puma = pumaCode,
+            nta_name = ntaName,
+            nta_num = nta,
+            citycouncil = cityCouncilDistrict,
+            assembly = assemblyDistrict,
+            congressional = congressionalDistrict,
+            latitude,
+            longitude)
 ```
 
 ****

@@ -635,10 +635,6 @@ Polarization refers to the direction of travel of an electromagnetic wave. A hor
 
 ### $\second{Surface Modeling}$
 
-Radar imagery from space enables full-field observation of the earth, even where the signal is obstructed by cloud cover. The scattering of the radar pulse arriving on Earth is a function of surface morphology. For example, urban centers and sharp-edged objects (such as buildings, ships, or steep mountains) have high backscatter signals while water absorbs the pulse with low reflection. Analysis of the return signal's phase can be used to map the Earth’s surface elevation (including buildings, trees, etc.) and can be used to map changes to the Earth surface (e.g., earthquakes, landslides, or subsidence due to tunneling, etc.). 
-
-<br>
-
 #### $\third{- Digital Surface Model (DSM)}$ 
 
 Captures both the natural and built/artificial features of the environment
