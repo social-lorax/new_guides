@@ -43,12 +43,11 @@ output <- function(data) {
 * Divide successes over total 
 
 ```{r}
-#Coin flip 
+#Coin flip: P[H]
 options <- 2 #heads or tails 
 success <- 1 #heads 
 
-probability <- success/options
-probability
+success/options
 ```
 
 <br> 
@@ -60,12 +59,11 @@ probability
 * Divide successes over total 
 
 ```{r}
-#Coin flip 
+#Coin flip: P[H] 
 flips <- rbinom(100000, 1, 0.5)
 success <- sum(flips == 1)
 
-probability <- success/length(flips)
-probability
+success/length(flips)
 ```
 
 ***
@@ -73,8 +71,6 @@ probability
 ### $\second{Intersection (X ∩ Y)}$ 
 
 Joint Probability = P(A & B) = P(A ∩ B)
-
-P(A=head & B=heads)
 
 <br> 
 
@@ -85,12 +81,11 @@ P(A=head & B=heads)
 * Divide successes over total 
 
 ```{r}
-#Coin flipped twice for HT 
+#Coin flipped twice : P[A=H & B=H] 
 options <- 4 #HT, HH, TH, TT 
-success <- 1 #HT
+success <- 1 #HH
 
-probability <- success/options
-probability
+success/options
 ```
 
 <br> 
@@ -101,13 +96,12 @@ probability
 * Multiply together 
 
 ```{r}
-#Coin flipped twice for HT
+#Coin flipped twice : P[A=H & B=H] 
 options <- 2 #heads or tails 
 success_a <- 1 #heads
-success_b <- 1 #tails
+success_b <- 1 #heads
 
-probability <- (success_a/options) * (success_b/options)
-probability
+(success_a/options) * (success_b/options)
 ```
 
 <br> 
@@ -119,13 +113,12 @@ probability
 * Divide successes over total 
 
 ```{r}
-#Coin flipped twice for HT
+#Coin flipped twice : P[A=H & B=H]
 flip1 <- rbinom(100000, 1, 0.5)
 flip2 <- rbinom(100000, 1, 0.5)
-success <- sum(flip1 & !flip2)
+success <- sum(flip1 & flip2)
 
-probability <- success/length(flip1)
-probability
+success/length(flip1)
 ```
 
 ***
@@ -133,8 +126,6 @@ probability
 ### $\second{Union (X ∪ Y)}$ 
 
 P(A or B) = P(A ∪ B)
-
-P(A=heads or B=heads)
 
 <br> 
 
@@ -145,12 +136,11 @@ P(A=heads or B=heads)
 * Divide successes over total 
 
 ```{r}
-#Coin flipped twice for HT 
+#Coin flipped twice: P[A=H | B=H] 
 options <- 4 #HT, HH, TH, TT 
 success <- 3 #HT, HH, TH
 
-probability <- success/options
-probability
+success/options
 ```
 
 <br> 
@@ -161,7 +151,7 @@ probability
 * Add P(A) to P(B) and subtract P(A & B)
 
 ```{r}
-#Coin flipped twice for HT
+#Coin flipped twice: P[A=H | B=H] 
 options <- 2 #heads or tails 
 success_a <- 1 #heads
 success_b <- 1 #tails
@@ -182,13 +172,12 @@ probability_a + probability_b - probability_ab
 * Divide successes over total 
 
 ```{r}
-#Coin flipped twice for HT
+#Coin flipped twice: P[A=H | B=H] 
 flip1 <- rbinom(100000, 1, 0.5)
 flip2 <- rbinom(100000, 1, 0.5)
-success <- sum(flip1 | !flip2)
+success <- sum(flip1 | flip2)
 
-probability <- success/length(flip1)
-probability
+success/length(flip1)
 ```
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
@@ -316,7 +305,9 @@ rbinom(n = 10000,
 
 ****
 
-The discrete probability distribution that expresses the probability of a given number of events occurring in a fixed interval of time or space.
+### $\second{Theoretical}$
+
+The discrete probability distribution of a series of events where the average time between events is known, but the exact timing of events is random.
 
 * Events occur with a known constant mean rate (λ)
 * Events are independent of the time since the last event
@@ -330,15 +321,16 @@ The discrete probability distribution that expresses the probability of a given 
 * `lambda` = constant mean rate
 
 ```{r}
-#Events per hour with mean of 5
-rpois(n = 10000,
+#Events per year with mean of 5
+rpois(n = 1000,
       lambda = 5) %>% 
   tibble() %>% 
   ggplot(aes(x = .)) + 
   geom_histogram(binwidth = 1, center = 0, fill = "gray40", col = "white") + 
-  labs(title = "Poisson Distribution of Events per Hour",
+  labs(title = "Poisson Distribution Events Per Year",
        x = "Number of Events",
-       y = "Number of Observations") + 
+       y = "Number of Years") + 
+  scale_x_continuous(breaks = c(0:14))+
   theme_classic()
 ```
 
@@ -369,6 +361,90 @@ ppois(q = 5,
        lambda = 5,
        lower.tail = TRUE)
 ```
+
+****
+
+### $\second{Impact of λ}$
+
+```{r echo=FALSE}
+lam <- function(lambda){
+  
+  rpois(n = 1000000, lambda = lambda) %>% 
+    tibble() %>% 
+    count(factor(.)) %>% 
+    mutate(n = n/1000000) %>% 
+    rename(x = `factor(.)`)
+}
+
+lam(1) %>% 
+  rename(lambda1 = n) %>% 
+  full_join(lam(2) %>% 
+              rename(lambda2 = n), 
+            by = "x") %>% 
+  full_join(lam(3) %>% 
+              rename(lambda3 = n), 
+            by = "x") %>% 
+  full_join(lam(4) %>% 
+              rename(lambda4 = n), 
+            by = "x") %>% 
+  full_join(lam(5) %>% 
+              rename(lambda5 = n), 
+            by = "x") %>% 
+  gather(-x, key = "lambda", value = "P") %>% 
+  transmute(x = as.double(x),
+            lambda = str_remove(lambda, "lambda"),
+            P = replace_na(P, 0)) %>% 
+  filter(x <= 16) %>% 
+  ggplot(aes(x = x, y = P, color = lambda, group = lambda)) + 
+  geom_line() + 
+  scale_color_viridis_d() +
+  labs(title = "PDF of Various Values of Lambda",
+       x = "Number of Events",
+       y = "P",
+       color = "Lambda") + 
+  scale_x_continuous(breaks = c(0:16))+
+  theme_classic()
+
+```
+
+****
+
+### $\second{Disaster Risk}$
+
+The Poisson Distribution is useful for disaster risk analysis when dealing, for example, with 100- and 500-year floods (i.e., floods that are expected to occur once in 100 or 500 years). With the 100 year flood, the average time between events is 100 years meaning we expect 0.01 floods a year (λ). The Poisson Distribution provides an estimate of the number of floods experienced in a given year or period of years. 
+
+The probability of x floods over 100 years with a λ of 1 (per hundred years, 0.01 per year):
+
+$$P[x]=\frac{\lambda^x*e^{-\lambda}}{x!}$$
+
+```{r}
+#Probability of exactly 1 flood during the next 100 years
+dpois(x = 1,
+      lambda = 1)
+```
+
+```{r}
+#Probability of at least 1 flood during the next 100 years
+ppois(q = 0,
+       lambda = 1,
+       lower.tail = FALSE)
+```
+
+<br>
+
+```{r}
+#Probability of exactly 1 flood during the next year
+dpois(x = 1,
+      lambda = 0.01)
+```
+
+```{r}
+#Probability of at least 1 flood during the next year
+ppois(q = 0,
+       lambda = 0.01,
+       lower.tail = FALSE)
+```
+
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
 
