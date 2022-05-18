@@ -1,0 +1,89 @@
+---
+output: 
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    number_sections: false
+    df_print: kable
+knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
+---
+
+\newcommand\first[1]{\color{darkblue}{\textbf{#1}}}
+\newcommand\second[1]{\color{dodgerblue}{\textbf{#1}}}
+\newcommand\third[1]{\color{skyblue}{\textrm{#1}}}
+
+[Return to Main Page](index.html)
+
+# $\first{Data Basics}$
+
+****
+
+### $\second{Process}$
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Logos/data_science.png?raw=true)
+
+****
+
+### $\second{Equity}$
+
+* Where does this data come from?
+* Why was this data collected?
+* How was this data generated?
+* Is this data demographically representative?
+* Who is included and who is excluded from this data?
+* Whose voices, lives, and experiences are missing?
+* How much can this data be disaggregated by race, gender, ethnicity, etc.?
+* Are the categories mutually exclusive and fully inclusive?
+* Are there “other” categories and, if so, who does that include?
+* Who stands to benefit from this data?
+* Who might be harmed by the collection or publication of this data?
+
+(See more in Urban Institute’s [Do No Harm Guide](https://www.urban.org/research/publication/do-no-harm-guide-applying-equity-awareness-data-visualization/view/full_report))
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
+
+# $\first{Data Wrangling}$
+
+****
+
+### $\second{Basics}$
+
+#### [R](r_basic.html)
+#### [Python](py_basic.html)
+
+****
+
+### $\second{Other Langauges}$
+
+#### [SQL](sql.html)
+#### [XML](xml.html)
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
+
+# $\first{Visualization}$
+
+****
+
+### $\second{R}$
+
+****
+
+### $\second{Python}$
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
+
+# $\first{Analysis}$
+
+****
+
+### $\second{R}$
+
+****
+
+### $\second{Python}$
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
+
+[Return to Main Page](index.html)

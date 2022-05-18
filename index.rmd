@@ -25,7 +25,7 @@ Feel free to use them and reach out with suggestions - ryan.m.brenner@gmail.com.
 
 <img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/index/head_analysis.png?raw=true" width="500">
 
-### [Data Home](data.html)
+### [Data Home](data_home.html)
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
 
@@ -33,7 +33,7 @@ Feel free to use them and reach out with suggestions - ryan.m.brenner@gmail.com.
 
 <img src="https://github.com/social-lorax/howto_codebooks/blob/master/images/index/head_geospatial.png?raw=true" width="500">
 
-### [Spatial Home](new_spatial_index.html)
+### [Spatial Home](spatial_home.html)
 
 ### [Monitoring Cities](monitoring_cities.html)
 

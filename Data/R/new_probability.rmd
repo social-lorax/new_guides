@@ -1,0 +1,616 @@
+---
+output: 
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    number_sections: false
+    df_print: kable
+knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
+---
+
+\newcommand\first[1]{\color{darkblue}{\textbf{#1}}}
+\newcommand\second[1]{\color{dodgerblue}{\textbf{#1}}}
+\newcommand\third[1]{\color{skyblue}{\textrm{#1}}}
+
+[Return to Main Page](new_r_index.html)
+
+```{r include=FALSE}
+library(kableExtra)
+library(tidyverse)
+
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+
+output <- function(data) {
+  knitr::kable(data) %>% 
+    kable_styling(full_width = F)
+  }
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
+
+# $\first{Basic Probability}$
+
+***
+
+### $\second{Single Event}$ 
+
+The most basic building block of probability calculations is the **random event**: an event having more than one possible outcome. The **sample space** (denoted S) is the collection of all possible outcomes of a random event. Any subset of the sample space is called an **event**, and denoted E.
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Stats/prob_space.png)
+
+For example, the number obtained from rolling of a die is a random event. The sample space for this example is S = {1, 2, 3, 4, 5, 6}. The outcomes in the event that the number is odd are E3 = {1, 3, 5}. The outcomes in the event that the number is greater than three are E4 = {4, 5, 6}.
+
+<br> 
+
+#### $\third{- Theoretical}$
+
+* Determine the size of the sample space 
+* Determine the size of the event
+* If all options are equally likely, divide event/sample space  
+
+```{r}
+#Rolling even number: P[0dd]
+options <- 6 #S = {1, 2, 3, 4, 5, 6} 
+success <- 3 #E_even = {1, 3, 5}
+
+success/options
+```
+
+<br> 
+
+#### $\third{- Experimental}$
+
+* Conduct many experiments 
+* Count successes 
+* Divide successes over total 
+
+```{r}
+#Rolling even number: P[odd]
+rolls <- floor(runif(100000, min = 1, max = 7))
+rolls <- rolls[rolls<7]
+success <- sum(rolls %in% c(1, 3, 5))
+
+success/length(rolls)
+```
+
+***
+
+### $\second{Multiple Events}$ 
+
+We are commonly interested in two operations on events. The first is the **union** of E1 and E2, denoted by the symbol ∪. E1∪E2 is the event that contains all outcomes in either E1 or E2. The second is the **intersection** of E1 and E2, denoted by the symbol ∩. E1∩E2 is the event that contains just the outcomes that are in both E1 and E2. For example, continuing the die
+illustration from above, E1∪E2 = {1, 3, 4, 5, 6} and E1∩E2 = {5}.
+
+<br> 
+
+#### $\third{- Theoretical}$
+
+* Determine the size of the sample space 
+* Determine the size of the event
+* If all options are equally likely, divide event/sample space  
+
+```{r}
+#P[E1∪E2]
+options <- 6 #S = {1, 2, 3, 4, 5, 6} 
+intersect_success <- 5 #E1∪E2 = {1, 3, 4, 5, 6}
+
+intersect_success/options
+```
+
+```{r}
+#P[E1∩E2]
+options <- 6 #S = {1, 2, 3, 4, 5, 6} 
+union_success <- 1 #E1∩E2 = {5}
+
+union_success/options
+```
+
+<br> 
+
+#### $\third{- Experimental}$
+
+* Conduct many experiments 
+* Count successes 
+* Divide successes over total 
+
+```{r}
+#P[E1∪E2]
+rolls <- floor(runif(100000, min = 1, max = 7))
+rolls <- rolls[rolls<7]
+intersect_success <- sum(rolls %in% c(1, 3, 4, 5, 6))
+
+intersect_success/length(rolls)
+```
+
+```{r}
+#P[E1∩E2]
+rolls <- floor(runif(100000, min = 1, max = 7))
+rolls <- rolls[rolls<7]
+union_success <- sum(rolls == 5)
+
+union_success/length(rolls)
+```
+
+***
+
+### $\second{Joint Probability}$ 
+
+The example above looked at multiple events related to a single act (i.e., the rolling of a single die); while there were still multiple events occurring (i.e., getting an odd number + getting a number greater than 3), it was tied to the same underlying phenomenon. When multiple events involve distinct phenomena (e.g., rolling multiple dice), joint probability applies. Joint probability depends on whether both events need to occur (e.g., P[E1∩E2]) or if at least one is sufficient (e.g., P[E1∪E2]).
+
+<br> 
+
+#### $\third{- P[E1∩E2]}$
+
+* Calculate P[E1] and P[E2]
+* Multiply together 
+
+```{r}
+#P[E1=1 ∩ E2=1]
+E1_options <- 6 #S = {1, 2, 3, 4, 5, 6} 
+E1_success <- 1 #E1 = {1}
+pE1 <- E1_success/E1_options
+
+E2_options <- 6 #S = {1, 2, 3, 4, 5, 6} 
+E2_success <- 1 #E2 = {1}
+pE2 <- E2_success/E2_options
+
+pE1 * pE2
+```
+
+<br> 
+
+#### $\third{- P[E1∪E2]}$
+
+* Calculate P[E1] and P[E2]
+* Add P[E1] to P[E2] and subtract P[E1∩E2]
+
+```{r}
+#P[E1=1 ∪ E2=1]
+E1_options <- 6 #S = {1, 2, 3, 4, 5, 6} 
+E1_success <- 1 #E1 = {1}
+pE1 <- E1_success/E1_options
+
+E2_options <- 6 #S = {1, 2, 3, 4, 5, 6} 
+E2_success <- 1 #E2 = {1}
+pE2 <- E2_success/E2_options
+
+(pE1 + pE2) - (pE1 * pE2)
+```
+
+***
+
+### $\second{Conditional Probability}$ 
+
+The probability of event E1 may depend upon the occurrence of another event, E2. The conditional probability P(E1|E2) is defined as the probability that event E1 occurs given that event E2 has already occurred.
+
+<br> 
+
+#### $\third{- P[E1|E2]}$
+
+* Calculate P[E1] and P[E2]
+* Calculate P[E1∩E2]
+* Divide P[E1∩E2] by P[E2]
+
+```{r}
+#P[E1=1 | E2=1]
+E1_options <- 6 #S = {1, 2, 3, 4, 5, 6} 
+E1_success <- 1 #E1 = {1}
+pE1 <- E1_success/E1_options
+
+E2_options <- 6 #S = {1, 2, 3, 4, 5, 6} 
+E2_success <- 1 #E2 = {1}
+pE2 <- E2_success/E2_options
+
+(pE1 * pE2) / pE2
+```
+
+<br> 
+
+#### $\third{- Independence}$
+
+Conditional probabilities give rise to the concept of independence. Two events are independent if they are not related probabilistically in any way: P[E1|E2] = P[E1]. That is, the probability of E1 is not in any way affected by knowledge of the occurrence of E2.
+
+|` ` |A |B |Total |
+|:---|:---:|:---:|:---:|
+|**1** |36 |144 |180|
+|**2** |288 |32 |320|
+|**Total** |324 |176 |500 |
+
+```{r}
+#P[A]
+324 / 500
+
+#P[A|1]
+36 / 180
+```
+
+Since P[A] is not equal to P[A|1], the A and 1 are dependent. 
+
+<br> 
+
+|` ` |C |D |Total |
+|:---|:---:|:---:|:---:|
+|**3** |27 |33 |60 |
+|**4** |18 |22 |40 |
+|**Total** |45 |55 |100 |
+
+```{r}
+#P[C]
+45 / 100
+
+#P[C|3]
+27 / 60
+```
+
+Since P[C] is equal to P[C|3], C and 3 are independent. 
+
+****
+
+### $\second{Total Probability Theorem}$ 
+
+Consider an event A and a set of mutually exclusive, collectively exhaustive events E1, E2 . . . En. The total probability theorem states that:
+
+$$P[A]=\sum_{i=1}^{n}{P[A|E_i]*P[E_i]}$$
+
+In words, this states that the overall probability of A can be calculated based on the probability of all E's and the probability of A given each E. For example, the probability that a building will collapse in an earthquake can be calculated given: 
+
+* P[strong] = 0.01
+* P[medium] = 0.1
+* P[weak] = 0.89
+
+And: 
+
+* P[collapse|strong] = 0.9
+* P[collapse|medium] = 0.2
+* P[collapse|weak] = 0.01
+
+$$P[collapse] = (P[collapse|strong] * P[strong]) + (P[collapse|medium] * P[medium]) + (P[collapse|weak] * P[weak])$$
+
+```{r}
+#P[collapse]
+(0.9 * 0.01) + (0.2 * 0.1) + (0.01 * 0.89)
+```
+
+The total probability theorem allows the problem to be broken into two parts (i.e., size of the earthquake and capacity of the building), compute probabilities for those parts, and then re-combine them to answer the original question. This not only facilitates solution of the problem in pieces, but it allows different specialists (e.g., seismologists and engineers) to work on different aspects of the problem.
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
+
+# $\first{Probability Distributions}$
+
+****
+
+### $\second{Boolean Variables}$
+
+#### $\third{- Bernoulli trial}$
+
+* Independent experiments with a Boolean-valued outcome (e.g., coin flip)
+* Probability of success (e.g., heads) = `p`
+* Probability of failure (e.g., tails) = `q` = 1 - `p`
+* A single experiment 
+
+<br> 
+
+#### $\third{- Binomial Distribution}$
+
+* Independent experiments with a Boolean-valued outcome (e.g., coin flip)
+* Probability of success (e.g., heads) = `p`
+* Probability of failure (e.g., tails) = `q` = 1 - `p`
+* Multiple experiments (n) 
+
+`rbinom()` simulates a Bernoulli trial, but has an interesting naming scheme:
+
+* `n` = number of runs 
+* `size` = number of experiments per run
+* `p` = probability of success
+
+```{r}
+#Flipping a coin 10,000 times
+rbinom(n = 10000,
+       size = 1,
+       p = 0.5) %>% 
+  tibble() %>% 
+  ggplot(aes(x = .)) + 
+  geom_histogram(bins = 2, center = 0, fill = "gray40", col = "white") + 
+  scale_x_continuous(breaks = c(0:10)) + 
+  labs(title = "Binomial Distribution of a Coin Flip",
+       x = "Number of Heads",
+       y = "Number of Trials") + 
+  theme_classic()
+```
+
+<br> 
+
+```{r}
+#Flipping a coin 10 times, 10,000 times
+rbinom(n = 10000,
+       size = 10,
+       p = 0.5) %>% 
+  tibble() %>% 
+  ggplot(aes(x = .)) + 
+  geom_histogram(bins = 11, center = 0, fill = "gray40", col = "white") + 
+  scale_x_continuous(breaks = c(0:10)) + 
+  labs(title = "Binomial Distribution of 10 Coin Flips",
+       x = "Number of Heads",
+       y = "Number of Trials") + 
+  theme_classic()
+```
+
+<br> 
+
+`dbinom()` calculates the probability of getting exactly a certain number of successes
+
+* `x` = number of successes
+* `size` = number of experiments
+* `p` = probability of success
+
+```{r}
+#Probability of exactly 5 heads
+dbinom(x = 5,
+       size = 10,
+       p = 0.5)
+```
+
+<br> 
+
+`pbinom()` calculates the cumulative probability of getting above or below a certain number of successes
+
+* `q` = number of successes
+* `size` = number of experiments
+* `p` = probability of success
+* `lower.tail` = probability <= q (`TRUE`) or probability > q (`FALSE`)
+
+```{r}
+#Probability of 5 or fewer heads
+pbinom(q = 5,
+       size = 10,
+       p = 0.5,
+       lower.tail = TRUE)
+```
+
+<br> 
+
+The expected value (`E[x]`) = `size * p`
+
+```{r}
+#Theoretical 
+10 * 0.5
+```
+
+```{r}
+#Experimental
+rbinom(n = 10000,
+       size = 10,
+       p = 0.5) %>% 
+  mean()
+```
+
+<br>
+
+The variance (`Var(X)`) = `size * p * (1 - p)`
+
+```{r}
+#Theoretical 
+10 * 0.5 * (1 - 0.5)
+```
+
+```{r}
+#Experimental
+rbinom(n = 10000,
+       size = 10,
+       p = 0.5) %>% 
+  var()
+```
+
+****
+
+### $\second{Discrete Variables}$
+
+#### $\third{- Poisson Distribution}$
+
+* Events occur with a known constant mean rate (λ)
+* Events are independent of the time since the last event
+* Essentially, a special binomial distribution when `p` is small and `n` is large
+
+$$P[x]=\frac{\lambda^x*e^{-\lambda}}{x!}$$
+
+`rpois()` simulates a Poisson distribution:
+
+* `n` = number of observations 
+* `lambda` = constant mean rate
+
+The "100-year flood" is expected to occur once every 100 years: 
+
+|Observation Period |Lambda |
+|:------------------|:------|
+|100 years          |1      |
+|1 year             |0.01   |
+|10 years           |0.1    |
+|1000 years         |10     |
+
+```{r}
+#Experimental look at 1000 example periods 
+rpois(n = 1000,
+      lambda = 1) %>% 
+  tibble() %>% 
+  ggplot(aes(x = .)) + 
+  geom_histogram(binwidth = 1, center = 0, fill = "gray40", col = "white") + 
+  labs(title = "Floods per 100 Year Period",
+       x = "Number of Hurricanes",
+       y = "Number of 100 Year Periods") + 
+  scale_x_continuous(breaks = c(0:14))+
+  theme_classic()
+```
+
+<br> 
+
+`dpois()` calculates the probability of getting exactly a certain number of successes
+
+* `x` = number of successes
+* `lambda` = constant mean rate
+
+```{r}
+#Probability of exactly 1 flood per 100 year period
+dpois(x = 1, lambda = 1)
+```
+
+```{r}
+#Probability of exactly 1 flood per in a given year
+dpois(x = 1, lambda = 0.01)
+```
+
+<br> 
+
+`ppois()` calculates the cumulative probability of getting above or below a certain number of successes
+
+* `q` = number of successes
+* `lambda` = constant mean rate
+* `lower.tail` = probability <= q (`TRUE`) or probability > q (`FALSE`)
+
+```{r}
+#Probability of 1 or more floods per 100 year period
+ppois(q = 0, lambda = 1, lower.tail = FALSE)
+```
+
+```{r}
+#Probability of 1 or more floods in a given year
+ppois(q = 0, lambda = 0.01, lower.tail = FALSE)
+```
+
+<br> 
+
+Impact of λ
+
+```{r echo=FALSE}
+lam <- function(lambda){
+  
+  rpois(n = 1000000, lambda = lambda) %>% 
+    tibble() %>% 
+    count(factor(.)) %>% 
+    mutate(n = n/1000000) %>% 
+    rename(x = `factor(.)`)
+}
+
+lam(1) %>% 
+  rename(lambda1 = n) %>% 
+  full_join(lam(2) %>% 
+              rename(lambda2 = n), 
+            by = "x") %>% 
+  full_join(lam(3) %>% 
+              rename(lambda3 = n), 
+            by = "x") %>% 
+  full_join(lam(4) %>% 
+              rename(lambda4 = n), 
+            by = "x") %>% 
+  full_join(lam(5) %>% 
+              rename(lambda5 = n), 
+            by = "x") %>% 
+  gather(-x, key = "lambda", value = "P") %>% 
+  transmute(x = as.double(x),
+            lambda = str_remove(lambda, "lambda"),
+            P = replace_na(P, 0)) %>% 
+  filter(x <= 16) %>% 
+  ggplot(aes(x = x, y = P, color = lambda, group = lambda)) + 
+  geom_line() + 
+  scale_color_viridis_d() +
+  labs(title = "PDF of Various Values of Lambda",
+       x = "Number of Events",
+       y = "P",
+       color = "Lambda") + 
+  scale_x_continuous(breaks = c(0:16))+
+  theme_classic()
+
+```
+
+<br> 
+
+The return period is just 1/λ: 
+
+```{r}
+lambda <- 0.05 #Per year
+
+1/lambda #Years
+```
+
+```{r}
+lambda <- 5 #Per hour
+
+(1/lambda) * 60 #Minutes
+```
+
+<br> 
+
+Probability of waiting time between events is equal to: 
+
+$$P(T > t)=e^{-{\lambda}t}$$
+
+```{r echo = FALSE}
+tibble(min = seq(0,4,0.1),
+       l1 = 1, 
+       l2 = 2, 
+       l3 = 3, 
+       l4 = 4,
+       l5 = 5) %>% 
+  mutate(l1 = exp(-l1*min),
+         l2 = exp(-l2*min),
+         l3 = exp(-l3*min),
+         l4 = exp(-l4*min),
+         l5 = exp(-l5*min)) %>% 
+  gather(-min, key = `Events per Hour`, value = prob) %>% 
+  mutate(`Events per Hour` = parse_number(`Events per Hour`),
+         min = min * 60) %>% 
+  ggplot(aes(x = min, y = prob, group = `Events per Hour`, color = `Events per Hour`)) + 
+  geom_line(size = 1) + 
+  scale_color_viridis_c() + 
+  scale_x_continuous(limits = c(0, 240), breaks = c(0, 30, 60, 90, 120, 150, 180, 210, 240)) + 
+  labs(x = "Mins to next event (t)", 
+       y = "P(T>t)",
+       color = "Events per Hour\n(lambda)") + 
+  theme_classic()
+```
+
+****
+
+### $\second{Continuous Variables}$
+
+#### $\third{- Normal Distribution}$
+
+
+`rnorm()` simulates a normal distribution:
+
+* `n` = number of observations 
+* `mean` = mean of the population
+* `sd` = standard deviation of the population
+
+```{r}
+#Grades of 10,000 students with average 3.25 and standard deviation of 0.25
+rnorm(n = 10000,
+      mean = 3.25,
+      sd = 0.25) %>% 
+  tibble() %>% 
+  ggplot(aes(x = .)) + 
+  geom_histogram(center = 0, fill = "gray40", col = "white") + 
+  labs(title = "Normal Distribution of GPA",
+       x = "GPA",
+       y = "Number of Students") + 
+  theme_classic()
+```
+
+<br> 
+
+`pnorm()` calculates the cumulative probability of getting above or below a certain value
+
+* `q` = value
+* `mean` = mean of the population
+* `sd` = standard deviation of the population
+* `lower.tail` = probability <= q (`TRUE`) or probability > q (`FALSE`)
+
+```{r}
+#Probability of GPA over 3.5
+pnorm(q = 3.5,
+      mean = 3.25,
+      sd = 0.25,
+      lower.tail = FALSE)
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
