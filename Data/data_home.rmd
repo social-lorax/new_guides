@@ -26,6 +26,12 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 
 ****
 
+### $\second{Analysis Hierarchy}$
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Logos/data_hierarchy.png?raw=true)
+
+****
+
 ### $\second{Equity}$
 
 * Where does this data come from?
@@ -41,6 +47,18 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 * Who might be harmed by the collection or publication of this data?
 
 (See more in Urban Institute’s [Do No Harm Guide](https://www.urban.org/research/publication/do-no-harm-guide-applying-equity-awareness-data-visualization/view/full_report))
+
+****
+
+### $\second{Troubleshooting}$
+
+|Issue |Common Fix |
+|:-----|:----------|
+|Input errors |Cleaning, omitting |
+|Unrealistic observations |Sanity checks, filter thresholds|
+|Noise/measurement errors |Averaging, interpolation, de-noising |
+|Low/heterogenous density |Spatio-temporal aggregation, re-zoning |
+|Representativity/biases |Normalization, acknowledgment, additional data collection |
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
 
@@ -59,6 +77,12 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 
 #### [SQL](sql.html)
 #### [XML](xml.html)
+
+**** 
+
+### $\second{Data Sources}$
+
+#### [Census](tidycensus.html)
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
 

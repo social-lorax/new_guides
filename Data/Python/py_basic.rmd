@@ -12,6 +12,8 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 
 ```{r include=FALSE}
 library(kableExtra)
+library(tidyverse)
+library(gapminder)
 
 
 knitr::opts_chunk$set(comment = NA, message = FALSE, warning = FALSE)
@@ -30,11 +32,224 @@ output <- function(data) {
 
 <img src="https://github.com/social-lorax/new_guides/blob/main/Images/Logos/py_main.png?raw=true" width="500">
 
+```{python eval = FALSE}
+import pandas as pd 
+import numpy as np
+from matplotlib import pyplot as plt
+%matplotlib inline
+```
+
 ![](https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/python.png?raw=true)
 
 # $\first{Import}$
 
 ****
+
+### $\second{Creating New Data}$
+
+```{python eval = FALSE}
+data_dict = {"Country": ["United States", "Canada", "Mexico"],
+             "Captial": ["Washington D.C.", "Ottawa", "Ciudad de Mexico"],
+             "Population_mil": [328.2, 37.59, 127.6]}
+
+pd.DataFrame(data_dict)
+```
+
+```{r echo = FALSE}
+tibble(Country = c("United States", "Canada", "Mexico"),
+       Capital = c("Washington D.C.", "Ottawa", "Ciudad de Mexico"),
+       Population_mil = c(328.2, 37.59, 127.6)) %>% 
+  output()
+```
+
+****
+
+### $\second{Importing}$
+
+#### $\third{- CSV and Text Files}$
+
+`pandas` covers the basics like csv files 
+
+```{python eval = FALSE}
+df = pd.read_csv("path/to/file.csv")
+
+df = pd.read_csv("url")
+```
+
+If there are dates, use `parse_dates`
+
+```{python eval = FALSE}
+df = pd.read_csv("path/to/file.csv", parse_dates=['datecol1', 'datecol2'])
+```
+
+<br> 
+
+#### $\third{- Excel}$
+
+`pandas` can also deal with Excel files with the help of `xlrd`
+
+```{python eval = FALSE}
+df = pd.ExcelFile("example..xlsx")
+```
+
+`sheet_names` returns the sheets in the file
+
+```{python eval = FALSE}
+df.sheet_names
+```
+
+```{r echo = FALSE}
+print(c("lifeExp", "pop", "gdpPercap"))
+```
+
+`parse()` pulls a specific sheet 
+
+```{python eval = FALSE}
+df.parse("lifeExp").head()
+```
+
+```{r echo = FALSE}
+gapminder %>% 
+  select(country, continent, year, lifeExp) %>% 
+  spread(year, lifeExp) %>% 
+  head() %>% 
+  output()
+```
+
+<br> 
+
+#### $\third{- Statistics Files}$
+
+`pandas` can read Stata files
+
+```{python eval = FALSE}
+df = pd.read_stata("data.dta")
+```
+
+Separate pacakages are needed for other file types 
+
+```{python eval = FALSE}
+from sas7bdat import SAS7BDAT
+
+with SAS7BDAT("data.sas7bdat") as file:
+    df_sas = file.to_data_frame()
+```
+
+<br> 
+
+#### $\third{- APIs}$
+
+```{python eval = FALSE}
+import requests #the module for making HTTP requests in Python; provides GET funcionality
+
+try: #spelling depends on enviroment version 
+    import urllib2 as urllib #URL handling module
+except ImportError:
+    import urllib.request as urllib
+    
+import json
+import glob #Unix style pathname pattern expansion
+import sys
+```
+
+**NYC Open Data Example**
+
+```{python eval = FALSE}
+parameter = {'pulocationid':149, 'dolocationid':132}
+url =  "https://data.cityofnewyork.us/resource/t29m-gskq.json"
+r = requests.get(url = url, params=parameter)
+data = r.json()
+
+data[1]
+```
+
+```
+'vendorid': '1',
+ 'tpep_pickup_datetime': '2018-02-26T05:07:58.000',
+ 'tpep_dropoff_datetime': '2018-02-26T05:31:54.000',
+ 'passenger_count': '1',
+ 'trip_distance': '15.90',
+ 'ratecodeid': '1',
+ 'store_and_fwd_flag': 'N',
+ 'pulocationid': '149',
+ 'dolocationid': '132',
+ 'payment_type': '1',
+ 'fare_amount': '43',
+ 'extra': '0.5',
+ 'mta_tax': '0.5',
+ 'tip_amount': '7',
+ 'tolls_amount': '0',
+ 'improvement_surcharge': '0.3',
+ 'total_amount': '51.3'
+```
+
+```{python eval = FALSE}
+def getFare(df):
+    
+    fares = [] # list for storing fares
+    
+    for index, row in df.iterrows(): # iterating through all rows of sample points
+        
+        # specify parameters for making request
+        parameters = {'pulocationid':int(row['Start_Zone']), 'dolocationid':int(row['End_Zone'])}
+        
+        url =  "https://data.cityofnewyork.us/resource/t29m-gskq.json"
+        r = requests.get(url = url, params=parameters)
+        data = r.json()
+        
+        odFare = []
+        
+        for obs in data: # iterating through each returned observation for the returned data 
+            
+            # making sanity checks and appending fares to 'odFare' list
+            try:
+                fare = float(obs['fare_amount'])
+
+                if (fare < 300 and fare > 2.5 ):
+                    odFare.append(fare)
+                    
+            except: 
+                pass
+            
+        # appending the mean of travel times retrieved above to the 'fares' list
+        fares.append(np.mean(odFare))
+        
+    return fares
+```
+
+```{python eval = FALSE}
+data_dict = {"Trip": ["Home to JFK", "Home to LaGuardia"],
+             "Start_Zone": [149, 149],
+             "End_Zone": [132, 138]}
+
+ods = pd.DataFrame(data_dict)
+
+ods["Avg_Fare"] = getFare(ods)
+
+ods
+```
+
+```{r echo = FALSE}
+tibble(Trip = c("Home to JFK", "Home to LaGuardia"),
+       Start_Zone = c(149, 149),
+       End_Zone = c(132, 138),
+       Avg_Fare = c(42.875, 62.125)) %>% 
+  output()
+```
+
+<br> 
+
+#### $\third{- Databases}$
+
+See the [page on SQL](sql.html) for accessing data through relational databases.
+
+****
+
+### $\second{Exporting}$
+
+```{python eval = FALSE}
+df.DataFrame.to_csv(index = False)
+```
 
 ![](https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/python.png?raw=true)
 
