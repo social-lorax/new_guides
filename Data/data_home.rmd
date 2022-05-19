@@ -16,6 +16,8 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 
 [Return to Main Page](index.html)
 
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
+
 # $\first{Data Basics}$
 
 ****
@@ -107,6 +109,8 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 ****
 
 ### $\second{Python}$
+
+#### [Principles of Urban Informatics](pui.html)
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
 

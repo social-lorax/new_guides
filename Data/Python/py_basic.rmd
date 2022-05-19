@@ -21,7 +21,11 @@ knitr::opts_chunk$set(comment = NA, message = FALSE, warning = FALSE)
 output <- function(data) {
   knitr::kable(data) %>% 
     kable_styling(full_width = F)
-  }
+}
+
+library(reticulate)
+use_python("Anaconda3/Scripts/conda.exe")
+use_condaenv("C:/Users/brenner/AppData/Local/r-miniconda/envs/guides")
 ```
 
 \newcommand\first[1]{\color{darkblue}{\textbf{#1}}}
@@ -30,13 +34,17 @@ output <- function(data) {
 
 [Return to Data Page](data_home.html)
 
-<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Logos/py_main.png?raw=true" width="500">
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Logos/pandas.png?raw=true)
 
-```{python eval = FALSE}
-import pandas as pd 
+```{python}
+import pandas as pd
 import numpy as np
+import datetime 
 from matplotlib import pyplot as plt
-%matplotlib inline
+import seaborn as sns
+import geopandas as gpd
+
+from gapminder import gapminder
 ```
 
 ![](https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/python.png?raw=true)
@@ -47,19 +55,14 @@ from matplotlib import pyplot as plt
 
 ### $\second{Creating New Data}$
 
-```{python eval = FALSE}
+`pd.DataFrame()` on a dictionary creates a dataframe  
+
+```{python}
 data_dict = {"Country": ["United States", "Canada", "Mexico"],
              "Captial": ["Washington D.C.", "Ottawa", "Ciudad de Mexico"],
              "Population_mil": [328.2, 37.59, 127.6]}
 
 pd.DataFrame(data_dict)
-```
-
-```{r echo = FALSE}
-tibble(Country = c("United States", "Canada", "Mexico"),
-       Capital = c("Washington D.C.", "Ottawa", "Ciudad de Mexico"),
-       Population_mil = c(328.2, 37.59, 127.6)) %>% 
-  output()
 ```
 
 ****
@@ -68,7 +71,7 @@ tibble(Country = c("United States", "Canada", "Mexico"),
 
 #### $\third{- CSV and Text Files}$
 
-`pandas` covers the basics like csv files 
+`pandas` covers the basics like csv files with `pd.read_csv()`
 
 ```{python eval = FALSE}
 df = pd.read_csv("path/to/file.csv")
@@ -79,7 +82,7 @@ df = pd.read_csv("url")
 If there are dates, use `parse_dates`
 
 ```{python eval = FALSE}
-df = pd.read_csv("path/to/file.csv", parse_dates=['datecol1', 'datecol2'])
+df = pd.read_csv("path/to/file.csv", parse_dates = ["datecol1", "datecol2"])
 ```
 
 <br> 
@@ -89,7 +92,7 @@ df = pd.read_csv("path/to/file.csv", parse_dates=['datecol1', 'datecol2'])
 `pandas` can also deal with Excel files with the help of `xlrd`
 
 ```{python eval = FALSE}
-df = pd.ExcelFile("example..xlsx")
+df = pd.ExcelFile("example.xlsx")
 ```
 
 `sheet_names` returns the sheets in the file
@@ -98,8 +101,8 @@ df = pd.ExcelFile("example..xlsx")
 df.sheet_names
 ```
 
-```{r echo = FALSE}
-print(c("lifeExp", "pop", "gdpPercap"))
+```{python echo = FALSE}
+print(["lifeExp", "pop", "gdpPercap"])
 ```
 
 `parse()` pulls a specific sheet 
@@ -108,12 +111,12 @@ print(c("lifeExp", "pop", "gdpPercap"))
 df.parse("lifeExp").head()
 ```
 
-```{r echo = FALSE}
-gapminder %>% 
-  select(country, continent, year, lifeExp) %>% 
-  spread(year, lifeExp) %>% 
-  head() %>% 
-  output()
+```{python echo = FALSE}
+df = gapminder[["country", "continent", "year", "lifeExp"]].pivot(index = ["country", "continent"], columns = "year" , values = "lifeExp").reset_index().head()
+
+df.columns.name = None
+
+df
 ```
 
 <br> 
@@ -164,7 +167,7 @@ data[1]
 ```
 
 ```
-'vendorid': '1',
+{'vendorid': '1',
  'tpep_pickup_datetime': '2018-02-26T05:07:58.000',
  'tpep_dropoff_datetime': '2018-02-26T05:31:54.000',
  'passenger_count': '1',
@@ -180,7 +183,7 @@ data[1]
  'tip_amount': '7',
  'tolls_amount': '0',
  'improvement_surcharge': '0.3',
- 'total_amount': '51.3'
+ 'total_amount': '51.3'}
 ```
 
 ```{python eval = FALSE}
@@ -229,12 +232,13 @@ ods["Avg_Fare"] = getFare(ods)
 ods
 ```
 
-```{r echo = FALSE}
-tibble(Trip = c("Home to JFK", "Home to LaGuardia"),
-       Start_Zone = c(149, 149),
-       End_Zone = c(132, 138),
-       Avg_Fare = c(42.875, 62.125)) %>% 
-  output()
+```{python echo = FALSE}
+data_dict = {"Trip": ["Home to JFK", "Home to LaGuardia"],
+             "Start_Zone": [149, 149],
+             "End_Zone": [132, 138],
+             "Avg_Fare": [42.875, 62.125]}
+
+pd.DataFrame(data_dict)
 ```
 
 <br> 
@@ -247,6 +251,8 @@ See the [page on SQL](sql.html) for accessing data through relational databases.
 
 ### $\second{Exporting}$
 
+`to_csv()` exports a dataframe as a csv file
+
 ```{python eval = FALSE}
 df.DataFrame.to_csv(index = False)
 ```
@@ -256,6 +262,489 @@ df.DataFrame.to_csv(index = False)
 # $\first{Clean}$
 
 ****
+
+### $\second{Checking Data}$ 
+
+#### $\third{- Contents}$
+
+`.head()` returns the first few rows 
+
+```{python}
+gapminder.head()
+```
+
+<br> 
+
+`.info()` shows information on each of the columns, such as the data type and number of missing values
+
+```{python}
+gapminder.info()
+```
+
+<br> 
+
+`.shape` returns the number of rows and columns of the DataFrame
+
+```{python}
+gapminder.shape
+```
+
+<br> 
+
+`.columns` returns an index of column names
+
+```{python}
+gapminder.columns
+```
+
+<br> 
+
+`.unique()` gives a list of all of the unique values in a specified column
+
+```{python}
+gapminder.continent.unique()
+```
+
+<br>
+
+#### $\third{- Validating}$
+
+Filters can be used to check the reasonableness of the range of values 
+
+```{python}
+#Number of cases with unreasonable life expectancies 
+valid_life = (gapminder["lifeExp"] > 20) & (gapminder["lifeExp"] < 100)
+len(gapminder) - len(gapminder[valid_life])
+```
+
+```{python}
+#Number of cases with unreasonable populations
+valid_pop = (gapminder["gdpPercap"] > 100) & (gapminder["pop"] < 1000000000000) 
+len(gapminder) - len(gapminder[valid_pop])
+```
+
+```{python}
+#Filtering out unreasonable cases    
+gapminder = gapminder[valid_life & valid_pop]
+```
+
+<br> 
+
+#### $\third{- Summarizing}$
+
+`.describe()` calculates a few summary statistics for each column
+
+```{python}
+gapminder.describe()
+```
+
+<br> 
+
+`.value_counts()` counts categorical variables, with the argument `noramlize = True` providing the relative frequency
+
+```{python}
+gapminder[gapminder["year"] == 2007]["continent"].value_counts()
+```
+
+```{python}
+gapminder[gapminder["year"] == 2007]["continent"].value_counts(normalize = True)
+```
+
+<br> 
+
+`.pivot_table()` can be used to make crosstabs
+
+```{python}
+conditions = [(gapminder["pop"].lt(4508000)),
+             (gapminder["pop"].ge(4508000) & gapminder["pop"].le(31210000)),
+             (gapminder["pop"].gt(31210000))]
+
+choices = ["small", "average", "large"]
+
+gapminder["size"] = np.select(conditions, choices)
+
+
+gapminder[gapminder["year"] == 2007].pivot_table(values = "lifeExp", 
+                                                 index = "continent", 
+                                                 columns = "size", 
+                                                 aggfunc = len,
+                                                 fill_value = 0,
+                                                 margins = True)
+```
+
+<br> 
+
+`.groupby()` provides summary statistics for grouped data
+
+```{python}
+gapminder[gapminder["year"] > 1990].groupby(["continent", "year"]).agg({'country':'count',
+                                                                        'pop':'sum',
+                                                                        'lifeExp':'mean',
+                                                                        'gdpPercap': 'median'})
+```
+
+<br> 
+
+`.corr()` generates a correlation table
+
+```{python}
+gapminder.corr()
+```
+
+<br> 
+
+#### $\third{- Missing Values}$
+
+`.isna().sum()` returns the number of missing observations per column
+
+```{python}
+gapminder.isna().sum()
+```
+
+<br> 
+
+`.dropna()` removes entire rows with missing values
+
+```{python}
+gapminder.dropna(inplace = True)
+```
+
+`subset =` will only drop if the missing values are in the specified column
+
+```{python}
+gapminder.dropna(subset = ['country'], inplace = True)
+```
+
+<br> 
+
+`.fillna()` replaces all missing values with the specified value
+
+```{python}
+#All at once 
+gapminder.fillna(0, inplace = True)
+```
+
+```{python}
+#Specific column and value
+gapminder["country"] = gapminder["country"].fillna("Missing")
+```
+
+<br> 
+
+#### $\third{- Duplicates}$
+
+`.drop_duplicates()` will keep only the first instance of each value in the column(s) specified
+
+```{python}
+gapminder.drop_duplicates("continent")
+```
+
+```{python}
+gapminder.drop_duplicates(["continent", "year"]).head()
+```
+
+<br> 
+
+#### $\third{- Outliers}$
+
+First start with a histogram using `plt.hist()`. (We can already see what may be two high outliers)
+
+```{python}
+gap_07 = gapminder[gapminder["year"] == 2007]
+
+pop_hist = plt.hist(gap_07["pop"], bins = 50)
+plt.title("Distribution of Population")
+plt.show()
+```
+
+Transform into a log-scale histogram if needed.
+
+```{python}
+def plot_loghist(x, bins): 
+  #function for plotting a log-scale histogram
+  #it ensures log-scale binning and label on the original scale
+    logbins = np.logspace(np.log10(x.min()),np.log10(x.max()),bins)
+    plt.hist(x, bins=logbins)
+    plt.xscale('log')
+    
+plot_loghist(gap_07["pop"], bins = 50)
+plt.title("Distribution of Population (log)")
+plt.show()
+```
+
+Next use `plt.boxplot()` to see the 25th, 75th, and median plotted with observations about a defined percentile plotted as circles. Here we see the two high points, but also the two lowest points.
+
+```{python}
+pop_box = plt.boxplot(np.log10(gap_07["pop"]), whis=[1, 99]) #whiskers will by the 1% and 99%
+plt.title("Distribution of Population (log)")
+plt.show()
+```
+
+We can then pull these observations to validate (or drop)
+
+```{python}
+gap_07[gap_07["pop"] < gap_07["pop"].quantile(0.01)][["country", "continent", "pop"]]
+```
+
+```{python}
+gap_07[gap_07["pop"] > gap_07["pop"].quantile(0.99)][["country", "continent", "pop"]]
+```
+
+<br> 
+
+Alternatively, we can use a standard definition of "mean +/- 3 standard deviations" as a threshold for outliers.
+
+```{python}
+stdev = np.std(gap_07["pop"])
+mean = np.mean(gap_07["pop"])
+high_out = mean + (3 * stdev)
+low_out = mean - (3 * stdev)
+
+gap_07[(gap_07["pop"] < low_out) | (gap_07["pop"] > high_out)][["country", "continent", "pop"]]
+```
+
+We can now validate that we *were* expecting these and that they are correct, but in other cases we could drop them.
+
+****
+
+### $\second{Wrangling}$ 
+
+#### $\third{- Sorting}$
+
+`.sort_values()` sorts based on a column (ascending), the argument `ascending = False` returns descending sorting
+
+```{python}
+gapminder.sort_values(["country", "year"], ascending = [True, False]).head()
+```
+
+<br>
+
+#### $\third{- Subsetting}$
+
+```{python}
+#Select Columns
+gapminder[["country", "year", "lifeExp"]].head()
+```
+
+```{python}
+#Select Rows
+gapminder.loc[[1, 3, 5]]
+```
+
+```{python}
+#Select Columns and Rows
+gapminder.loc[[1, 3, 5], ["country", "year", "lifeExp"]]
+```
+
+<br>
+
+#### $\third{- Indexing}$
+
+`.set_index()` makes the selected column(s) into the index allowing for easier subsetting
+
+```{python}
+gapminder_ind = gapminder[gapminder["year"] > 2000].set_index("continent")
+
+gapminder_ind.loc["Asia"].head()
+```
+
+```{python}
+gapminder_ind = gapminder[gapminder["year"] > 2000].set_index(["continent", "country"])
+
+gapminder_ind.loc[[("Asia", "Japan"),("Americas", "United States")]]
+```
+
+<br> 
+
+`.reset_index()` returns the index values to columns and renumbers the rows as an index
+
+```{python}
+gapminder_ind.loc[[("Asia", "Japan"),("Americas", "United States")]].reset_index()
+```
+
+<br>
+
+#### $\third{- Filtering}$
+
+Basic options include: 
+
+* `==`
+* `!=`
+* `>`
+* `>=`
+* `<`
+* `<=`
+* `() & ()`
+* `() | ()`
+
+```{python}
+#Single Value
+gapminder[gapminder["lifeExp"] > 82]
+```
+
+```{python}
+#Multiple values with "and"
+gapminder[(gapminder["lifeExp"] > 82) & (gapminder["pop"] > 10000000)]
+```
+
+```{python}
+#Multiple values with "or"
+gapminder[(gapminder["lifeExp"] > 82) | (gapminder["gdpPercap"] > 100000)]
+```
+
+```{python}
+#Multiple values in a list 
+gapminder[gapminder["continent"].isin(["Americas", "Oceania"])].head()
+```
+
+```{python}
+#Not equal to multiple values in a list 
+gapminder[gapminder["continent"].isin(["Americas", "Oceania"]) == False].head()
+```
+
+****
+
+### $\second{Mutating Columns}$ 
+
+#### $\third{- New Columns}$
+
+```{python}
+gapminder["gdp"] = gapminder["gdpPercap"] * gapminder["pop"]
+
+gapminder.head()
+```
+
+<br>
+
+#### $\third{- Changing Type}$
+
+Use `.astype("str")` for strings
+
+```{python}
+gapminder['gdp'] = gapminder['gdp'].astype("str")
+
+gapminder.head()
+```
+
+<br> 
+
+Use `pd.to_numeric()` for numeric
+
+* `errors = 'ignore'` will return the original value
+* `errors = 'coerce'` will return a null value
+
+```{python}
+gapminder['gdp'] = pd.to_numeric(gapminder['gdp'])
+
+gapminder.head()
+```
+
+<br>
+
+#### $\third{- Cases}$
+
+`np.select()` with pre-defined conditions and choices operates like `case_when()`
+
+```{python}
+conditions = [(gapminder["pop"].lt(4508000)),
+             (gapminder["pop"].ge(4508000) & gapminder["pop"].le(31210000)),
+             (gapminder["pop"].gt(31210000))]
+
+choices = ["small", "average", "large"]
+
+gapminder["size"] = np.select(conditions, choices)
+
+gapminder[gapminder["year"] == 2007].drop_duplicates("size")
+```
+
+****
+
+### $\second{Reshaping}$
+
+#### $\third{- Spreading}$
+
+`.pivot()` spreads columns
+
+```{python}
+df = gapminder[["country", "continent", "year", "lifeExp"]].pivot(index = ["country", "continent"], columns = "year" , values = "lifeExp").reset_index()
+
+df.columns.name = None
+
+df.head()
+```
+
+<br>
+
+#### $\third{- Gathering}$
+
+`melt()` gathers columns
+
+```{python}
+df.melt(id_vars=["country", "continent"], var_name = "year", value_name = "lifeExp").head()
+```
+
+****
+
+### $\second{DateTimes}$
+
+#### $\third{- Setting}$
+
+`pd.to_datetime()` formats a string as a datetime with the following formats:
+
+|Directive |Meaning |Example |
+|:---|:-------|:-------|
+|%a |Abbreviated weekday |Sun, Mon, …, Sat | 
+|%A |Full weekday |Sunday, Monday, …, Saturday | 
+|%w |Weekday as a decimal number, where 0 is Sunday and 6 is Saturday|0, 1, …, 6 |
+|%d |Day of the month as a zero-padded decimal number |01, 02, …, 31 |
+|%b |Abbreviated month |Jan, Feb, …, Dec |
+|%B |Full month |January, February, …, December |
+|%m |Month as a zero-padded decimal number |01, 02, …, 12 |
+|%y |Year without century as a zero-padded decimal number |00, 01, …, 99 |
+|%Y |Year with century as a decimal number | 0001, 0002, …, 2013, 2014, …, 9998, 9999 |
+|%H |Hour (24-hour clock) as a zero-padded decimal number |00, 01, …, 23 |
+|%I |Hour (12-hour clock) as a zero-padded decimal number |01, 02, …, 12 |
+|%p |AM or PM for %I hour |AM, PM |
+|%M |Minute as a zero-padded decimal number |00, 01, …, 59 |
+|%S |Second as a zero-padded decimal number |00, 01, …, 59 |
+|%f |Microsecond as a decimal number, zero-padded to 6 digits |000000, 000001, …, 999999 |
+|%z |UTC offset in the form ±HHMM[SS[.ffffff]] (empty string if the object is naive)| (empty), +0000, -0400, +1030, +063415, -030712.345216|
+|%Z |Time zone name (empty string if the object is naive) |(empty), UTC, GMT |
+|%j |Day of the year as a zero-padded decimal number |001, 002, …, 366 |
+|%U |Week number of the year (Sunday as the first day of the week) as a zero-padded decimal number; all days in a new year preceding the first Sunday are considered to be in week 0 |00, 01, …, 53 |
+|%W |Week number of the year (Monday as the first day of the week) as a zero-padded decimal number; all days in a new year preceding the first Monday are considered to be in week 0 |00, 01, …, 53 |
+
+```{python}
+gapminder['date_year'] = pd.to_datetime(gapminder['year'], format = '%Y')
+
+gapminder.head()
+```
+
+<br>
+
+#### $\third{- Extracting}$
+
+`dt` has:
+
+* `dt.year`
+* `dt.month`
+* `dt.day`
+* `dt.hour`
+* `dt.minute`
+
+```{python}
+gapminder["month"] = gapminder["date_year"].dt.month
+
+gapminder.head()
+```
+
+<br>
+
+#### $\third{- Comparing}$
+
+```{python}
+gapminder[gapminder["date_year"] > pd.to_datetime("1990-07-04 12:01:00")].head()
+```
 
 ![](https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/python.png?raw=true)
 
