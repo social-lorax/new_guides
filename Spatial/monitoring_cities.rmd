@@ -14,7 +14,7 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 \newcommand\second[1]{\color{dodgerblue}{\textbf{#1}}}
 \newcommand\third[1]{\color{skyblue}{\textrm{#1}}}
 
-[Return to Main Page](new_spatial_index.html)
+[Return to Spatial Page](spatial_home.html)
 
 ```{r include=FALSE}
 library(kableExtra)
@@ -805,3 +805,5 @@ print(pop_total);
 <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
 
 </div>
+
+[Return to Spatial Page](spatial_home.html)

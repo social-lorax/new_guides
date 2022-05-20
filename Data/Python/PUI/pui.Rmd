@@ -14,5 +14,13 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 
 [Return to Data Page](data_home.html)
 
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Logos/cusp.png?raw=true)
+
+<br> 
+
+These are the notebooks from the Fall 2021 Principles of Urban Informatics lab at NYU.
+
 ### [Lab 1: Importing and Exploring Data](pui_lab1.html)
 
+### [Lab 2a: Data Cleaning](pui_lab2a.html)
+### [Lab 2b: Real Estate Price Assessment](pui_lab2b.html)
