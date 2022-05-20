@@ -29,7 +29,7 @@ output <- function(data) {
 
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/cities.gif?raw=true" width="1000" height="100">
 
 </div>
 
@@ -60,8 +60,10 @@ output <- function(data) {
 var elev = ee.Image('srtm90_v4');
 var elevation_mask = elev.mask();
 
+// --------------------------------
+// ----- DMSP ---------------------
+// --------------------------------
 
-//---DMSP---
 //Select time
 //DMSP is avaiable between 1992 and 2012 (yearly)
 var DMSP_T1_a = '1993-01-01';
@@ -89,7 +91,10 @@ Map.addLayer(DMSP_T2, {min:0, max:64}, 'DMSP T2');
 Map.addLayer(DMSP_change, {min:-20, max:20 , palette: ['blue', 'white', 'red']}, 'DMSP T2-T1 rad');
 
 
-//---VIRRS---
+// --------------------------------
+// ----- VIRRS --------------------
+// --------------------------------
+
 //Select time
 //VIRRS is available between 2012 and present (monthly)
 var VIIRS_T1_a = '2012-09-01';
@@ -187,6 +192,7 @@ print(VIIRS_chart);
 // --------------------------------
 // ----- NAIP ---------------------
 // --------------------------------
+
 //Select ROI
 var ROI = ee.FeatureCollection("users/rmb623/nyc");
 Map.addLayer(ROI, {}, 'ROI', 0);
@@ -240,6 +246,7 @@ print(ndvi_naip);
 // --------------------------------
 // ----- Sentinel -----------------
 // --------------------------------
+
 //Select ROI
 var ROI = ee.FeatureCollection("users/rmb623/nyc");
 Map.addLayer(ROI, {}, 'ROI', 0);
@@ -303,6 +310,7 @@ print(ndvi_sentinel);
 // --------------------------------
 // ----- LANDSAT ------------------
 // --------------------------------
+
 //Select ROI
 var ROI = ee.FeatureCollection("users/rmb623/nyc");
 Map.addLayer(ROI, {}, 'ROI', 0);
@@ -407,6 +415,7 @@ print(timeseries);
 // --------------------------------
 // ----- MODIS --------------------
 // --------------------------------
+
 //Select ROI
 var ROI = ee.FeatureCollection("users/rmb623/nyc");
 Map.addLayer(ROI, {}, 'ROI', 0);
@@ -470,6 +479,7 @@ print(heat_time);
 // --------------------------------
 // ----- LANDSAT ------------------
 // --------------------------------
+
 //Select ROI
 var ROI = ee.FeatureCollection("users/rmb623/nyc");
 Map.addLayer(ROI, {}, 'ROI', 0);
@@ -653,71 +663,36 @@ Represents the bare-Earth surface, removing all natural and built features. A Di
 
 * USGS DTM is available across the US at 10 meter Resolution. There are areas in the US where 1m data is also available.
 
-
-
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/cities.gif?raw=true" width="1000" height="100">
 
 </div>
 
-# $\first{Cities from the Sky}$
-
-Aerial platforms, temporal-spatial tradeoffs, characterization and change detection, national record and inventories
+# $\first{Air Pollution}$
 
 ****
 
-### $\second{Lab}$
+### $\second{Criteria Air Pollutants}$
+
+The Clean Air Act requires EPA to set National Ambient Air Quality Standards (NAAQS) for six common air pollutants (also known as "criteria air pollutants"). These pollutants are found all over the U.S. They can harm your health and the environment, and cause property damage.
+
+|Pollutant |Common Sources |Maximum Acceptable Concentration |Environmental Risks |Human Health Risks |
+|:---|:-------|:-------|:-------|:--------|
+|Carbon Monoxide (CO) |Automobile emissions, fires, industrial processes |35 ppm (1-hour period); 9 ppm (8-hour period) |Contributes to smog formation |Exacerbates symptoms of heart disease, such as chest pain; may cause vision problems and reduce physical and mental capabilities in healthy people |
+|Nitrogen Oxides (NO and NO2) |Automobile emissions, electricity generation, industrial processes|0.053 ppm (1-year period) |Contributes to acid rain formation, which subsequently damages foliage, buildings, and monuments; reacts to form particulate matter; contributes to smog formation |Inflammation and irritation of breathing passages |
+|Sulfur Dioxide (SO2) |Electricity generation, fossil-fuel combustion, industrial processes, automobile emissions |0.03 ppm (1-year period); 0.14 ppm (24-hour period) |Major cause of haze; contributes to acid rain formation, which subsequently damages foliage, buildings, and monuments; reacts to form particulate matter |Breathing difficulties, particularly for people with asthma and heart disease |
+|Ozone (O3) |Nitrogen oxides (NOx) and volatile organic compounds (VOCs) from industrial and automobile emissions, gasoline vapors, chemical solvents, and electrical utilities |0.075 ppm (8-hour period) |Interferes with the ability of certain plants to respire, leading to increased susceptibility to other environmental stressors (e.g., disease, harsh weather) |Reduced lung function; irritation and inflammation of breathing passages | 
+|Particulate matter |Sources of primary particles include fires, smokestacks, construction sites, and unpaved roads; sources of secondary particles include reactions between gaseous chemicals emitted by power plants and automobiles |150 μg/m3 (24-hour period for particles <10 μm); 35 μg/m3 (24-hour period for particles <2.5 μm) |Contributes to formation of haze as well as acid rain, which changes the pH balance of waterways and damages foliage, buildings, and monuments |Irritation of breathing passages, aggravation of asthma, irregular heartbeat |
+|Lead (Pb) |Metal processing, waste incineration, fossil-fuel combustion |0.15 μg/m3 (rolling three-month average); 1.5 μg/m3 (quarterly average) |Loss of biodiversity, decreased reproduction, neurological problems in vertebrates |Adverse effects upon multiple bodily systems; may contribute to learning disabilities when young children are exposed; cardiovascular effects in adults|
 
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/cities.gif?raw=true" width="1000" height="100">
 
 </div>
 
-# $\first{Cities from Space}$
 
-***
-
-<div align="center">
-
-<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
-
-</div>
-
-# $\first{Cities from Rooftops}$
-
-Ground-based observation platforms, spectral characterization, temporal characterization, agency records.
-
-****
-
-### $\second{Lab}$
-
-<div align="center">
-
-<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
-
-</div>
-
-# $\first{Cities from Streets}$
-
-Fixed and mobile sensing platforms, sensor networks, data acquisition and processing.
-
-****
-
-### $\second{Lab}$
-
-<div align="center">
-
-<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
-
-</div>
-
-# $\first{Cities and Citizens}$
-
-Citizens as sensors, mobile sensing.
-
-****
 
 ### $\second{Population Density}$
 
@@ -792,17 +767,7 @@ print(pop_total);
 
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
-
-</div>
-
-# $\first{Programs}$
-
-***
-
-<div align="center">
-
-<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/spatial.gif" width="1000" height="100">
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/cities.gif?raw=true" width="1000" height="100">
 
 </div>
 
