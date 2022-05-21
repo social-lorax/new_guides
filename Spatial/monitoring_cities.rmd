@@ -39,13 +39,19 @@ output <- function(data) {
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/cities_space1.png)
 
-![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/cities_space3.png)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/passive_active.jpg)
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/cities_space2.jpg)
 
 ****
 
-### $\second{Night Lights}$
+### $\second{Passive Sensors}$
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/cities_space3.png)
+
+<br> 
+
+#### $\third{- Night Lights}$
 
 |Name |Defense Meteorological Satellite Program (DMSP), Operational Line Scanner(OLS) |Suomi National Polar Orbiting Partnership (NPP), Visible Infrared Imaging Radiometer Suite (VIIRS) |
 |:------|:----------|:----------|
@@ -170,9 +176,9 @@ print(VIIRS_chart);
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/night3.png)
 
-****
+<br> 
 
-### $\second{Normalized Difference Vegetation Index}$
+#### $\third{- Normalized Difference Vegetation Index}$
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/veg.png)
 
@@ -398,9 +404,9 @@ print(timeseries);
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/ndvi4.png)
 
-***
+<br>
 
-### $\second{Surface Temperature}$
+#### $\third{- Surface Temperature}$
 
 <img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/urban_heat.jpg" width="500">
 
@@ -614,6 +620,8 @@ print(chart);
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/urban_heat3.jpg)
 
 ****
+
+### $\second{Active Sensors}$
 
 ### $\second{Synthetic Apperture Radar}$
 
