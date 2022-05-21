@@ -623,13 +623,6 @@ print(chart);
 
 ### $\second{Active Sensors}$
 
-|Digital Surface Model (DSM) |Digital Elevation Model (DEM) |
-|:---------------------------|:-----------------------------|
-|Captures both the natural and built/artificial features of the environment | Represents the bare-Earth surface, removing all natural and built features. A Digital Terrain model (DTM) augments a DEM by including vector features of the natural terrain, such as rivers and ridges.|
-|![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_dsm.png)|![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_dem.png)|
-
-<br> 
-
 #### $\third{- Synthetic Aperture Radar}$
 
 Synthetic Aperture Radar (SAR) uses microwaves meaning it is weather independent (i.e., clouds have no impact) and can be collected during the day or the night.  
@@ -670,42 +663,6 @@ Polarization refers to the direction of travel of an electromagnetic wave. A hor
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/sar5.png)
 
-```
-// --------------------------------
-// ----- SURFACE MODELS -----------
-// --------------------------------
-// Create ROI
-var lon = -73.949580, lat = 40.612130; 
-var width = 0.05, height = 0.01;
-var ROI = ee.Geometry.Rectangle([lon+width, lat+height,  
-                                 lon-width, lat-height]);
-Map.centerObject(ROI, 13);
-
-
-// ----- COPERNICUS DSM -----------
-// Copernicus Glo-30 DSM created from 2016 Sentinel 1 dataset
-var copernicus_dsm = ee.ImageCollection('projects/sat-io/open-datasets/GLO-30')
-                       .mosaic()
-                       .setDefaultProjection('EPSG:3857', null, 30);
-Map.addLayer(copernicus_dsm, {min: 0, max: 50.0}, 'Copernicus DSM 30m');
-
-// ----- SRTM DSM -----------------
-// DSM from the Shuttle Radar Topography Mission (SRTM) from 2000
-// Fill in the masked water area by using .unmask()
-var srtm_dsm = ee.Image('CGIAR/SRTM90_V4')
-                 .select('elevation')
-                 .unmask();
-Map.addLayer(srtm_dsm, {min: 0, max: 50.0}, 'SRTM DSM 90m');
-
-// ----- ALOS DSM -----------------
-// ALOS World 3D by JAXA collected between 2006-2011
-var alos_dsm = ee.Image('JAXA/ALOS/AW3D30/V2_2')
-                 .select('AVE_DSM');
-Map.addLayer(alos_dsm, {min: 0, max: 50.0}, 'ALOS DSM 30m');
-```
-
-![](https://github.com/social-lorax/new_guides/blob/main/Images/Spatial/gee_dsm.png?raw=true)
-
 <br>
 
 #### $\third{- LiDAR}$
@@ -722,6 +679,131 @@ Map.addLayer(alos_dsm, {min: 0, max: 50.0}, 'ALOS DSM 30m');
 
 * [NYS LiDAR data](http://gis.ny.gov/elevation/)
 * [USGIS data](https://www.usgs.gov/3d-elevation-program/about-3dep-products-services?qt-science_support_page_related_con=0)
+
+<br>
+
+#### $\third{- Elevation}$
+
+|Digital Surface Model (DSM) |Digital Elevation Model (DEM) |
+|:---------------------------|:-----------------------------|
+|Captures both the natural and built/artificial features of the environment | Represents the bare-Earth surface, removing all natural and built features. A Digital Terrain model (DTM) augments a DEM by including vector features of the natural terrain, such as rivers and ridges.|
+|![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_dsm.png)|![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_dem.png)|
+
+<br>
+
+```
+// --------------------------------
+// ----- SURFACE MODEL ------------
+// --------------------------------
+// Create ROI
+var lon = -73.949580, lat = 40.612130; 
+var width = 0.05, height = 0.01;
+var ROI = ee.Geometry.Rectangle([lon+width, lat+height,  
+                                 lon-width, lat-height]);
+Map.centerObject(ROI, 13);
+
+
+// ----- COPERNICUS DSM -----------
+// Copernicus Glo-30 DSM created from 2016 Sentinel 1 dataset (SAR)
+var copernicus_dsm = ee.ImageCollection('projects/sat-io/open-datasets/GLO-30')
+                       .mosaic()
+                       .setDefaultProjection('EPSG:3857', null, 30);
+Map.addLayer(copernicus_dsm, {min: 0, max: 50.0}, 'Copernicus DSM 30m');
+
+
+// ----- SRTM DSM -----------------
+// DSM from the Shuttle Radar Topography Mission (SRTM) from 2000 (SAR)
+// Fill in the masked water area by using .unmask()
+var srtm_dsm = ee.Image('CGIAR/SRTM90_V4')
+                 .select('elevation')
+                 .unmask();
+Map.addLayer(srtm_dsm, {min: 0, max: 50.0}, 'SRTM DSM 90m');
+
+
+// ----- ALOS DSM -----------------
+// ALOS World 3D by JAXA collected between 2006-2011 (SAR)
+var alos_dsm = ee.Image('JAXA/ALOS/AW3D30/V2_2')
+                 .select('AVE_DSM');
+Map.addLayer(alos_dsm, {min: 0, max: 50.0}, 'ALOS DSM 30m');
+
+
+// ----- USGS DEM ----------
+// LiDAR-based DEM from the USGS 3D Elevation Program
+var usgs_3dep_dem = ee.Image('USGS/3DEP/10m');
+Map.addLayer(usgs_3dep_dem, {min: 0, max: 50.0}, 'USGS 3DEP DEM 10m');
+```
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Spatial/gee_dsm.png?raw=true)
+
+<br> 
+
+```
+// --------------------------------
+// ----- PROFILE LINE -------------
+// --------------------------------
+// Create a line based on lat long
+function getRange(start, end, step) {  
+    var range = [];  
+    while (step > 0 ? end >= start : end <= start) {  
+        range.push(start);  
+        start += step;  
+    }  
+return range;  
+}
+
+var y  = 40.6116; //latitude of the profile line  
+var x1 = -74.1988; //longitude of profile line beginning point  
+var x2 = -73.7325; //longitude of profile line end point  
+var N = 2000; //number of samples on the profile line  
+
+// Apply the function to get the coordinate points
+var R = getRange(x1,x2,(x2-x1)/N);  
+
+// Transform coordinates into a FeatureCollection
+var points = ee.FeatureCollection(R.map(function(i){
+  var point = ee.Geometry.Point([ee.Number(i), ee.Number(y)]); 
+  return(ee.Feature(point).set({
+    lon:ee.Number(i), 
+    lat:ee.Number(y) 
+  })); 
+}));
+
+Map.addLayer(points, {color:'red'}, 'points');
+
+// Get values at each point and stack the images into a single image
+var stack = srtm_dsm
+  .addBands([usgs_3dep_dem, alos_dsm , copernicus_dsm])
+  .rename(['DSM SRTM', 'DEM USGS','DSM ALOS', 'DSM Copernicus']);
+
+// Get value at each points and store them as a column
+var collection = stack.reduceRegions({  
+    reducer: ee.Reducer.max(),  
+    collection: points,  
+    scale: 1}); 
+
+// Compare ALOS, SRTM Copernicus, and USGS
+var chart = ui.Chart.feature.byFeature({
+  features: collection,
+  xProperty: 'lon',
+  yProperties:  ['DEM USGS', 'DSM Copernicus', 'DSM SRTM', 'DSM ALOS']})
+  .setChartType('LineChart')
+  .setOptions({title: 'Elevation ALOS, Copernicus DSM vs USGS',
+               hAxis: {title: 'Longitude', 
+                      titleTextStyle: {italic: false, bold: true},
+               viewWindow: {min: x1, max: x2}},
+               vAxis: {title: 'Elevation (m)',
+                       titleTextStyle: {italic: false, bold: true}},
+               series: {0: {lineWidth: 2, color: 'red'},
+                        1: {lineWidth: 2, color: 'green'},
+                        2: {lineWidth: 4, color: 'orange'},
+                        3: {lineWidth: 4, color: 'blue'}
+                        }});
+print(chart);
+```
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Spatial/gee_points.png?raw=true)
+
+<br> 
 
 <div align="center">
 
