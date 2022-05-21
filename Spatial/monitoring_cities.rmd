@@ -673,7 +673,7 @@ Represents the bare-Earth surface, removing all natural and built features. A Di
 
 #### $\third{- LiDAR}$
 
-![](https://github.com/social-lorax/new_guides/blob/main/Images/Spatial/lidar.png?raw=true)
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Spatial/lidar.png?raw=true" height="350">
 
 |RADAR |SONAR |LIDAR |
 |:-----|:-----|:-----|
