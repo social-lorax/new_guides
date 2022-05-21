@@ -626,6 +626,7 @@ print(chart);
 |Digital Surface Model (DSM) |Digital Elevation Model (DEM) |
 |:---------------------------|:-----------------------------|
 |Captures both the natural and built/artificial features of the environment | Represents the bare-Earth surface, removing all natural and built features. A Digital Terrain model (DTM) augments a DEM by including vector features of the natural terrain, such as rivers and ridges.|
+|![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_dsm.png)|![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/nyc_dem.png)|
 
 <br> 
 
