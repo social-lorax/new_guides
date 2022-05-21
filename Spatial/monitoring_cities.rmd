@@ -686,6 +686,26 @@ The Clean Air Act requires EPA to set National Ambient Air Quality Standards (NA
 |Particulate matter |Sources of primary particles include fires, smokestacks, construction sites, and unpaved roads; sources of secondary particles include reactions between gaseous chemicals emitted by power plants and automobiles |150 μg/m3 (24-hour period for particles <10 μm); 35 μg/m3 (24-hour period for particles <2.5 μm) |Contributes to formation of haze as well as acid rain, which changes the pH balance of waterways and damages foliage, buildings, and monuments |Irritation of breathing passages, aggravation of asthma, irregular heartbeat |
 |Lead (Pb) |Metal processing, waste incineration, fossil-fuel combustion |0.15 μg/m3 (rolling three-month average); 1.5 μg/m3 (quarterly average) |Loss of biodiversity, decreased reproduction, neurological problems in vertebrates |Adverse effects upon multiple bodily systems; may contribute to learning disabilities when young children are exposed; cardiovascular effects in adults|
 
+****
+
+### $\second{Observation}$
+
+**Remote Sensing**
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Spatial/pollution_fingerprint.jpg?raw=true)
+
+**Ground-based Sensors**
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Spatial/ground_air.png?raw=true)
+
+****
+
+### $\second{Data Sources}$
+
+* [NYC Community Air Survey](https://www1.nyc.gov/site/doh/data/data-sets/air-quality-nyc-community-air-survey.page)
+* [EPA](https://www.epa.gov/outdoor-air-quality-data)
+* [WHO](https://www.who.int/data/gho/data/themes/air-pollution)
+
 <div align="center">
 
 <img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/cities.gif?raw=true" width="1000" height="100">
