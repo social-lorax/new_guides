@@ -669,6 +669,46 @@ Represents the bare-Earth surface, removing all natural and built features. A Di
 
 </div>
 
+# $\first{GHG Emissions}$
+
+****
+
+### $\second{Climate Change}$
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Spatial/climate_change.jpg?raw=true)
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Spatial/climate_policies.png?raw=true)
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Spatial/climate_progress.png?raw=true)
+
+****
+
+### $\second{Observation}$
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Spatial/ghg_observation.png?raw=true)
+
+****
+
+### $\second{Data Sources}$
+
+* [NYC GHG Inventory](https://nyc-ghg-inventory.cusp.nyu.edu/)
+* [EPA GHG Inventory](https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks)
+* [UNFCCC Data](https://unfccc.int/process-and-meetings/transparency-and-reporting/greenhouse-gas-data/ghg-data-unfccc/ghg-data-from-unfccc)
+
+****
+
+### $\second{Solar Potential}$
+
+**Skyview Factor**
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Spatial/skyview.png?raw=true)
+
+<div align="center">
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/cities.gif?raw=true" width="1000" height="100">
+
+</div>
+
 # $\first{Air Pollution}$
 
 ****
