@@ -670,13 +670,41 @@ Polarization refers to the direction of travel of an electromagnetic wave. A hor
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/sar5.png)
 
-<br>
+```
+// --------------------------------
+// ----- SURFACE MODELS -----------
+// --------------------------------
+// Create ROI
+var lon = -73.949580, lat = 40.612130; 
+var width = 0.05, height = 0.01;
+var ROI = ee.Geometry.Rectangle([lon+width, lat+height,  
+                                 lon-width, lat-height]);
+Map.centerObject(ROI, 13);
 
-#### $\third{- Digital Elevation Model (DEM)}$ 
 
-Represents the bare-Earth surface, removing all natural and built features. A Digital Terrain model (DTM) augments a DEM by including vector features of the natural terrain, such as rivers and ridges.
+// ----- COPERNICUS DSM -----------
+// Copernicus Glo-30 DSM created from 2016 Sentinel 1 dataset
+var copernicus_dsm = ee.ImageCollection('projects/sat-io/open-datasets/GLO-30')
+                       .mosaic()
+                       .setDefaultProjection('EPSG:3857', null, 30);
+Map.addLayer(copernicus_dsm, {min: 0, max: 50.0}, 'Copernicus DSM 30m');
 
-* USGS DTM is available across the US at 10 meter Resolution. There are areas in the US where 1m data is also available.
+// ----- SRTM DSM -----------------
+// DSM from the Shuttle Radar Topography Mission (SRTM) from 2000
+// Fill in the masked water area by using .unmask()
+var srtm_dsm = ee.Image('CGIAR/SRTM90_V4')
+                 .select('elevation')
+                 .unmask();
+Map.addLayer(srtm_dsm, {min: 0, max: 50.0}, 'SRTM DSM 90m');
+
+// ----- ALOS DSM -----------------
+// ALOS World 3D by JAXA collected between 2006-2011
+var alos_dsm = ee.Image('JAXA/ALOS/AW3D30/V2_2')
+                 .select('AVE_DSM');
+Map.addLayer(alos_dsm, {min: 0, max: 50.0}, 'ALOS DSM 30m');
+```
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Spatial/gee_dsm.png?raw=true)
 
 <br>
 
