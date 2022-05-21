@@ -671,6 +671,16 @@ Represents the bare-Earth surface, removing all natural and built features. A Di
 
 * USGS DTM is available across the US at 10 meter Resolution. There are areas in the US where 1m data is also available.
 
+#### $\third{- LiDAR}$
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Spatial/lidar.png?raw=true)
+
+|RADAR |SONAR |LIDAR |
+|:-----|:-----|:-----|
+|Radio Detection and Ranging |Sound Navigation and Ranging |Light Detection and Ranging |
+|Uses radio waves |Uses sound waves |Uses lasers/infrared waves |
+|Used for air traffic control and speed detection |Used to measure the ocean flood and located submarines |Used in autonomous driving and elevation detection |
+
 <div align="center">
 
 <img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/cities.gif?raw=true" width="1000" height="100">
