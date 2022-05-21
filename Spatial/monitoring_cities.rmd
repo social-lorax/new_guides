@@ -758,6 +758,8 @@ The Clean Air Act requires EPA to set National Ambient Air Quality Standards (NA
 
 ### $\second{Open Data}$
 
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Spatial/nyc_data.png?raw=true)
+
 ![](https://github.com/social-lorax/new_guides/blob/main/Images/Spatial/open_data.png?raw=true)
 
 ****
