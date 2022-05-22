@@ -64,53 +64,42 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
 
-# $\first{Data Wrangling}$
+# $\first{R}$
+
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/r_main.png" height="100">
 
 ****
 
-### $\second{Basics}$
+#### [Coding with R](r_code.html)
+#### [Data Wrangling with R](r_basic.html)
+#### Visualization with R
+#### [Census Data in R](tidycensus.html)
+#### [Statistics in R](py_stats.html)
+#### [Machine Learning in R](py_ml.html)
 
-#### [R](r_basic.html)
-#### [Python](py_basic.html)
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
+
+# $\first{Python}$
+
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Logos/py_main.png" height="100">
 
 ****
 
-### $\second{Other Langauges}$
+#### [Coding with Python](py_code.html)
+#### [Data Wrangling with Python](py_basic.html)
+#### Visualization with Python
+#### [Statistics in Python](py_stats.html)
+#### [Machine Learning in Python](py_ml.html)
+#### [Principles of Urban Informatics](pui.html)
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
+
+# $\first{Other Languanges}$
+
+****
 
 #### [SQL](sql.html)
 #### [XML](xml.html)
-
-**** 
-
-### $\second{Data Sources}$
-
-#### [Census](tidycensus.html)
-
-![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
-
-# $\first{Visualization}$
-
-****
-
-### $\second{R}$
-
-****
-
-### $\second{Python}$
-
-![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
-
-# $\first{Analysis}$
-
-****
-
-### $\second{R}$
-
-****
-
-### $\second{Python}$
-
-#### [Principles of Urban Informatics](pui.html)
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
 
