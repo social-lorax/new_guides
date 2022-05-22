@@ -139,6 +139,13 @@ ax.set_ylabel("Predicted")
 
 ### $\second{K Means Clustering}$
 
+```{python}
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_samples, silhouette_score
+from scipy.spatial.distance import cdist, pdist
+import matplotlib.cm as cm
+```
+
 ![](https://github.com/social-lorax/new_guides/blob/main/Images/Stats/py_kmean1.png?raw=true)
 
 ```{python}
@@ -151,39 +158,10 @@ ax.set_xlabel("Life Expectancy")
 ax.set_ylabel("Population (log)")
 ```
 
-<br> 
+**Optimal Clusters**
 
 ```{python}
-from sklearn.cluster import KMeans
-
-km = KMeans(random_state = 42, n_clusters = 2) 
-result = km.fit(gap_07[["lifeExp", "logPop"]])
-gap_07["cluster"] = result.labels_
-
-fig, ax = plt.subplots(figsize=(7.5, 5))
-ax.scatter(x = gap_07["lifeExp"], y = gap_07["logPop"], c = gap_07["cluster"])
-ax.set_xlabel("Life Expectancy")
-ax.set_ylabel("Population (log)")
-```
-
-<br> 
-
-```{python}
-km = KMeans(random_state = 42, n_clusters = 3) 
-result = km.fit(gap_07[["lifeExp", "logPop"]])
-gap_07["cluster"] = result.labels_
-
-fig, ax = plt.subplots(figsize=(7.5, 5))
-ax.scatter(x = gap_07["lifeExp"], y = gap_07["logPop"], c = gap_07["cluster"])
-ax.set_xlabel("Life Expectancy")
-ax.set_ylabel("Population (log)")
-```
-
-<br> 
-
-```{python}
-from sklearn.metrics import silhouette_score
-
+#Silhouette Score
 def silhouette_score_plot(k, data):
     km = KMeans(n_clusters = k, random_state = 42)
     cluster_labels = km.fit_predict(data)
@@ -194,7 +172,7 @@ scores = pd.DataFrame({"k": [],
                        "score": []})
 
 for n in range(2, 11): 
-    score = silhouette_score_plot(n , gap_07[["lifeExp", "logPop"]])
+    score = silhouette_score_plot(n , gap_07[["lifeExp", "logPop", "gdpPercap"]])
     scores = scores.append(pd.DataFrame({"k": [n], "score": [score]}))
 
 
@@ -205,17 +183,52 @@ ax.set_ylabel("Silhouette Coefficient")
 ax.set_title("K with max coefficient = " + str(int(scores[scores["score"] == scores["score"].max()]["k"].squeeze())))
 ```
 
+<br> 
 
 ```{python}
-gap_model = gapminder[gapminder["year"] == 2007][["lifeExp", "pop", "gdpPercap"]]
+#Elbow Method 
+sse = pd.DataFrame({"k": [], 
+                    "sse": []})
 
-km = KMeans(random_state = 42, n_clusters = 3) 
-result = km.fit(gap_model)
-gap_model["cluster"] = result.labels_
+for n in range(1, 11):
+    km = KMeans(n_clusters = n, random_state = 42).fit(gap_07[["lifeExp", "logPop", "gdpPercap"]])
+    sse = sse.append(pd.DataFrame({"k": [n], "sse": [km.inertia_]}))
+    # Inertia = sum of distances of samples to their closest cluster center
 
-gap_model.groupby("cluster").agg({"lifeExp":"mean",
-                                  "pop":"mean",
-                                  "gdpPercap":"mean"})
+fig, ax = plt.subplots(figsize=(7.5, 5))
+ax.plot(sse["k"], sse["sse"])
+ax.set_xlabel("K")
+ax.set_ylabel("SSE")
+ax.set_title("Elbow for KMeans Clustering")
+```
+
+<br>
+
+**Clustering**
+
+```{python}
+km = KMeans(random_state = 42, n_clusters = 2) 
+result = km.fit(gap_07[["lifeExp", "logPop", "gdpPercap"]])
+gap_07["cluster"] = result.labels_
+
+fig, ax = plt.subplots(figsize=(7.5, 5))
+ax.scatter(x = gap_07["gdpPercap"], y = gap_07["lifeExp"], c = gap_07["cluster"])
+ax.set_xlabel("GDP Per Capita")
+ax.set_ylabel("Life Expectancy")
+```
+
+```{python}
+fig, ax = plt.subplots(figsize=(7.5, 5))
+ax.scatter(x = gap_07["logPop"], y = gap_07["lifeExp"], c = gap_07["cluster"])
+ax.set_xlabel("Population (log)")
+ax.set_ylabel("Life Expectancy")
+```
+
+
+```{python}
+gap_07.groupby("cluster").agg({"lifeExp":"mean",
+                               "logPop":"mean",
+                               "gdpPercap":"mean"})
 ```
 
 <img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/stats.gif?raw=true" height="100" width ="1000">
