@@ -53,6 +53,7 @@ import matplotlib.pylab as plt
 import seaborn as sns 
 
 import warnings
+warnings.filterwarnings('ignore')
 ```
 
 <img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/stats.gif?raw=true" height="100" width ="1000">
@@ -137,6 +138,8 @@ ax.set_ylabel("Predicted")
 ****
 
 ### $\second{K Means Clustering}$
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Stats/py_kmean1.png?raw=true)
 
 ```{python}
 gapminder["logPop"] = np.log(gapminder["pop"])
