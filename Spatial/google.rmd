@@ -14,7 +14,7 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 \newcommand\second[1]{\color{dodgerblue}{\textbf{#1}}}
 \newcommand\third[1]{\color{skyblue}{\textrm{#1}}}
 
-[Return to Main Page](new_spatial_index.html)
+[Return to Spatial Page](spatial_home.html)
 
 ```{r include=FALSE}
 library(kableExtra)
@@ -474,4 +474,4 @@ var sumStats = varImage.reduceRegion(
 
 </div>
 
-[Return to Main Page](new_spatial_index.html)
+[Return to Spatial Page](spatial_home.html)

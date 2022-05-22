@@ -665,6 +665,73 @@ Polarization refers to the direction of travel of an electromagnetic wave. A hor
 
 <br>
 
+```
+// --------------------------------
+// ----- SURFACE CLASSIFICATION ---
+// --------------------------------
+// ----- SET UP -------------------
+// ROA for  Bangladesh Flood 
+var centerX = 91.103909, centerY = 24.64874; 
+var post_start =  '2016-07-18';  
+var post_end =  '2016-07-30';
+var pre_start= '2016-01-30';
+var pre_end = '2016-03-30';
+var width_roi = 1.5, height_roi = 1; 
+var width_plot = 0.01, height_plot = 0.01; 
+
+// Set a bounding box for image
+var box = ee.Geometry.Rectangle([centerX+width_roi, centerY+height_roi,  
+                                centerX-width_roi, centerY-height_roi]);
+
+// Set a bounding box for time series plot
+var roi_plot = ee.Geometry.Rectangle([centerX+width_plot, centerY+height_plot,  
+                                      centerX-width_plot, centerY-height_plot]);                                  
+
+Map.setCenter(centerX, centerY, 5);
+
+// ----- SAR DATA -----------------
+/*
+1. instrumentMode = IW means Interferometric Wide Swath; a process of capturing data
+2. transmitterReceiverPolarisation = polarization of the signal; use VV or HH
+   * VV = verticle transmit and verticle receive
+   * HH = horizontal transmission and horizontal receive
+   We generally use VV for flood detection and Urban change detection because it 
+   appears dark for water and brighter for settlement.
+3. orbitProperties_pass = the direction of the satellite with respect to earth;
+   chose either DESCENDING or ASCENDING
+*/
+var collectionVV = ee.ImageCollection('COPERNICUS/S1_GRD')
+    .filter(ee.Filter.eq('instrumentMode', 'IW'))
+    .filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV'))
+    .select(['VV'])
+    .filter(ee.Filter.eq('orbitProperties_pass', 'DESCENDING'));
+
+// ----- CALCULATIONS -------------
+//Select one image from each month
+var before = ee.Image(collectionVV.filterDate(pre_start, pre_end).mean().clip(box));
+  
+var after = ee.Image(collectionVV.filterDate(post_start, post_end).mean().clip(box));
+
+//Subtact backscatter value of each month with March 2015
+var diff = before.subtract(after).clip(box);
+//var diff = (before.subtract(after.abs()).clip(box)
+
+//Mask changes
+var cumulative_mask_l = (diff.abs()).gt(4);
+var SAR_masked = diff.abs().updateMask(cumulative_mask_l);
+
+// Plot
+Map.addLayer(box, {}, 'ROI for change detection');
+Map.addLayer(roi_plot, {}, 'ROI for timeseries plot');
+Map.addLayer(before, {min: -15, max: 0}, 'SAR_pre');
+Map.addLayer(after, {min: -15, max: 0}, 'SAR_post');
+Map.addLayer(SAR_masked, {min: -10, max: -7, palette: ['red']}, 'SAR_Change_detection');
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Spatial/gee_sar.png)
+
+<br> 
+
 #### $\third{- LiDAR}$
 
 <img src="https://github.com/social-lorax/new_guides/blob/main/Images/Spatial/lidar.png?raw=true" height="350">
