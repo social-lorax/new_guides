@@ -1,0 +1,50 @@
+---
+output: 
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    number_sections: false
+    df_print: kable
+knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
+---
+
+```{r include=FALSE}
+library(kableExtra)
+library(tidyverse)
+library(gapminder)
+
+
+knitr::opts_chunk$set(comment = NA, message = FALSE, warning = FALSE)
+
+output <- function(data) {
+  knitr::kable(data) %>% 
+    kable_styling(full_width = F)
+}
+
+library(reticulate)
+use_python("Anaconda3/Scripts/conda.exe")
+use_condaenv("C:/Users/brenner/AppData/Local/r-miniconda/envs/guides")
+```
+
+\newcommand\first[1]{\color{darkblue}{\textbf{#1}}}
+\newcommand\second[1]{\color{dodgerblue}{\textbf{#1}}}
+\newcommand\third[1]{\color{skyblue}{\textrm{#1}}}
+
+[Return to Data Page](data_home.html)
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Stats/ml_header.jpg?raw=true)
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/stats.gif?raw=true" height="100" width ="1000">
+
+```{python}
+import pandas as pd
+import numpy as np
+import datetime 
+from matplotlib import pyplot as plt
+import seaborn as sns
+import geopandas as gpd
+
+from gapminder import gapminder
+```
