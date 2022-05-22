@@ -389,7 +389,7 @@ norm.cdf(80, loc = sample.mean(), scale = sample.std()) - norm.cdf(40, loc = sam
 
 ### $\second{Fitting}$
 
-![]https://github.com/social-lorax/new_guides/blob/main/Images/Stats/fitting_prob_dist.png?raw=true)
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Stats/fitting_prob_dist.png?raw=true)
 
 ```{python}
 def distribution_analysis(x, log_scale = False, fit_distribution = 'None', bins = 50, vis_means = True):
