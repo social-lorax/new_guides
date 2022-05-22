@@ -275,16 +275,197 @@ sum(stats.poisson.pmf(range(0, 3), mu = lam))
 
 ```{python}
 #Probability of more than 2
-sum(stats.poisson.pmf(range(0, 2), mu = lam))
+1 - sum(stats.poisson.pmf(range(0, 2), mu = lam))
 ```
 
 <br>
 
 #### $\third{Continuous}$
 
+* Continuous variables 
+
+```{python}
+x = np.array(range(-500,501)) * 0.01
+
+plt.plot(x, stats.norm.pdf(x, 0, 1))
+plt.title('PDF (probability density function) of a standard normal distribution')
+plt.show()
+```
+
+```{python}
+plt.plot(x,stats.norm.cdf(x, 0, 1))
+plt.title('CDF (cumulative distribution function) of a standard normal distribution')
+plt.show()
+```
+
+<br> 
+
+**Impact of σ**
+
+```{python}
+x = np.array(range(0, 2000)) * 0.01
+mu = 10
+
+plt.title('PDF of a normal distribution')
+for sigma in range(1,6):
+    plt.plot(x, stats.norm.pdf(x, mu, sigma),label='sigma={0}'.format(sigma))
+
+plt.legend()
+plt.axvline(mu, color = 'r', ls = '--', lw = 2.0)
+plt.ylim([0, 0.5])
+
+plt.show()
+```
+
+```{python}
+plt.title('CDF of a normal distribution')
+for sigma in range(1,6):
+    plt.plot(x,stats.norm.cdf(x, mu, sigma), label = 'sigma={0}'.format(sigma))
+
+plt.legend()
+plt.ylim([0, 1.1])
+plt.xlim([0, 30])
+
+plt.show()
+```
+
+<br> 
+
+**Percentiles**
+
+$Z=\frac{x-\mu}{\sigma}$
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Stats/normal_percents.png?raw=true)
+
+<br>
+
+**Example**
+
+```{python}
+sample = np.random.normal(loc=60, scale=15, size=1000)
+sample.mean()
+```
+
+```{python}
+sample.std()
+```
+
+```{python}
+sns.histplot(sample, 
+             bins = 20, 
+             color = 'blue',
+             stat='density')
+
+sns.kdeplot(sample, 
+            color = 'darkblue',
+            linewidth = 4)
+
+plt.axvline(sample.mean(), color = 'r', ls = '--', lw = 2.0)
+plt.axvline(sample.mean() - sample.std(), color = 'g', ls = '--', lw = 2.0)
+plt.axvline(sample.mean() + sample.std(), color = 'g', ls = '--', lw = 2.0)
+
+plt.show()
+```
+
+```{python}
+# Above Mean, Right: Probability > 80
+1 - norm.cdf(80, loc = sample.mean(), scale = sample.std())
+```
+
+```{python}
+# Above Mean, Left: Probability < 80
+norm.cdf(80, loc = sample.mean(), scale = sample.std())
+```
+
+```{python}
+# Below Mean, Left: Probability < 40
+norm.cdf(40, loc = sample.mean(), scale = sample.std())
+```
+
+```{python}
+# Below Mean, Right: Probability > 40
+1 - norm.cdf(40, loc = sample.mean(), scale = sample.std())
+```
+
+```{python}
+# Middle: Probability 40 < x < 80
+norm.cdf(80, loc = sample.mean(), scale = sample.std()) - norm.cdf(40, loc = sample.mean(), scale = sample.std())
+```
+
 ****
 
 ### $\second{Fitting}$
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/fitting_prop_dist.png?raw=true)
+
+```{python}
+def distribution_analysis(x, log_scale = False, fit_distribution = 'None', bins = 50, vis_means = True):
+    #x - array of observations
+    #log_scale - analyze distribution of log(x) if True
+    #fit_distribution - fit the distribution ('normal', 'gev' or 'pareto') or do nothing if 'None'
+    #bins - how many bins to use for binning the data
+    #vis_means - show mean and std lines if True
+    
+    if log_scale: 
+        x1 = np.log10(x) #convert data to decimal logarithms
+        xlabel = 'log(values)' #reflect in x labels
+    else:
+        x1 = x #leave original scale 
+        xlabel = 'values'    
+        
+    mu = x1.mean() #compute the mean
+    if log_scale: #if logscale, output log mean, its original scale, and original scale mean
+        print('Log mean = {:.2f}({:.2f}), mean = {:.2f}'.format(mu, 10**mu, x.mean()))
+    else:
+        print('Mean = {:.2f}'.format(mu)) #otherwise print mean
+    
+    sigma = x1.std() #compute and output standard deviation 
+    print('Standard deviation = {:.2f}'.format(sigma))
+        
+    #visualize histogram and the interpolated line using seaborn
+    sns.histplot(x1, bins = bins, color = 'darkblue', stat = 'density')
+    
+    sns.kdeplot(x1, color = 'darkblue', linewidth = 4)
+    
+    #show vertical lines for mean and std if vis_means = True
+    if vis_means:
+        plt.axvline(mu, color = 'r', ls = '--', lw=2.0)
+        plt.axvline(mu-sigma, color = 'g', ls = '--', lw = 2.0)
+        plt.axvline(mu+sigma, color = 'g', ls = '--', lw = 2.0)
+        
+    ylim = plt.gca().get_ylim() #keep the y-range of original distribution density values 
+    #(to make sure the fitted distribution would not affect it)
+    
+    h = np.arange(mu - 3 * sigma, mu + 3 * sigma, sigma / 100) #3-sigma visualization range for the fitted distribution
+    pars = None #fitted distribution parameters
+    
+    #fit and visualize the theoretic distribution
+    if fit_distribution == 'normal':
+        pars = norm.fit(x1)
+        plt.plot(h,norm.pdf(h,*pars),'r')
+    elif fit_distribution == 'gev':
+        pars = gev.fit(x1)
+        plt.plot(h,gev.pdf(h,*pars),'r')
+    elif fit_distribution == 'pareto':
+        pars = pareto.fit(x1)
+        plt.plot(h,pareto.pdf(h,*pars),'r')
+    
+    plt.xlabel(xlabel) #add x label 
+    plt.ylim(ylim) #restore the y-range of original distribution density values 
+    plt.show()
+```
+
+```{python}
+distribution_analysis(sample)
+```
+
+```{python}
+distribution_analysis(sample, fit_distribution = "normal")
+```
+
+```{python}
+distribution_analysis(sample, fit_distribution = "pareto")
+```
 
 <img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/stats.gif?raw=true" height="100" width ="1000">
 
