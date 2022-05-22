@@ -37,3 +37,261 @@ use_condaenv("C:/Users/brenner/AppData/Local/r-miniconda/envs/guides")
 ![](https://github.com/social-lorax/new_guides/blob/main/Images/Stats/stats_header.jpg?raw=true)
 
 <img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/stats.gif?raw=true" height="100" width ="1000">
+
+```{python}
+import numpy as np
+from numpy import random
+import pandas as pd
+
+from scipy import stats
+from scipy.stats import norm #normal
+from scipy.stats import genextreme as gev #generalized extreme value
+from scipy.stats import pareto #pareto
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+import warnings
+warnings.filterwarnings('ignore')
+```
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/stats.gif?raw=true" height="100" width ="1000">
+
+# $\first{Probability}$
+
+****
+
+### $\second{Binary}$
+
+```{python}
+np.random.seed(613)
+pass_fail = stats.bernoulli.rvs(p = 0.7, size = 100)
+
+pass_fail
+```
+
+<br>
+
+#### $\third{- Probabilities}$
+
+Probability of Success = p
+
+```{python}
+round(sum(pass_fail) / len(pass_fail), 2)
+```
+
+Probabilty of Failure = q = 1 - p
+
+```{python}
+round(1 - (sum(pass_fail) / len(pass_fail)), 2)
+```
+
+<br> 
+
+#### $\third{- Distribution}$
+
+```{python}
+pass_fail = np.array(pass_fail, dtype=str)
+
+sns.histplot(pass_fail,
+             color = 'darkblue')
+plt.show()
+```
+
+****
+
+### $\second{Discrete}$
+
+```{python}
+grade = np.random.choice(np.array(['A','B','C','F']), 100, p=[0.15,0.55,0.2,0.1])
+
+grade
+```
+
+<br>
+
+#### $\third{- Probabilities}$
+
+```{python}
+P = {}
+
+P["A"] = sum(grade == "A") / len(grade)
+P["B"] = sum(grade == "B") / len(grade)
+P["C"] = sum(grade == "C") / len(grade)
+P["F"] = sum(grade == "F") / len(grade)
+
+P
+```
+
+<br> 
+
+#### $\third{- Distribution}$
+
+```{python}
+grade.sort()
+
+sns.histplot(grade,
+             color = 'darkblue')
+plt.show()
+```
+
+****
+
+### $\second{Continuous}$
+
+```{python}
+score = np.random.normal(loc=60, scale=15, size=100)
+
+score
+```
+
+<br> 
+
+#### $\third{- Probabilities}$
+
+The probability of a specific outcome are extremely low because there are an infinite number of possible outcomes:
+
+```{python}
+sum(score == 80.0) / len(score)
+```
+
+Instead, look at higher, lower, or a range:
+
+```{python}
+sum((score > 75) & (score < 85)) / len(score)
+```
+
+<br> 
+
+#### $\third{- Distribution}$
+
+```{python}
+sns.histplot(score, 
+             kde = True, 
+             bins = 20, 
+             color = 'darkblue')
+plt.show()
+```
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/stats.gif?raw=true" height="100" width ="1000">
+
+# $\first{Probability Distributions}$
+
+****
+
+### $\second{Types}$
+
+#### $\third{Binomial}$
+
+*A single binary event is a Bernoulli distribution, a collection of Bernoulli events is a binomial distribution.*
+
+* The experiment consists of a fixed number of trials (n)
+* Each trial has only two possible outcomes: success and failure
+* The probability of success (p) and the probability of failure (q) are constant throughout the experiment
+* Each trial is independent of every other trial
+
+If true, then for n trials and r successes:
+
+* $P[r,n]=\frac{n!}{(n-r)!r!}*p^r*q^{n-r}$
+* $\mu=n*p$
+* $\sigma=\sqrt{n*p*q}$
+ 
+```{python} 
+#Eg. filliping a coin 10 times, 10000 times
+trials = []
+
+for i in range(0, 10000):
+    sample = stats.bernoulli.rvs(p = 0.5, size = 10)
+    trials.append(sum(sample))
+
+print(trials[0:100])
+```
+
+```{python}
+#Expected Mean = n * p = 10 * 0.5 = 5
+np.mean(trials)
+```
+
+```{python}
+#Expected Standard Deviation = sqrt(n * p * (1 - p)) = sqrt(10 * 0.5 * (1 - 0.5)) = 1.58
+np.std(trials)
+```
+
+```{python}
+sns.histplot(trials,
+             color = 'darkblue',
+             bins = 10)
+
+plt.axvline(np.mean(trials), color = 'r', ls = '--', lw = 2.0)
+plt.axvline(np.mean(trials) - np.std(trials), color = 'g', ls = '--', lw = 2.0)
+plt.axvline(np.mean(trials) + np.std(trials), color = 'g', ls = '--', lw = 2.0)
+
+plt.show()
+```
+
+<br>
+
+#### $\third{Poisson}$
+
+* The experiment consists of counting the number of occurrences over a period or space
+* The mean has to be the same for each interval of measurement (e.g. each hour or mile)
+* The number of occurrences during one interval is independent of all other intervals
+
+If true, then x given λ events in the past:
+
+* $P[x]=\frac{\lambda^x*e^{-\lambda}}{x!}$
+* $\mu=\lambda$
+* $\sigma=\sqrt{\lambda}$
+
+```{python}
+#Eg. 25 hurricanes in the past 22 years
+
+lam = 25.0 / 22
+
+distribution = stats.poisson.pmf(range(0, 11), mu = lam)
+```
+
+```{python}
+sns.barplot(x = [0,1,2,3,4,5,6,7,8,9,10], 
+            y = distribution,
+            color = 'darkblue')
+
+plt.axvline(lam, color = 'r', ls = '--', lw = 2.0)
+plt.axvline(lam - np.sqrt(lam), color = 'g', ls = '--', lw = 2.0)
+plt.axvline(lam + np.sqrt(lam), color = 'g', ls = '--', lw = 2.0)
+
+plt.show()
+```
+
+```{python}
+#Probability of only 1
+stats.poisson.pmf(1, mu = lam)
+```
+
+```{python}
+#Probability of less than 3
+sum(stats.poisson.pmf(range(0, 3), mu = lam))
+```
+
+```{python}
+#Probability of more than 2
+sum(stats.poisson.pmf(range(0, 2), mu = lam))
+```
+
+<br>
+
+#### $\third{Continuous}$
+
+****
+
+### $\second{Fitting}$
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/stats.gif?raw=true" height="100" width ="1000">
+
+# $\first{Inferential Statistics}$
+
+****
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/stats.gif?raw=true" height="100" width ="1000">
+
+[Return to Data Page](data_home.html)
