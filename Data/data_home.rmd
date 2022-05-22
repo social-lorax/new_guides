@@ -73,9 +73,10 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 #### [Coding with R](r_code.html)
 #### [Data Wrangling with R](r_basic.html)
 #### Visualization with R
-#### [Census Data in R](tidycensus.html)
 #### [Statistics in R](py_stats.html)
 #### [Machine Learning in R](py_ml.html)
+
+#### [Census Data in R](tidycensus.html)
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
 
@@ -90,7 +91,16 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 #### Visualization with Python
 #### [Statistics in Python](py_stats.html)
 #### [Machine Learning in Python](py_ml.html)
+
+<br>
+
 #### [Principles of Urban Informatics](pui.html)
+
+<br>
+
+[Link to Book](https://bedford-computing.co.uk/learning/wp-content/uploads/2015/10/Python-for-Data-Analysis.pdf)
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Python/py_data_analysis.jpg?raw=true" width="300">
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
 
