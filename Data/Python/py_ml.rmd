@@ -63,6 +63,71 @@ import warnings
 
 ****
 
+### $\second{Linear Regression}$
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Stats/py_regression1.png?raw=true)
+
+```{python}
+gapminder["logGDP"] = np.log(gapminder["gdpPercap"])
+gapminder[["logGDP", "lifeExp"]].head()
+```
+
+```{python}
+reg_plot = sns.regplot(x = gapminder["logGDP"], y = gapminder["lifeExp"],
+            scatter_kws={"color": "black"}, line_kws={"color": "red"})
+reg_plot
+```
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Stats/py_regression2.png?raw=true)
+
+```{python}
+lm = smf.ols(formula='lifeExp~logGDP', data = gapminder).fit()
+print(lm.summary())
+```
+
+<br>
+
+```{python}
+gapminder['predictedLifeExp'] = lm.predict()
+
+fig, ax = plt.subplots(figsize=(7.5, 5))
+ax.scatter(x = gapminder["lifeExp"], y = gapminder["predictedLifeExp"], color = "black")
+ax.plot([30, 90], [30, 90], color = "red")
+ax.set_xlabel("Expected")
+ax.set_ylabel("Predicted")
+```
+
+<br>
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Stats/py_regression3.png?raw=true)
+
+```{python}
+lm2 = smf.ols(formula='lifeExp~logGDP+year', data = gapminder).fit()
+print(lm2.summary())
+```
+
+<br>
+
+```{python}
+gapminder['predictedLifeExp2'] = lm2.predict()
+
+fig, ax = plt.subplots(figsize=(7.5, 5))
+ax.scatter(x = gapminder["lifeExp"], y = gapminder["predictedLifeExp2"], color = "black")
+ax.plot([30, 90], [30, 90], color = "red")
+ax.set_xlabel("Expected")
+ax.set_ylabel("Predicted")
+```
+
+****
+
+### $\second{Logistic Regression/Classification}$
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Stats/py_logistic1.png?raw=true)
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Stats/py_logistic2.png?raw=true)
+
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Stats/py_logistic3.png?raw=true)
+
 <img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/stats.gif?raw=true" height="100" width ="1000">
 
 # $\first{Unsupervised}$
@@ -70,6 +135,85 @@ import warnings
 <img src="https://github.com/social-lorax/new_guides/blob/main/Images/Stats/ml_unsupervised.png?raw=true" height="350">
 
 ****
+
+### $\second{K Means Clustering}$
+
+```{python}
+gapminder["logPop"] = np.log(gapminder["pop"])
+gap_07 = gapminder[gapminder["year"] == 2007]
+
+fig, ax = plt.subplots(figsize=(7.5, 5))
+ax.scatter(x = gap_07["lifeExp"], y = gap_07["logPop"], color = "black")
+ax.set_xlabel("Life Expectancy")
+ax.set_ylabel("Population (log)")
+```
+
+<br> 
+
+```{python}
+from sklearn.cluster import KMeans
+
+km = KMeans(random_state = 42, n_clusters = 2) 
+result = km.fit(gap_07[["lifeExp", "logPop"]])
+gap_07["cluster"] = result.labels_
+
+fig, ax = plt.subplots(figsize=(7.5, 5))
+ax.scatter(x = gap_07["lifeExp"], y = gap_07["logPop"], c = gap_07["cluster"])
+ax.set_xlabel("Life Expectancy")
+ax.set_ylabel("Population (log)")
+```
+
+<br> 
+
+```{python}
+km = KMeans(random_state = 42, n_clusters = 3) 
+result = km.fit(gap_07[["lifeExp", "logPop"]])
+gap_07["cluster"] = result.labels_
+
+fig, ax = plt.subplots(figsize=(7.5, 5))
+ax.scatter(x = gap_07["lifeExp"], y = gap_07["logPop"], c = gap_07["cluster"])
+ax.set_xlabel("Life Expectancy")
+ax.set_ylabel("Population (log)")
+```
+
+<br> 
+
+```{python}
+from sklearn.metrics import silhouette_score
+
+def silhouette_score_plot(k, data):
+    km = KMeans(n_clusters = k, random_state = 42)
+    cluster_labels = km.fit_predict(data)
+    silhouette_avg = silhouette_score(data, cluster_labels)
+    return silhouette_avg
+
+scores = pd.DataFrame({"k": [], 
+                       "score": []})
+
+for n in range(2, 11): 
+    score = silhouette_score_plot(n , gap_07[["lifeExp", "logPop"]])
+    scores = scores.append(pd.DataFrame({"k": [n], "score": [score]}))
+
+
+fig, ax = plt.subplots(figsize=(7.5, 5))
+ax.plot(scores["k"], scores["score"])
+ax.set_xlabel("K")
+ax.set_ylabel("Silhouette Coefficient")
+ax.set_title("K with max coefficient = " + str(int(scores[scores["score"] == scores["score"].max()]["k"].squeeze())))
+```
+
+
+```{python}
+gap_model = gapminder[gapminder["year"] == 2007][["lifeExp", "pop", "gdpPercap"]]
+
+km = KMeans(random_state = 42, n_clusters = 3) 
+result = km.fit(gap_model)
+gap_model["cluster"] = result.labels_
+
+gap_model.groupby("cluster").agg({"lifeExp":"mean",
+                                  "pop":"mean",
+                                  "gdpPercap":"mean"})
+```
 
 <img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/stats.gif?raw=true" height="100" width ="1000">
 
