@@ -36,15 +36,49 @@ use_condaenv("C:/Users/brenner/AppData/Local/r-miniconda/envs/guides")
 
 ![](https://github.com/social-lorax/new_guides/blob/main/Images/Stats/ml_header.jpg?raw=true)
 
+A computer program is said to learn from experience **E** with respect to some class of tasks **T** and performance measure **P**, if its performance on **T**, as measured by **P**, improves with **E**.
+
 <img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/stats.gif?raw=true" height="100" width ="1000">
 
 ```{python}
+from gapminder import gapminder
+
 import pandas as pd
 import numpy as np
-import datetime 
-from matplotlib import pyplot as plt
-import seaborn as sns
-import geopandas as gpd
 
-from gapminder import gapminder
+import statsmodels.formula.api as smf
+import math
+
+import matplotlib.pylab as plt
+import seaborn as sns 
+
+import warnings
 ```
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/stats.gif?raw=true" height="100" width ="1000">
+
+# $\first{Supervised}$
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Stats/ml_supervised.png?raw=true" height="350">
+
+****
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/stats.gif?raw=true" height="100" width ="1000">
+
+# $\first{Unsupervised}$
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Stats/ml_unsupervised.png?raw=true" height="350">
+
+****
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/stats.gif?raw=true" height="100" width ="1000">
+
+# $\first{Reinforcement}$
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Stats/ml_reinforcement.png?raw=true" height="350">
+
+****
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/stats.gif?raw=true" height="100" width ="1000">
+
+[Return to Data Page](data_home.html)
