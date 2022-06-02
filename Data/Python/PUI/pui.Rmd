@@ -25,6 +25,8 @@ These are the notebooks from the Fall 2021 Principles of Urban Informatics lab a
 ### [Lab 2a: Data Cleaning](pui_lab2a.html)
 ### [Lab 2b: Real Estate Price Assessment](pui_lab2b.html)
 
+### [Lab 5a: Hypothesis Testing](pui_lab5a.html)
+
 ### [Midterm](pui_midterm.html)
 
 ### [Lab 7: Regression](pui_lab7.html)
