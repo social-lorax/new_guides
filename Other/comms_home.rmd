@@ -1,0 +1,104 @@
+---
+output: 
+  html_document:
+    highlight: tango
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    number_sections: false
+    df_print: kable
+knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
+---
+
+\newcommand\first[1]{\color{darkblue}{\textbf{#1}}}
+\newcommand\second[1]{\color{dodgerblue}{\textbf{#1}}}
+\newcommand\third[1]{\color{skyblue}{\textrm{#1}}}
+
+[Return to Main Page](index.html)
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/comms.gif?raw=true" height="100" width = "1000">
+
+# $\first{Communicating with Data}$
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Comms/story1.jpg?raw=true" width = "1000">
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Comms/story2.png?raw=true" width = "1000">
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Comms/story3.png?raw=true" width = "1000">
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/comms.gif?raw=true" height="100" width = "1000">
+
+# $\first{Fundamentals}$
+
+****
+
+### $\second{Why Storytelling}$
+
+*Data story telling is the practice of building a narrative around a set of data and its accompanying visualizations to help convey the meaning of that data in a powerful and compelling fashion.*
+
+* Focuses attention
+* Provides meaning and context
+* Helps retain insights 
+* Persuades change-resistant stakeholders
+* Communicates to non-technical stakeholders 
+
+****
+
+### $\second{Elements}$
+
+#### $\third{- Data}$
+
+Selecting the right data implies including enough contextual insights in a story to better support the main point without overloading with information. Data professionals care about their methods, but the audience likely cares more about results and implications.
+
+When translating technical language consider:
+
+* What does the audience know?
+* What do they need to understand? 
+
+Focus on the relevant, reliable, and actionable results (e.g., predictions) and findings (e.g., data analysis).
+
+<br>
+
+#### $\third{- Narrative}$
+
+Make the story compelling and easy to understand. Prioritize the essential points: avoid disconnected facts and focus on central insight in a linear fashion. Keep the focus on action. 
+
+**Background**
+
+* What motivated the analysis?
+* What changed?
+* Who is the focus of the analysis?
+
+**Insights**
+
+* What contributed to the problem?
+* Provide supporting evidence
+
+**Climax**
+
+* What would happen if there is no change?
+* What are potential solutions and next steps?
+
+<br>
+
+#### $\third{- Visuals}$
+
+Visuals should be simple, engaging, and not misleading. 
+
+Statistical considerations: 
+
+* Absolute change and relative change depend on the quantity
+* Normalize values for better comparisons
+* Means can be misleading (e.g., outliers)
+* P-values are only for statistical significance, not proof or indicative of importance
+
+Data Visualization considerations: 
+
+* Aggregate less relevant data
+* Make visuals approachable and engaging
+* Introduce visualization by name, highlightling the key message
+* Focus on the story not on decoding the graph
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Underlines/comms.gif?raw=true" height="100" width = "1000">
+
+[Return to Main Page](index.html)
