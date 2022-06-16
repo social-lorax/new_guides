@@ -15,3 +15,11 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 \newcommand\third[1]{\color{skyblue}{\textrm{#1}}}
 
 [Return to Data Page](data_home.html)
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Logos/tidytext.png?raw=true" height="200">
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
+
+[Return to Data Page](data_home.html)
