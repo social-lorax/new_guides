@@ -75,6 +75,7 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 #### Visualization with R
 #### [Statistics in R](py_stats.html)
 #### [Machine Learning in R](py_ml.html)
+#### [Text Analysis in R](r_text.html)
 
 #### [Census Data in R](tidycensus.html)
 
