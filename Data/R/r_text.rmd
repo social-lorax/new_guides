@@ -16,9 +16,669 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 
 [Return to Data Page](data_home.html)
 
+```{r include = FALSE}
+library(kableExtra)
+library(tidyverse)
+
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+
+output <- function(data) {
+  knitr::kable(data) %>% 
+    kable_styling(full_width = F)
+}
+
+comments <- tibble(user = c("D. Stein", "NYer", "Jonathan Katz", "South Of Albany", "backtoblackbean", "Beth", "ANNE IN MAINE", "Alex", "aging New Yorker", "Michael Weinfield", "urbanfoodpolicy", "Ameet M", "Ron", "Alex", "matthija"),
+                   comment = c("A big letdown. We’re in for a rough four years. Too bad only just over a fifth of New York voters saw fit to actually vote for mayor. We could have had a good mayor—a woman!", "NYC, and elsewhere, should watch out.  The Trump Family may try to dump some more national security and National Archives files in the composting.  And then claim they thought they were \"helping\" the City... And claim tax breaks...", "Why is this a front-page news item?
+
+Does it really matter if organic waste is composted?
+
+No, it doesn't.  Not a bad thing to do, but hardly worth prime space.", "The program hasn’t been around long enough to claim that it has low participation rates.  A big education push through schools and community boards would go a long way.  I wanted to join the program at precisely the time it was cut back.  We all really should be composting and it is easy.  Shame on Adams.", "While the low rate of participation in such a cosmopolitan city is appalling, it makes totally sense when I see people's attitude towards waste in general. We live in the society with abundant natural resources and consumption is the big economic driver. I truly wonder how many people in the U.S. are aware of what happens to the waste they produce. And how many of them would feel responsible for it.", "Composting in a small building is so easy. We did it in my 8-unit Brooklyn in building pre-pandemic and we're doing it now. To its credit, the city has created and distributed really good bins -- one for inside each apt, and one for outside -- that don't attract vermin and don't smell. They do a good job of collecting the compost and letting everyone know by text when the collection is happening. Here's what I don't get: WHY AREN'T RESTAURANTS AND SUPERMARKETS PARTICIPATING?? That's where MOST of the compostable trash is generated in the city. The average resident in a week generates a small bag full at most -- I cook meals with fresh fruits and veggies every day and that's all I generate.", "I am not sure about the need for composting, but am sure that we all need common sense.  A few years ago I met a family who lived in Manhattan where there was no near by composting facility—so the would put their scraps in a bag and take them on the subway to the closest one.  Bags of garbage riding around on the subway-something is wrong with this picture—maybe we should just go back to open sewer trenches--like in the good old days.", "It doesn’t sound like composting was really possible thanks to resident participation rates. I’ve tried it in my back yard and it wasn’t easy. We should try reduce food waste before it even gets to our garbage cans. So much food is wasted by supermarkets. We should try to find ways to distribute it before it goes to waste.", "The city should be expanding the compost program and backing it with a robust public education program, including in the schools. New York City should be leading the way on climate change, and this is an important piece of it. Anyone who claims to be vegan should be aware of how incredibly important it is to recycle food waste. If the mayor refuses to make this a priority, let's make sure the City Council hears from us how important it is! 
+
+As for the fact that there's low participation, how about a carrot-stick approach, as was used for COVID vaccines?", "I spent the first 35 years of my life growing up and living in the Metropolitan area. I loved it then and I still do. However, this new Mayor? I thought he was a mistake when he was first elected and he’s proven me correct almost every day of his term so far. His latest ill conceived decision regarding composting only reaffirms my earlier misgivings about him. 
+NYC will survive him, (remember Abe Beam ?), but it will not be any better or even as good with him at the helm.", "Managing residuals is often the stepchild of food systems advocacy, but a just, healthy, resilient food system includes composting. The rationale for not funding composting is reminiscent of the 1980s, when the Koch administration opposed mandatory citywide recycling, arguing it would be impractical and costly. The stakes are much higher today because organic waste, about a third of our residential trash, releases the potent greenhouse gas methane when landfilled. Municipal composting is a critical element in our city's climate strategy and a means to restore nutrients to degraded soils. There are many competing budget priorities as the city recovers from the pandemic, but a well-designed system for recycling food scraps can be efficient and produce long-term co-benefits.", "This is so incredibly disappointing to learn. Once you start composting it’s so hard to go back to throwing away your food waste. I was so pleased when they city started collecting food scraps again this year, but noticed the participation is now way down since before the pandemic. We need to show more of a long term commitment to composting if we are to be serious about climate change. It really does not save much money by stopping this program.", "It's a small and worthwhile cost. Keep the program.", "It’s crazy Eric Adams wants to bring back the rule of law, safety for all its residents, get New York back to work and reduce a bloated budget. What were so many New Yorkers thinking?", "@Alex It is ridiculously easy to compost.  Just get an composting bin [lets in right amount of rain and air] and toss in vegetable scraps, including bread."))
+```
+
 <img src="https://github.com/social-lorax/new_guides/blob/main/Images/Logos/tidytext.png?raw=true" height="200">
 
+![](https://github.com/social-lorax/new_guides/blob/main/Images/R/tidytext1.png?raw=true)
+
+```{r}
+#All
+library(tidyverse)
+library(tidytext)
+
+#Sentiment Analysis
+library(textdata)
+
+#Topic Modeling 
+library(topicmodels)
+```
+
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
+
+# $\first{Tidytext}$
+
+****
+
+### $\second{Tokenizing}$
+
+#### $\third{- Terminology}$
+
+* Corpus = a collection of documents
+* Document = each separate body of text 
+* Bag of Words = words in a document that are independent
+* Term = each unique word 
+* Token = each occurrence of a term
+* Tokenizing = turning a document into a bag of words 
+
+<br> 
+
+#### $\third{- Tokenizing}$
+
+```{r eval = FALSE}
+comments %>% head()
+```
+
+```{r echo = FALSE}
+comments %>% head() %>% output()
+```
+
+```{r eval = FALSE}
+tokenized_comments <- comments %>% 
+  unnest_tokens(input = comment, 
+                output = word, 
+                token = "words", 
+                to_lower = TRUE, 
+                drop = TRUE)
+
+tokenized_comments %>% 
+  count(word) %>% 
+  arrange(desc(n)) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+tokenized_comments <- comments %>% 
+  unnest_tokens(input = comment, 
+                output = word, 
+                token = "words", 
+                to_lower = TRUE, 
+                drop = TRUE)
+
+tokenized_comments %>% 
+  count(word) %>% 
+  arrange(desc(n)) %>% 
+  head() %>% 
+  output()
+```
+
+<br> 
+
+#### $\third{- Removing Stop Words}$
+
+```{r}
+stop_words %>% head(100) %>% pull(word)
+```
+
+```{r eval = FALSE}
+tokenized_comments <- tokenized_comments %>% 
+  anti_join(stop_words, by = "word")
+
+tokenized_comments %>% 
+  count(word) %>% 
+  arrange(desc(n)) %>% 
+  head() 
+```
+
+```{r echo = FALSE}
+tokenized_comments <- tokenized_comments %>% 
+  anti_join(stop_words, by = "word")
+
+tokenized_comments %>% 
+  count(word) %>% 
+  arrange(desc(n)) %>% 
+  head() %>% 
+  output()
+```
+
+<br> 
+
+#### $\third{- Removing Custom Words}$
+
+```{r eval = FALSE}
+tokenized_comments <- tokenized_comments %>% 
+  filter(!(word %in% c("composting", "waste", "program", "york")))
+
+tokenized_comments %>% 
+  count(word) %>% 
+  arrange(desc(n)) %>% 
+  head() 
+```
+
+```{r echo = FALSE}
+tokenized_comments <- tokenized_comments %>% 
+  filter(!(word %in% c("composting", "waste", "program", "york")))
+
+tokenized_comments %>% 
+  count(word) %>% 
+  arrange(desc(n)) %>% 
+  head() %>% 
+  output()
+```
+
+<br> 
+
+#### $\third{- Plotting}$
+
+```{r}
+tokenized_comments %>% 
+  count(word) %>% 
+  filter(n > 2) %>% 
+  mutate(word = fct_reorder(word, n)) %>% 
+  ggplot(aes(x = word, y = n)) + 
+  geom_col() + 
+  coord_flip()
+```
+
+<br> 
+
+```{r}
+library(wordcloud)
+
+tokenized_comments <- tokenized_comments %>% 
+  count(word) 
+
+wordcloud(words = tokenized_comments$word, 
+          freq = tokenized_comments$n,
+          max.words = 30)
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
+
+# $\first{Sentiment Analysis}$
+
+****
+
+### $\second{Dictionaries}$
+
+#### $\third{- Bing}$
+
+The Bing dataset, created by [Bing Liu, et al.](https://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html), is a list of words with each classified as either positive or negative.
+
+```{r eval = FALSE}
+get_sentiments("bing") %>% head(5)
+```
+
+```{r echo = FALSE}
+get_sentiments("bing") %>% head(5) %>% output()
+```
+
+<br>
+
+```{r eval = FALSE}
+get_sentiments("bing") %>%   
+  count(sentiment)
+```
+
+```{r echo = FALSE}
+get_sentiments("bing") %>%   
+  count(sentiment) %>% 
+  output()
+```
+
+<br> 
+
+#### $\third{- Afinn}$
+
+The Afinn dataset, created by [Finn Årup Nielsen](https://github.com/fnielsen/afinn), is a list of words ranked from -5 to +5 based on the word’s perceived positivity or negativity. 
+
+```{r eval = FALSE}
+get_sentiments("afinn") %>% head(5)
+```
+
+```{r echo = FALSE}
+get_sentiments("afinn") %>% head(5) %>% output()
+```
+
+<br>
+
+```{r eval = FALSE}
+get_sentiments("afinn") %>%   
+  count(value)
+```
+
+```{r echo = FALSE}
+get_sentiments("afinn") %>%   
+  count(value) %>% 
+  output()
+```
+
+<br> 
+
+#### $\third{- Loughran}$
+
+The Loughran dataset, created by [Tim Loughran and Bill McDonald](https://rdrr.io/cran/textdata/man/lexicon_loughran.html), is a list of words categorized as "negative", "positive", "litigious", "uncertainty", "constraining", or "superfluous". It was created using financial documents for a financial context. 
+
+```{r eval = FALSE}
+get_sentiments("loughran") %>% head(5)
+```
+
+```{r echo = FALSE}
+get_sentiments("loughran") %>% head(5) %>% output()
+```
+
+<br>
+
+```{r eval = FALSE}
+get_sentiments("loughran") %>%   
+  count(sentiment)
+```
+
+```{r echo = FALSE}
+get_sentiments("loughran") %>%   
+  count(sentiment) %>% 
+  output()
+```
+
+<br> 
+
+#### $\third{- NRC}$
+
+The NRC Emotion Lexicon is a list of words and their associations with eight basic emotions (anger, fear, anticipation, trust, surprise, sadness, joy, and disgust) and two sentiments (negative and positive). The annotations were manually done by crowdsourcing. More information is available on the [project's webpage](https://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm).
+
+```{r eval = FALSE}
+get_sentiments("nrc") %>% head(5)
+```
+
+```{r echo = FALSE}
+get_sentiments("nrc") %>% head(5) %>% output()
+```
+
+<br>
+
+```{r eval = FALSE}
+get_sentiments("nrc") %>%   
+  count(sentiment)
+```
+
+```{r echo = FALSE}
+get_sentiments("nrc") %>%   
+  count(sentiment) %>% 
+  output()
+```
+
+****
+
+### $\second{Analyzing}$
+
+#### $\third{- Binary}$
+
+```{r}
+sentiments_bing <- get_sentiments("bing")
+
+tokenized_comments <- comments %>% 
+  unnest_tokens(input = comment, 
+                output = word, 
+                token = "words", 
+                to_lower = TRUE, 
+                drop = TRUE) %>% 
+  inner_join(sentiments_bing, by = "word")
+```
+
+```{r eval = FALSE}
+tokenized_comments %>% 
+  count(sentiment)
+```
+
+```{r echo = FALSE}
+tokenized_comments %>% 
+  count(sentiment) %>% 
+  output()
+```
+
+<br> 
+
+```{r eval = FALSE}
+tokenized_comments %>% 
+  group_by(user) %>% 
+  count(sentiment) %>% 
+  spread(sentiment, n, fill = 0) %>% 
+  mutate(classification = if_else(negative > positive, "Negative", "Positive"))
+```
+
+```{r echo = FALSE}
+tokenized_comments %>% 
+  group_by(user) %>% 
+  count(sentiment) %>% 
+  spread(sentiment, n, fill = 0) %>% 
+  mutate(classification = if_else(negative > positive, "Negative", "Positive")) %>% 
+  output()
+```
+
+<br> 
+
+#### $\third{- Numeric}$
+
+```{r}
+sentiments_afinn <- get_sentiments("afinn")
+
+tokenized_comments <- comments %>% 
+  unnest_tokens(input = comment, 
+                output = word, 
+                token = "words", 
+                to_lower = TRUE, 
+                drop = TRUE) %>% 
+  inner_join(sentiments_afinn, by = "word")
+```
+
+```{r eval = FALSE}
+tokenized_comments %>% 
+  summarize(overall = sum(value),
+            min = min(value),
+            max = max(value),
+            average = mean(value))
+```
+
+```{r echo = FALSE}
+tokenized_comments %>% 
+  summarize(overall = sum(value),
+            min = min(value),
+            max = max(value),
+            average = mean(value)) %>% 
+  output()
+```
+
+<br> 
+
+```{r eval = FALSE}
+tokenized_comments %>% 
+  group_by(user) %>% 
+  summarize(overall = sum(value),
+            min = min(value),
+            max = max(value),
+            average = mean(value))
+```
+
+```{r echo = FALSE}
+tokenized_comments %>% 
+  group_by(user) %>% 
+  summarize(overall = sum(value),
+            min = min(value),
+            max = max(value),
+            average = mean(value)) %>% 
+  output()
+```
+
+<br> 
+
+#### $\third{- Categorical}$
+
+```{r}
+sentiments_nrc <- get_sentiments("nrc")
+
+tokenized_comments <- comments %>% 
+  unnest_tokens(input = comment, 
+                output = word, 
+                token = "words", 
+                to_lower = TRUE, 
+                drop = TRUE) %>% 
+  inner_join(sentiments_nrc, by = "word")
+```
+
+```{r eval = FALSE}
+tokenized_comments %>% 
+  count(sentiment) %>% 
+  arrange(desc(n))
+```
+
+```{r echo = FALSE}
+tokenized_comments %>% 
+  count(sentiment) %>% 
+  arrange(desc(n)) %>% 
+  output()
+```
+
+<br> 
+
+```{r eval = FALSE}
+tokenized_comments %>% 
+  group_by(user) %>% 
+  count(sentiment) %>% 
+  spread(sentiment, n, fill = 0) 
+```
+
+```{r echo = FALSE}
+tokenized_comments %>% 
+  group_by(user) %>% 
+  count(sentiment) %>% 
+  spread(sentiment, n, fill = 0) %>% 
+  output()
+```
+
+<br> 
+
+```{r eval = FALSE}
+tokenized_comments %>% 
+  group_by(user) %>% 
+  count(sentiment) %>% 
+  arrange(desc(n)) %>% 
+  distinct(user, .keep_all = TRUE) %>% 
+  select(-n)
+```
+
+```{r echo = FALSE}
+tokenized_comments %>% 
+  group_by(user) %>% 
+  count(sentiment) %>% 
+  arrange(desc(n)) %>% 
+  distinct(user, .keep_all = TRUE) %>% 
+  select(-n) %>% 
+  output()
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
+
+# $\first{Topic Modeling}$
+
+Latent Dirichlet Allocation (LDA) is a form of unsupervised learning that categorizes text. 
+
+****
+
+### $\second{Document Term Matrices}$
+
+```{r}
+comments_dtm <- comments %>%
+  mutate(id = c(1:15),
+         comment = str_remove_all(comment, "New York ")) %>% 
+  unnest_tokens(input = comment, 
+                output = word, 
+                token = "words", 
+                to_lower = TRUE, 
+                drop = TRUE) %>% 
+  anti_join(stop_words, by = "word") %>% 
+  filter(!(word %in% c("composting", "waste", "program"))) %>% 
+  count(word, id) %>% 
+  cast_dtm(document = id, 
+           term = word, 
+           value = n)
+
+comments_dtm
+```
+
+```{r}
+comments_dtm <- comments_dtm %>%
+  as.matrix()
+
+comments_dtm[1:5, 5:10]
+```
+
+****
+
+### $\second{Modeling}$
+
+```{r}
+lda_model <- LDA(comments_dtm,
+                 k = 3,
+                 method = "Gibbs",
+                 control = list(seed = 613))
+```
+
+<br>
+
+#### $\third{- k}$
+
+Parameter k determines the number of topics. Choosing the optimal k involves: 
+
+* Topic coherence: examine the words in topics, decide if they make sense 
+* Log-likelihood: how plausible model parameters are given the data 
+* Perplexity: the model's"surprise" at the data
+
+```{r}
+mod_log_lik = numeric(10)
+mod_perplexity = numeric(10)
+
+for (i in 2:10) {  
+  mod = LDA(comments_dtm,
+            k = i,
+            method = "Gibbs",
+            control = list(seed = 613))
+  
+  mod_log_lik[i] = logLik(mod)  
+  mod_perplexity[i] = perplexity(mod, comments_dtm)
+}
+```
+
+```{r}
+tibble(x = c(2:10),
+       y = mod_log_lik[2:10]) %>% 
+  ggplot(aes(x, y)) + 
+  geom_line() + 
+  labs(x = "k",
+       y = "Log-Likelihood",
+       title = "Log-Likelihood Method",
+       subtitle = "Larger Log-Likelihood Better") + 
+  theme_classic()
+```
+
+<br> 
+
+```{r}
+tibble(x = c(2:10),
+       y = mod_perplexity[2:10]) %>% 
+  ggplot(aes(x, y)) + 
+  geom_line() + 
+  labs(x = "k",
+       y = "Perplexity Score",
+       title = "Perplexity Method",
+       subtitle = "Smaller (Local) Perplexity Better") + 
+  theme_classic()
+```
+
+
+<br>
+
+#### $\third{- Word Classification}$
+
+```{r eval = FALSE}
+lda_words <- lda_model %>% 
+  tidy(matrix = "beta")
+
+lda_words %>% 
+  spread(topic, beta) %>% 
+  mutate(topic = case_when(`1` > `2` & `1` > `3` ~ "1",
+                           `2` > `1` & `2` > `3` ~ "2",
+                           `3` > `1` & `3` > `2` ~ "3",
+                           TRUE                  ~ "Tie")) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+lda_words <- lda_model %>% 
+  tidy(matrix = "beta")
+
+lda_words %>% 
+  spread(topic, beta) %>% 
+  mutate(topic = case_when(`1` > `2` & `1` > `3` ~ "1",
+                           `2` > `1` & `2` > `3` ~ "2",
+                           `3` > `1` & `3` > `2` ~ "3",
+                           TRUE                  ~ "Tie")) %>% 
+  filter(!(term %in% c("1980s", "35", "8", "abe"))) %>% 
+  head() %>% output()
+```
+
+<br> 
+
+#### $\third{- Document Classification}$
+
+```{r eval = FALSE}
+lda_docs <- lda_model %>% 
+  tidy(matrix = "gamma")
+
+lda_docs %>% 
+  spread(topic, gamma) %>% 
+  mutate(topic = case_when(`1` > `2` & `1` > `3` ~ "1",
+                           `2` > `1` & `2` > `3` ~ "2",
+                           `3` > `1` & `3` > `2` ~ "3",
+                           TRUE                  ~ "Tie")) %>% 
+  head()
+```
+
+```{r echo = FALSE}
+lda_docs <- lda_model %>% 
+  tidy(matrix = "gamma")
+
+lda_docs %>% 
+  spread(topic, gamma) %>% 
+  mutate(topic = case_when(`1` > `2` & `1` > `3` ~ "1",
+                           `2` > `1` & `2` > `3` ~ "2",
+                           `3` > `1` & `3` > `2` ~ "3",
+                           TRUE                  ~ "Tie"),
+         document = as.double(document)) %>% 
+  arrange(document) %>% 
+  head() %>% output()
+```
+
+<br> 
+
+#### $\third{- Visualization}$
+
+```{r}
+topic1 <- lda_words %>% filter(topic == 1)
+topic2 <- lda_words %>% filter(topic == 2)
+topic3 <- lda_words %>% filter(topic == 3)
+```
+
+```{r}
+library(wordcloud)
+
+wordcloud(words = topic1$term, 
+          freq = topic1$beta,
+          max.words = 10)
+```
+
+```{r}
+wordcloud(words = topic2$term, 
+          freq = topic2$beta,
+          max.words = 10)
+```
+
+```{r}
+wordcloud(words = topic3$term, 
+          freq = topic3$beta,
+          max.words = 10)
+```
+
+Maybe we could say: 
+
+* Topic 1 = participation rates and composting specifically through past NYC programs  
+* Topic 2 = the benefits of composting 
+* Topic 3 = making composting work 
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
+
+# $\first{Probability}$
+
+****
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
 

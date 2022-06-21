@@ -71,7 +71,8 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 ****
 
 #### [Coding with R](r_code.html)
-#### [Data Wrangling with R](r_basic.html)
+#### [Getting Data into R](r_data.html)
+#### [Data Wrangling with R](r_cleaning.html)
 #### Visualization with R
 #### [Statistics in R](py_stats.html)
 #### [Machine Learning in R](py_ml.html)
