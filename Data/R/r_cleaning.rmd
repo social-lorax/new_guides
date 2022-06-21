@@ -28,7 +28,13 @@ output <- function(data) {
 }
 ```
 
+<center>
+
 ![](https://github.com/social-lorax/new_guides/blob/main/Images/Logos/tidyverse.png?raw=true)
+
+<img src="https://github.com/social-lorax/new_guides/blob/main/Images/Logos/data_cleaning_cycle.jpg?raw=true" height="400">
+
+</center>
 
 ```{r}
 library(tidyverse)
@@ -42,6 +48,224 @@ library(gapminder)
 
 <img src="https://github.com/social-lorax/new_guides/blob/main/Images/Logos/stringr.png?raw=true" height="200">
 
+[stringr cheatsheet](https://github.com/social-lorax/new_guides/blob/main/Cheatsheets/r_strings.pdf)  
+[Regular Expressions page](regex.html)
+
 ****
 
+### $\second{Summary Stats}$
 
+#### $\third{- Length}$
+
+`str_length()` returns the total number of characters in the string, including spaces 
+
+```{r}
+str_length("How long is this example string?")
+```
+
+<br> 
+
+Spaces (or other characters) can be removed before counting 
+
+```{r}
+str_remove_all("How long is this example string?", " ") %>% str_length()
+```
+
+<br>
+
+#### $\third{- Naive Word Count}$
+
+Naively assuming that words are separate by a space allows for a quick word count
+
+```{r}
+str_split("How long is this example string?", pattern = fixed(" ")) %>% lapply(length)
+```
+
+****
+
+### $\second{Formatting}$
+
+#### $\third{- Printing Formatted Text}$
+
+`print()` returns what was entered 
+
+```{r}
+print("This \"example\" string has 'both' types of quotes\n and extends to the second line")
+```
+
+`writeLines()` processes what was entered and returns the formatting 
+
+```{r}
+writeLines("This \"example\" string has 'both' types of quotes\nand extends to the second line")
+```
+
+<br> 
+
+#### $\third{- Text Escapes}$
+
+If there are no double quotes in the string, use double quotes (`" "`)
+
+```{r}
+writeLines("This example string has no quotes")
+```
+
+If there are double quotes but no single quotes in the string, use single quotes (`' '`)
+
+```{r}
+writeLines('This "example" string has double quotes')
+```
+
+If there are both double and single quotes, use double quotes with an escape (`" \" \" "`)
+
+```{r}
+writeLines("This \"example\" string has 'both' types of quotes")
+```
+
+Use an escape to enter an actual backslash (`\\`)
+
+```{r}
+writeLines("This example string has a \\")
+```
+
+<br> 
+
+#### $\third{- Numbers}$
+
+```{r}
+library(scales)
+```
+
+```{r}
+scales::percent(0.823443610429, accuracy = 0.1)
+```
+
+```{r}
+scales::comma(8234436.10429, accuracy = 0.01)
+```
+
+```{r}
+scales::scientific(8234436.10429)
+```
+
+```{r}
+scales::dollar(8236.10429, accuracy = 0.01)
+```
+
+****
+
+### $\second{Concatenating}$
+
+#### $\third{- str_c}$
+
+`str_c()` concatenates strings with some formatting 
+
+```{r}
+str_c("Line 1", "Line 2", "Line 3", sep = ", ") %>% 
+  writeLines()
+```
+
+```{r}
+str_c("Line 1", "Line 2", "Line 3", sep = "\n") %>% 
+  writeLines()
+```
+
+<br>
+
+#### $\third{- str_glue}$
+
+`str_glue()` concatenates strings and allows for pulling in external values 
+
+```{r}
+str_glue("Today is {Sys.Date()}") %>% 
+  writeLines()
+```
+
+****
+
+### $\second{Subsetting}$
+
+#### $\third{- Extracting}$
+
+`str_sub()` clips a segment of the string based on the starting and ending digit. Both the starting number and the ending number are included. Counting goes in both directions starting from 1 and -1.
+
+```{r}
+str_sub("This is an example string", start = 1, end = 10)
+```
+
+```{r}
+str_sub("This is an example string", start = 11, end = -1)
+```
+
+<br> 
+
+`str_extract()`  lifts a subset that matches a regular expression anywhere in the string
+
+```{r}
+str_extract("The number is 718-555-0123", "[0-9]{3}-[0-9]{3}-[0-9]{4}")
+```
+
+<br> 
+
+#### $\third{- Detecting}$
+
+`str_detect()` identifies whether a pattern is present in a string. 
+
+```{r}
+str_detect("This is an example string", pattern = fixed("example"))
+```
+
+<br> 
+
+`str_count()` counts the occurrence of a pattern in a string. 
+
+```{r}
+str_count("This is an example string", pattern = fixed("is"))
+```
+
+```{r}
+str_count("This is an example string", pattern = fixed(" is "))
+```
+
+<br> 
+
+#### $\third{- Splitting}$
+
+`str_split()` breaks up a string based on a set separator
+
+```{r}
+str_split("005, 047, 061, 081, 085", pattern = fixed(", "))
+```
+
+Splitting can be limited using the argument `n`: splitting will stop once n subsets are created
+
+```{r}
+str_split("005, 047, 061, 081, 085", pattern = fixed(", "), n = 3)
+```
+
+`length()` can be used for a count instead of pulling each string
+
+```{r}
+str_split(c("005, 047, 061, 081, 085", "059, 105"), pattern = fixed(", ")) %>% lapply(length)
+```
+
+<br> 
+
+#### $\third{- Editing}$
+
+`str_remove()` deletes the first occurrence of a pattern (`str_remove_all()` deletes all occurrences)
+
+```{r}
+str_remove("This is an example string", pattern = fixed(" string"))
+```
+
+<br>
+
+`str_replace()` replaces the first occurrence of a pattern (`str_replace_all()` replaces all occurrences)
+
+```{r}
+str_replace("This is an example string", pattern = fixed("is"), replacement = "at")
+```
+
+![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/r_underline.png)
+
+[Return to Data Page](data_home.html)
