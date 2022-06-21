@@ -30,6 +30,8 @@ output <- function(data) {
 
 <center>
 
-![](https://github.com/social-lorax/new_guides/blob/main/Images/Logos/regular_expression.gif?raw=true)
+![](https://github.com/social-lorax/new_guides/blob/main/Images/Logos/regular-expression.gif?raw=true)
 
 </center>
+
+<img src="https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Underlines/regex.gif" height="100" width="1000">
