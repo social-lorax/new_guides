@@ -111,6 +111,7 @@ knit: furmanr::knit_output_dir("C:/Users/brenner/Documents/GitHub/guides")
 ****
 
 #### [SQL](sql.html)
+#### [Regular Expressions](regex.html)
 #### [XML](xml.html)
 
 ![](https://raw.githubusercontent.com/social-lorax/new_guides/main/Images/Index/underline.gif)
